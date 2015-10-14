@@ -1,0 +1,12 @@
+# Site settings
+title: Gabriel Saraiva
+email: gabrielsaraiva7@gmail.com
+description: "This is my personal site. Where I test new tecnology, break everything and put something that can be usefull to someone. :)"
+baseurl: ""
+url: "http://gabrielsaraiva.com.br"
+twitter_username: gabrielsaraiva
+github_username:  gabrsar
+
+# Build settings
+markdown: kramdown
+permalink: pretty
