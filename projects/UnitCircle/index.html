@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p5.js example</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="p5.min.js"></script>
+  <script src="sketch.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="configuration">
+  <h1>Configuration</h1>
+  <hr/>
+
+  <div>
+    <input name="mode" type="radio" id="mode-mouse">
+    <label for="mode-mouse">Mouse</label>
+    <input name="mode" type="radio" id="mode-time" checked="checked">
+    <label for="mode-time">Time</label>
+  </div>
+
+  <div id="time-configuration">
+    <hr/>
+    <div>
+      <label for="speed">Speed: <span id="currentSpeed"></span></label>
+    </div>
+
+    <input type="range" min="-50" max="50" value="1" step="1" class="slider" id="speed">
+
+  </div>
+  <div id="mouse-configuration">
+    <hr/>
+
+    <div>
+      <label for="integer-lock">Integer stick:</label>
+      <input name="mode" type="checkbox" id="integer-lock" false>
+    </div>
+    <span id="mouse-lock"></span>
+  </div>
+</div>
+
+</body>
+</html>
