@@ -15,6 +15,10 @@ Here are just some of projects from my graduation, hobbies and some jobs (Beware
 * [UnitCircle](https://github.com/gabrsar/UnitCircle). A small tool to help understand and use the Unit Circle, really useful for those who are starting in geometry or want to learn some P5.js library.
 * [Click here to use it.]({{ site.url }}/projects/UnitCircle/index.html)
 
+# Glappy Bird #
+* [UnitCircle](https://github.com/gabrsar/GlappyBird). A small tool to help understand and use the Unit Circle, really useful for those who are starting in geometry or want to learn some P5.js library.
+* [Click here to use it.]({{ site.url }}/projects/GlappyBird/index.html)
+
 # University Projects #
 * [Projects](https://github.com/gabrsar/projetos-graduacao). A lot of projects in C and Java. Sorry. I need sleep.
 
