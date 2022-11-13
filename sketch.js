@@ -54,7 +54,7 @@ function setup() {
 
   noCursor();
   textFont('Monospace');
-  frameRate(30);
+  frameRate(Infinity);
   const x = createCanvas(windowWidth, windowHeight);
   x.style('display', 'block');
 
