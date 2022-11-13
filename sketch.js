@@ -9,7 +9,7 @@ let q1 = quote1.split("").map((l,i)=>({t:l,x:0+i*32,y:0}));
 
 let q2 = quote2.split("").map((l,i)=>({t:l,x:0+i*32,y:-1000, dX:1,dY:1}));
 
-const nBallons = Math.random()*50;
+const nBallons = 50+Math.random()*50;
 
 let midBallons = Math.floor(nBallons/2);
 let ballons = [];
@@ -66,7 +66,9 @@ function draw() {
   background(0);
   
 
-  q1 = q1.map((lc,i)=>({t:lc.t,x:100+(i*size)+Math.cos(t+(1+i))*size/2,y:100+Math.sin(t+(1+i))*size/3}));
+  const q1x = (t*100)%(windowWidth+500)
+
+  q1 = q1.map((lc,i)=>({t:lc.t,x:q1x-500+(i*size)+Math.cos(t+(1+i))*size/2,y:100+Math.sin(t+(1+i))*size/3}));
   textSize(size);
   
   ballons.slice(0,midBallons).forEach((b)=>drawBallon(b));
