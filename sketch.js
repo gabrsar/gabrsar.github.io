@@ -61,7 +61,7 @@ function setup() {
 
   noCursor();
   textFont('Monospace');
-  frameRate(30);
+  frameRate(Infinity);
   const x = createCanvas(windowWidth, windowHeight);
   x.style('display', 'block');
 
@@ -71,7 +71,7 @@ function setup() {
 }
 
 function draw() {
-  t+=0.1;
+  t+=deltaTime/250;
 
   bgNoise+=0.01;
   windNoiseY+=0.1;
