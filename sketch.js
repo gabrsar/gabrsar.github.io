@@ -1,7 +1,6 @@
 const quote1 = "Feliz  Aniversário !";
 const quote2 = "Diego Lemos <3";
-const size = 32;
-
+let size = 32;
 const q1size = quote1.length*(size+2);
 console.log(q1size);
 const Y_AXIS = 1;
@@ -63,6 +62,8 @@ function setup() {
   frameRate(30);
   const x = createCanvas(windowWidth, windowHeight);
   x.style('display', 'block');
+
+  size = min(windowHeight,windowWidth)/30;
 
 
 }
