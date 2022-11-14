@@ -50,6 +50,8 @@ let opY =0;
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  size = min(windowHeight,windowWidth)/30;
+
 }
 
 function setup() {
