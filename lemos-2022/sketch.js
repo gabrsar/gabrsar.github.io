@@ -149,6 +149,7 @@ function draw() {
  
   ballons.slice(midBallons,nBallons).forEach((b)=>drawBallon(b));
   ballons = ballons.map((b)=>animateBallon(b));
+
 }
 
 
