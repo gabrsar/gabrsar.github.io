@@ -4,6 +4,12 @@ let size = 32;
 const q1size = quote1.length*(size+2);
 console.log(q1size);
 const Y_AXIS = 1;
+const nBallons = 50+Math.random()*50;
+
+const highProfile={layers:30,perspectiveSize:2, ballons:nBallons};
+const lowProfile={layers:5,perspectiveSize:8, ballons:20};
+
+let currentProfile = lowProfile;
 
 
 let windNoiseX = Math.random()*1000;
@@ -15,7 +21,6 @@ let q1 = quote1.split("").map((l,i)=>({t:l,x:0+i*size,y:0}));
 
 let q2 = quote2.split("").map((l,i)=>({t:l,x:0+i*size,y:-1000, dX:1,dY:1}));
 
-const nBallons = 50+Math.random()*50;
 
 let midBallons = Math.floor(nBallons/2);
 let ballons = [];
@@ -25,6 +30,7 @@ function makeBallons(){
 for(let i = 0 ; i< nBallons;i++){
   ballons.push(
     {
+    i:i,
     y:windowHeight + Math.random()*2000,
     x:Math.random()*windowWidth,
     c:[
@@ -71,11 +77,11 @@ function setup() {
 }
 
 function draw() {
-  t+=deltaTime/250;
+  t+=deltaTime/400;
 
   bgNoise+=0.01;
-  windNoiseY+=0.1;
-  windNoiseX+=0.1;
+  windNoiseY+=0.01;
+  windNoiseX+=0.01;
 
 
   push();
@@ -126,12 +132,14 @@ function draw() {
     text(l.t,l.x,l.y);
   });
   
+
+  const profile = frameRate() > 25 ? highProfile : lowProfile
   
-  const layers=30;
+  const layers=profile.layers;
   const colorStart=80;
   const colorMin=50;
   const layerDelta=(colorStart-colorMin)/layers;
-  const perspectiveSize=2;
+  const perspectiveSize=profile.perspectiveSize;
 
   for(let j=0;j<layers;j+=1){
     q2.forEach((l,i)=>{
@@ -154,6 +162,9 @@ function draw() {
 
 
 function animateBallon(b){
+  if(b.i > currentProfile.ballons){
+    return b;
+  }
   
   if(b.y< -100){
     b.y = windowHeight + Math.random()*200;
@@ -167,12 +178,15 @@ function animateBallon(b){
   
   return {
     ...b,
-    x:b.x+noise(windNoiseX*b.z)*5,
-    y: b.y < -100 ? windowHeight+100: b.y-noise(windNoiseY*b.z)-(b.m*10)-0.1
+    x: b.x+noise(windNoiseX*b.z)*2,
+    y: b.y < -100 ? windowHeight+100: b.y-noise(windNoiseY*b.z)-(b.m)-0.1
   }
 }
 
 function drawBallon(b){
+  if(b.i > currentProfile.ballons){
+    return;
+  }
   push();
   const c = `rgba(${[...b.c,b.z].join(",")})`;
   fill(c);
