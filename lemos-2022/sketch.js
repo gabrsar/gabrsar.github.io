@@ -106,8 +106,8 @@ function draw() {
     blc = plc || lc;
     const x = (mouseX) +(i*size*2+Math.sin(t/10)*20);
     const y = mouseY;
-    const dX = blc.dX + (1/(1+i*10))*(x-blc.dX)+size;
-    const dY = blc.dY + (1/(1+i*10))*(y-blc.dY);
+    const dX = blc.dX + (1/(1+i*1.5))*(x-lc.dX)+size;
+    const dY = blc.dY + (1/(1+i*1.5))*(y-lc.dY);
     const nlc = {
       t:lc.t,
       x,
