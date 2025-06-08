@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOES Wallpaper</title>
+    <link rel="stylesheet" href="../common.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #f8f8f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        select, button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        select:hover, button:hover {
+            background-color: #444;
+        }
+
+        .image-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        #satellite-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .info {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .error {
+            color: #ff6b6b;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <button id="home-btn" class="floating-home-btn" onclick="window.location.href='../index.html'">&larr;</button>
+    <header>
+        <h1>GOES Satellite Wallpaper</h1>
+    </header>
+
+    <div class="container">
+        <div class="controls">
+            <select id="satellite-select">
+                <option value="goes-east">GOES-East (GOES-16)</option>
+                <option value="goes-west">GOES-West (GOES-18)</option>
+            </select>
+
+            <select id="region-select">
+                <option value="full_disk">Full Disk</option>
+                <option value="conus">Continental US</option>
+                <option value="mesoscale_1">Mesoscale 1</option>
+                <option value="mesoscale_2">Mesoscale 2</option>
+            </select>
+
+            <select id="band-select">
+                <option value="GEOCOLOR">GeoColor</option>
+                <option value="02">Band 2 (Visible)</option>
+                <option value="13">Band 13 (Clean IR)</option>
+            </select>
+
+            <button id="refresh-btn">Refresh Image</button>
+            <button id="download-btn">Download Image</button>
+        </div>
+
+        <div class="image-container">
+            <img id="satellite-image" alt="GOES Satellite Image">
+            <div class="loading" id="loading">Loading...</div>
+        </div>
+
+        <div class="info" id="image-info">
+            <!-- Image information will be displayed here -->
+        </div>
+
+        <div class="error" id="error-message" style="display: none;">
+            <!-- Error messages will be displayed here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

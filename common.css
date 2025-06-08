@@ -1,0 +1,35 @@
+/* Common styles for the floating return button */
+.floating-home-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgba(40, 40, 40, 0.7);
+  color: #fff;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.floating-home-btn:hover {
+  background-color: rgba(60, 60, 60, 0.9);
+  transform: scale(1.1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* For buttons that use text instead of an arrow symbol */
+.floating-home-btn.text-btn {
+  width: auto;
+  padding: 0 15px;
+  border-radius: 25px;
+  font-size: 16px;
+}
