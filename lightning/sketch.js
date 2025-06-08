@@ -22,7 +22,9 @@ function setup() {
   frameRate(60);
   width = window.innerWidth;
   height = window.innerHeight;
-  createCanvas(width, height);
+  let canvas = createCanvas(width, height);
+  // Ensure the canvas has a lower z-index than the home button
+  canvas.style('z-index', '-1');
   angleMode(DEGREES);
 
   groundY = height / 5 * 4;
