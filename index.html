@@ -138,17 +138,35 @@
         content: "";
         position: absolute;
         inset: 0;
+        display: block;
+        opacity: 1;
+        transition: opacity 0.5s ease;
         background:
-          linear-gradient(90deg, rgba(8, 11, 14, 0.96) 0%, rgba(8, 11, 14, 0.76) 40%, rgba(8, 11, 14, 0.16) 100%),
-          linear-gradient(180deg, rgba(8, 11, 14, 0.14), rgba(8, 11, 14, 0.86));
+          linear-gradient(90deg, rgba(8, 11, 14, 0.74) 0%, rgba(8, 11, 14, 0.5) 40%, rgba(8, 11, 14, 0.1) 100%),
+          linear-gradient(180deg, rgba(8, 11, 14, 0.08), rgba(8, 11, 14, 0.6));
         pointer-events: none;
+      }
+
+      body[data-superhot="on"] .field::after {
+        opacity: 0;
       }
 
       .hero-inner {
         position: relative;
         z-index: 1;
+        display: block;
         width: min(1120px, calc(100% - 40px));
         margin: 0 auto;
+        color: #fff;
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.5s ease, transform 0.5s ease, color 0.5s ease;
+      }
+
+      body[data-superhot="on"] .hero-inner {
+        color: #060606;
+        opacity: 1;
+        transform: translateY(-4px);
       }
 
       .eyebrow {
@@ -158,14 +176,24 @@
         font-weight: 820;
         letter-spacing: 0;
         text-transform: uppercase;
+        transition: color 0.5s ease;
       }
 
       h1 {
         max-width: 820px;
         margin: 0 0 24px;
-        font-size: clamp(3rem, 9vw, 7rem);
+        font-size: clamp(4rem, 10vw, 8.2rem);
         line-height: 0.9;
         letter-spacing: 0;
+        color: inherit;
+        transition: color 0.5s ease, text-shadow 0.5s ease;
+      }
+
+      .welcome {
+        display: inline-block;
+        font-size: 0.58em;
+        line-height: 1;
+        vertical-align: baseline;
       }
 
       .intro {
@@ -174,11 +202,60 @@
         color: rgba(255, 255, 255, 0.82);
         font-size: clamp(1.05rem, 2vw, 1.34rem);
         line-height: 1.56;
+        transition: color 0.5s ease;
+      }
+
+      body[data-superhot="on"] .hero-inner .eyebrow {
+        color: #060606;
+      }
+
+      body[data-superhot="on"] .hero-inner h1,
+      body[data-superhot="on"] .hero-inner .intro {
+        color: #060606;
+        text-shadow: none;
       }
 
       .below {
         background: var(--paper);
         color: var(--ink);
+      }
+
+      .route span,
+      .route p,
+      .note,
+      footer,
+      .footer-inner,
+      .route h2 {
+        transition: color 0.5s ease, opacity 0.5s ease, border-color 0.5s ease;
+      }
+
+      body[data-superhot="on"] .below {
+        color: #060606;
+      }
+
+      body[data-superhot="on"] .route {
+        background: rgba(255, 255, 255, 0.96);
+      }
+
+      body[data-superhot="on"] .route span,
+      body[data-superhot="on"] .route p,
+      body[data-superhot="on"] .note,
+      body[data-superhot="on"] footer,
+      body[data-superhot="on"] .footer-inner {
+        color: #060606;
+      }
+
+      body[data-superhot="on"] .route h2 {
+        color: #060606;
+      }
+
+      body[data-superhot="on"] .route {
+        border-color: rgba(255, 255, 255, 0.22);
+        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.18);
+      }
+
+      body[data-superhot="on"] footer {
+        background: rgba(255, 255, 255, 0.96);
       }
 
       .section {
@@ -326,7 +403,7 @@
       </div>
       <div class="hero-inner">
         <p class="eyebrow">Software, currículo e pequenas coisas estranhas</p>
-        <h1>Oi. Eu sou o Gabriel Saraiva.</h1>
+        <h1>Oi. <span class="welcome">Bem vindo.</span></h1>
         <p class="intro">
           Tenho esse site pra guardar algumas coisas que eu escrevo quando tenho vontade de programar
           por diversão, sem compromisso com nada, a não ser, me divertir. Aqui você pode encontrar
@@ -366,6 +443,13 @@
               <p>Onde ficam meus repositórios, experimentos e algumas ideias em andamento.</p>
             </div>
           </a>
+          <a class="route" href="https://www.instagram.com/olhanoceu/">
+            <span>Imagem</span>
+            <div>
+              <h2>Instagram</h2>
+              <p>Olhares, registros e outras coisas que eu acabo deixando por lá.</p>
+            </div>
+          </a>
         </div>
       </section>
 
@@ -390,14 +474,35 @@
       const context = canvas.getContext("2d");
       context.lineCap = "round";
       context.lineJoin = "round";
+      const bloomCanvas = document.createElement("canvas");
+      const bloomContext = bloomCanvas.getContext("2d");
+      bloomContext.lineCap = "round";
+      bloomContext.lineJoin = "round";
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const temperatureMin = 800;
+      const synthwavePalette = [
+        { r: 255, g: 79, b: 216 },
+        { r: 124, g: 84, b: 255 },
+        { r: 0, g: 233, b: 255 },
+        { r: 255, g: 92, b: 170 },
+        { r: 102, g: 255, b: 214 },
+        { r: 255, g: 153, b: 92 }
+      ];
       const particles = [];
       let frame = 0;
       const mouseGlow = {
         x: 0,
         y: 0,
+        previousX: 0,
+        previousY: 0,
+        vx: 0,
+        vy: 0,
         active: false,
-        radius: 150
+        radius: 140
+      };
+      const attractor = {
+        x: 0,
+        y: 0
       };
       const particleTuning = {
         min: 640,
@@ -408,6 +513,13 @@
         lastAdjustment: 0,
         stableFrames: 0
       };
+      let retinaBurn = 0;
+      let clickBurst = 0;
+      let clickChain = 0;
+      let nextClickAllowedAt = 0;
+      let lastClickAt = 0;
+      const eddingtonThreshold = 18;
+      const startupWarmupFrames = 120;
 
       function clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
@@ -417,8 +529,97 @@
         return start + (end - start) * amount;
       }
 
+      function lerpColor(a, b, amount) {
+        return {
+          r: Math.round(lerp(a.r, b.r, amount)),
+          g: Math.round(lerp(a.g, b.g, amount)),
+          b: Math.round(lerp(a.b, b.b, amount))
+        };
+      }
+
+      function blackbodyRgb(kelvin) {
+        const temp = kelvin / 100;
+        const red = temp <= 66 ? 255 : 329.698727446 * ((temp - 60) ** -0.1332047592);
+        const green = temp <= 66
+          ? 99.4708025861 * Math.log(temp) - 161.1195681661
+          : 288.1221695283 * ((temp - 60) ** -0.0755148492);
+        const blue = temp >= 66
+          ? 255
+          : temp <= 19
+            ? 0
+            : 138.5177312231 * Math.log(temp - 10) - 305.0447927307;
+        const whiteMix = clamp(
+          (Math.log10(Math.max(temperatureMin, kelvin)) - Math.log10(6500)) /
+            (Math.log10(50000) - Math.log10(6500)),
+          0,
+          1
+        );
+        const whitened = whiteMix ** 0.92;
+        const mixedRed = lerp(red, 255, whitened);
+        const mixedGreen = lerp(green, 255, whitened);
+        const mixedBlue = lerp(blue, 255, whitened);
+
+        return {
+          r: Math.round(clamp(mixedRed, 0, 255)),
+          g: Math.round(clamp(mixedGreen, 0, 255)),
+          b: Math.round(clamp(mixedBlue, 0, 255))
+        };
+      }
+
+      function energyToTemperature(energy) {
+        return temperatureMin * Math.pow(1 + Math.max(0, energy), 2.8);
+      }
+
+      function temperatureRadiance(kelvin) {
+        const normalized = Math.pow(kelvin / temperatureMin, 4);
+        return 1 - Math.exp(-normalized / 6);
+      }
+
+      function exposureCurve(value) {
+        return 1 - Math.exp(-Math.max(0, value));
+      }
+
+      function colorForEnergy(energy, alpha) {
+        const temperature = energyToTemperature(energy);
+        const color = temperature < 1000
+          ? blackbodyRgb(temperature)
+          : blackbodyRgb(temperature);
+        return `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
+      }
+
+      function synthwaveColorForParticle(point, temperature, alpha) {
+        const thresholdMix = clamp((1000 - temperature) / 300, 0, 1);
+        const lowIndex = point.coolA % synthwavePalette.length;
+        const highIndex = point.coolB % synthwavePalette.length;
+        const base = lerpColor(
+          synthwavePalette[lowIndex],
+          synthwavePalette[highIndex],
+          0.5 + 0.5 * Math.sin(point.coolPhase + point.life * 6)
+        );
+        const vivid = lerpColor(base, { r: 255, g: 255, b: 255 }, thresholdMix * 0.18);
+        return `rgba(${vivid.r}, ${vivid.g}, ${vivid.b}, ${alpha})`;
+      }
+
+      function colorForPoint(point, energy, alpha) {
+        const temperature = energyToTemperature(energy);
+        if (temperature < 1000) {
+          return synthwaveColorForParticle(point, temperature, alpha);
+        }
+
+        const color = blackbodyRgb(temperature);
+        return `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
+      }
+
       function updateMouseGlow(event) {
         const bounds = canvas.getBoundingClientRect();
+        const nextX = event.clientX - bounds.left;
+        const nextY = event.clientY - bounds.top;
+        if (mouseGlow.active) {
+          mouseGlow.vx = lerp(mouseGlow.vx, nextX - mouseGlow.previousX, 0.62);
+          mouseGlow.vy = lerp(mouseGlow.vy, nextY - mouseGlow.previousY, 0.62);
+        }
+        mouseGlow.previousX = nextX;
+        mouseGlow.previousY = nextY;
         mouseGlow.x = event.clientX - bounds.left;
         mouseGlow.y = event.clientY - bounds.top;
         mouseGlow.active =
@@ -431,6 +632,8 @@
 
       function hideMouseGlow() {
         mouseGlow.active = false;
+        mouseGlow.vx = 0;
+        mouseGlow.vy = 0;
         canvas.dataset.glow = "off";
       }
 
@@ -440,6 +643,12 @@
         canvas.width = Math.max(1, Math.floor(bounds.width * scale));
         canvas.height = Math.max(1, Math.floor(bounds.height * scale));
         context.setTransform(scale, 0, 0, scale, 0, 0);
+        bloomCanvas.width = Math.max(1, Math.floor(bounds.width * 0.42));
+        bloomCanvas.height = Math.max(1, Math.floor(bounds.height * 0.42));
+        if (!attractor.x && !attractor.y) {
+          attractor.x = bounds.width * 0.72;
+          attractor.y = bounds.height * 0.52;
+        }
         particleTuning.max = Math.max(1400, Math.min(7600, Math.floor((bounds.width * bounds.height) / 180)));
         if (particles.length === 0) {
           setParticleCount(Math.min(particleTuning.max, Math.max(960, Math.floor(particleTuning.max * 0.22))));
@@ -453,8 +662,14 @@
           x: -12 + Math.random() * 24,
           y: -14 + Math.random() * 28,
           z: 8 + Math.random() * 24,
-          hue: 34 + Math.random() * 160,
-          heat: 0
+          energy: 0.002 + Math.random() * 0.01,
+          heat: 0,
+          hoverCharge: 0,
+          coolA: Math.floor(Math.random() * synthwavePalette.length),
+          coolB: Math.floor(Math.random() * synthwavePalette.length),
+          coolPhase: Math.random() * Math.PI * 2,
+          pulse: Math.random() * Math.PI * 2,
+          life: 0.2 + Math.random() * 0.8
         };
 
         for (let warmup = 0; warmup < 320; warmup += 1) {
@@ -530,29 +745,119 @@
         );
       }
 
-      function heatParticle(point, amount) {
-        if (amount <= 0) {
+      function energizeParticle(point, multiplier) {
+        if (multiplier <= 0) {
           return;
         }
 
-        point.heat = clamp(point.heat + amount * (1 - point.heat * 0.48), 0, 1);
+        const boost = 0.008 + multiplier * 0.045;
+        point.energy = Math.min(point.energy * (1 + multiplier) + boost, 1e8);
+        point.heat = Math.min((point.heat || 0) + 0.08 + multiplier * 0.55, 8);
       }
 
-      function drawParticleSegment(point, index, x1, y1, x2, y2) {
-        const heat = point.heat;
-        const heatCurve = heat * heat;
-        const baseHue = (point.hue + index * 0.08) % 360;
-        const hue = lerp(baseHue, 35, heat);
-        const saturation = lerp(74, 94, heat);
-        const lightness = lerp(64, 74, heat);
-        const alpha = lerp(0.5, 0.86, heat);
+      function doubleHotParticle(point, multiplier) {
+        const currentHeat = point.heat || 0;
+        if (currentHeat <= 0.08) {
+          energizeParticle(point, multiplier);
+          return;
+        }
 
-        context.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
-        context.lineWidth = 0.78 + 1.45 * heatCurve;
+        const streak = point.hoverCharge || 0;
+        const ramp = 1 / (1 + Math.exp((streak - 2.4) * 1.35));
+        const gentleGain = multiplier * (0.2 + 0.9 * ramp);
+        const heatGain = currentHeat * (0.03 + 0.09 * ramp);
+
+        point.hoverCharge = Math.min(8, streak + 1);
+        point.heat = Math.min(currentHeat * (1.01 + 0.01 * ramp) + heatGain, 24);
+        point.energy = Math.min(point.energy * (1.005 + 0.025 * ramp) + gentleGain + heatGain * 0.35, 1e8);
+
+        if (streak >= 6) {
+          point.energy = Math.min(point.energy + currentHeat * 0.85 + 0.5, 1e8);
+          point.heat = Math.min(point.heat * 1.08 + 0.4, 24);
+          point.hoverCharge = 0;
+        }
+      }
+
+      function perturbParticle(point, glowPower, scale) {
+        const pointerSpeed = Math.hypot(mouseGlow.vx, mouseGlow.vy);
+        if (glowPower <= 0 || pointerSpeed <= 0.08) {
+          return;
+        }
+
+        const impulse = glowPower * clamp(pointerSpeed / 34, 0, 1.65);
+        const unitScale = Math.max(scale, 1);
+        point.x += clamp(mouseGlow.vx / unitScale, -4, 4) * impulse * 0.028;
+        point.y += clamp(mouseGlow.vy / unitScale, -4, 4) * impulse * 0.028;
+        point.z += impulse * 0.02;
+      }
+
+      function detonateAttractorPulse() {
+        const now = performance.now();
+        if (now < nextClickAllowedAt) {
+          return;
+        }
+        if (now - lastClickAt > 1200) {
+          clickChain = 0;
+        }
+        clickChain = Math.min(4, clickChain + 1);
+        lastClickAt = now;
+        nextClickAllowedAt = now + 120 * Math.pow(1.72, clickChain - 1);
+        const pulseCenterX = mouseGlow.active ? mouseGlow.x : attractor.x;
+        const pulseCenterY = mouseGlow.active ? mouseGlow.y : attractor.y;
+        const pulseRadius = mouseGlow.radius * 3.2;
+        const pulseRadiusSquared = pulseRadius * pulseRadius;
+        const chainScale = clickChain < 4
+          ? 0.16 * Math.pow(1.75, clickChain - 1)
+          : 4.2;
+        clickBurst = Math.max(clickBurst, clickChain < 4 ? 0.045 * chainScale : 1.0);
+
+        particles.forEach((point) => {
+          const px = attractor.x + point.x * 0.01;
+          const py = attractor.y + point.y * 0.01;
+          const dx = px - pulseCenterX;
+          const dy = py - pulseCenterY;
+          const distanceSquared = dx * dx + dy * dy;
+          if (distanceSquared >= pulseRadiusSquared) {
+            return;
+          }
+
+          const falloff = 1 - distanceSquared / pulseRadiusSquared;
+          const burst = falloff * falloff * falloff;
+          const explosiveGain = clickChain < 4
+            ? (0.12 + burst * 0.55) * chainScale
+            : (2.4 + burst * 14) * chainScale;
+          point.energy = Math.min(point.energy + explosiveGain, 1e8);
+          point.heat = Math.min((point.heat || 0) + (clickChain < 4 ? 0.06 : 1.2) + burst * (clickChain < 4 ? 0.22 : 4.2) * chainScale, 24);
+          point.x += dx * burst * (clickChain < 4 ? -0.008 : -0.03) * chainScale;
+          point.y += dy * burst * (clickChain < 4 ? -0.008 : -0.03) * chainScale;
+          point.z += burst * (clickChain < 4 ? 0.18 : 0.9) * chainScale;
+        });
+      }
+
+      function drawBloomSegment(point, energy, x1, y1, x2, y2) {
+        return;
+      }
+
+      function drawParticleSegment(point, x1, y1, x2, y2, energy, bloomEligible) {
+        const temperature = energyToTemperature(energy);
+        const radiance = temperatureRadiance(temperature);
+        const alpha = lerp(0.42, 0.98, radiance);
+        const trailScale = 1 + radiance * 1.55;
+        const tailX = x2 - (x2 - x1) * trailScale;
+        const tailY = y2 - (y2 - y1) * trailScale;
+
+        context.strokeStyle = colorForPoint(point, energy, alpha);
+        context.lineWidth = 0.74 + 2.2 * radiance;
         context.beginPath();
-        context.moveTo(x1, y1);
+        context.moveTo(tailX, tailY);
         context.lineTo(x2, y2);
         context.stroke();
+
+        if (bloomEligible) {
+          drawBloomSegment(point, energy, x1, y1, x2, y2);
+        }
+
+        return radiance;
       }
 
       function tuneParticleCount(timestamp, frameMs) {
@@ -594,32 +899,66 @@
 
         const width = canvas.clientWidth;
         const height = canvas.clientHeight;
+        const baseAttractorX = width * 0.72;
+        const baseAttractorY = height * 0.52;
+        const targetAttractorX = baseAttractorX;
+        const targetAttractorY = baseAttractorY;
+        const attractorHeat = clamp((maxEnergy * 0.015) + (retinaBurn * 0.75) + (clickChain * 0.08), 0, 1);
+        const attractorLerp = 0.03 + attractorHeat * 0.12;
+        attractor.x = lerp(attractor.x, targetAttractorX, attractorLerp);
+        attractor.y = lerp(attractor.y, targetAttractorY, attractorLerp);
         context.fillStyle = frame < 2 ? "#080b0e" : "rgba(8, 11, 14, 0.072)";
         context.fillRect(0, 0, width, height);
         drawGrid(width, height);
 
         const glowFade = mouseGlow.active ? 1 : 0;
         const glowRadiusSquared = mouseGlow.radius * mouseGlow.radius;
+        const coreRadiusSquared = glowRadiusSquared * 0.03;
+        const energizeRadiusSquared = glowRadiusSquared * 0.12;
         if (glowFade <= 0 && canvas.dataset.glow !== "off") {
           canvas.dataset.glow = "off";
         }
         drawMouseHalo(glowFade);
 
-        const orbit = frame * 0.00075;
+        const orbitSpeed = 0.00075 + attractorHeat * 0.0022;
+        const orbit = frame * orbitSpeed;
         const cosOrbit = Math.cos(orbit);
         const sinOrbit = Math.sin(orbit);
         const scale = Math.min(width, height) * 0.022;
-        const centerX = width * 0.72;
-        const centerY = height * 0.52;
+        const centerX = attractor.x;
+        const centerY = attractor.y;
         const cooling = Math.pow(0.5, frameMs / 1050);
+        const frameScale = frameMs / (1000 / 60);
+        const startupHeat = clamp(frame / startupWarmupFrames, 0, 1);
+        const burstFade = clickBurst;
+        clickBurst *= Math.pow(0.5, frameMs / 140);
         let hotParticles = 0;
+        let bloomSegments = 0;
+        let maxEnergy = 0;
 
         particles.forEach((point, index) => {
+          const pulse = 0.03 + 0.035 * point.life * (0.5 + 0.5 * Math.sin(frame * 0.018 + point.pulse));
+          let chargedThisFrame = false;
+          let emittedLoss = 0;
+          const heatEnergy = (point.heat || 0) * 0.11;
+          const clickRadiation = clickChain < 4 ? burstFade * 8 : burstFade * 26;
+          const radiationPressure = clamp((point.energy + heatEnergy + clickRadiation - eddingtonThreshold) / 40, 0, 5);
           for (let i = 0; i < 2; i += 1) {
             const previousX = point.x;
             const previousY = point.y;
             const previousZ = point.z;
             stepLorenz(point);
+
+            if (radiationPressure > 0) {
+              const push = radiationPressure * 0.0018;
+              const spread = radiationPressure * 0.0009;
+              point.x += point.x * push;
+              point.y += point.y * push;
+              point.z += point.z * push * 0.72;
+              point.x += (point.x - previousX) * spread;
+              point.y += (point.y - previousY) * spread;
+              point.z += (point.z - previousZ) * spread * 0.5;
+            }
 
             const px = previousX * cosOrbit - previousZ * sinOrbit;
             const pz = previousX * sinOrbit + previousZ * cosOrbit;
@@ -639,33 +978,98 @@
               const distanceSquared = distanceX * distanceX + distanceY * distanceY;
 
               if (distanceSquared < glowRadiusSquared) {
-                glowPower = (1 - distanceSquared / glowRadiusSquared) * glowFade;
-                heatParticle(point, glowPower * 0.24);
+                const falloff = 1 - distanceSquared / glowRadiusSquared;
+                glowPower = falloff * falloff * falloff * glowFade;
+                if (distanceSquared < coreRadiusSquared && (point.heat || 0) > 0.22) {
+                  point.hoverCharge = Math.min(8, (point.hoverCharge || 0) + falloff * 0.03);
+                }
+                if (!chargedThisFrame && distanceSquared < energizeRadiusSquared) {
+                  const hoverBoost = distanceSquared < coreRadiusSquared ? point.hoverCharge * 0.004 : 0;
+                  doubleHotParticle(point, 0.22 * glowPower + hoverBoost);
+                  chargedThisFrame = true;
+                }
+                perturbParticle(point, glowPower * 0.72, scale);
               }
             }
 
-            drawParticleSegment(point, index, x1, y1, x2, y2);
+            const drawEnergy = Math.max(0, point.energy + pulse + heatEnergy + (clickChain < 4 ? burstFade * 0.12 : burstFade * 0.9));
+            const bloomEligible = drawEnergy > 0.18 && i === 1 && index % 2 === 0;
+            if (bloomEligible) {
+              bloomSegments += 1;
+            }
+            const emittedRadiance = drawParticleSegment(point, x1, y1, x2, y2, drawEnergy, bloomEligible);
+            emittedLoss += emittedRadiance * (0.017 + 0.012 * point.life) * (0.7 + 0.35 * frameScale);
           }
 
-          point.heat *= cooling;
-          if (point.heat < 0.035) {
-            point.heat = 0;
+          point.energy = Math.max(0, point.energy * cooling - emittedLoss - radiationPressure * 0.12);
+          point.heat = Math.max(0, (point.heat || 0) * Math.pow(0.5, frameMs / 2200) - emittedLoss * 0.34);
+          point.hoverCharge = Math.max(0, (point.hoverCharge || 0) * Math.pow(0.5, frameMs / 650));
+          point.energy += 0.00016 * point.life * (0.5 + 0.5 * Math.sin(frame * 0.01 + point.pulse)) + (clickChain < 4 ? burstFade * 0.008 : burstFade * 0.06);
+          if (point.energy < 0.015) {
+            point.energy = 0;
           } else {
             hotParticles += 1;
           }
+          maxEnergy = Math.max(maxEnergy, point.energy);
 
-          if (Math.abs(point.x) > 50 || Math.abs(point.y) > 60 || point.z > 80) {
+          if (Math.abs(point.x) > 60 || Math.abs(point.y) > 72 || point.z > 96) {
             point.x = -12 + Math.random() * 24;
             point.y = -14 + Math.random() * 28;
             point.z = 8 + Math.random() * 24;
-            point.heat = Math.min(point.heat, 0.18);
+            point.energy = Math.min(point.energy, 0.2);
           }
         });
+
+        const sceneRadiance = (startupHeat + (clickChain < 4 ? burstFade * 0.08 : burstFade * 0.7)) * (maxEnergy > 0.18 ? temperatureRadiance(energyToTemperature(maxEnergy)) : 0);
+        const hotCharge = particles.reduce((sum, point) => sum + Math.min(1, point.hoverCharge || 0), 0);
+        const superHot = clickChain >= 4 && (maxEnergy > 24 || sceneRadiance > 0.72 || retinaBurn > 0.85 || hotCharge > 2600);
+        document.body.dataset.superhot = superHot ? "on" : "off";
+        retinaBurn = Math.max(retinaBurn * Math.pow(0.5, frameMs / 1800), sceneRadiance * 1.15);
+        if (sceneRadiance > 0.02) {
+          context.save();
+          context.globalCompositeOperation = "lighter";
+          const sceneColor = blackbodyRgb(energyToTemperature(maxEnergy));
+          const sceneGlow = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.hypot(width, height) * 0.95);
+          sceneGlow.addColorStop(0, `rgba(${sceneColor.r}, ${sceneColor.g}, ${sceneColor.b}, ${0.18 * sceneRadiance})`);
+          sceneGlow.addColorStop(0.35, `rgba(${sceneColor.r}, ${sceneColor.g}, ${sceneColor.b}, ${0.08 * sceneRadiance})`);
+          sceneGlow.addColorStop(1, "rgba(255,255,255,0)");
+          context.fillStyle = sceneGlow;
+          context.fillRect(0, 0, width, height);
+          context.restore();
+        }
+
+        if (retinaBurn > 0.01) {
+          const burn = exposureCurve(retinaBurn * 2.35);
+          const edgeFade = 1 - Math.max(0, Math.min(1, retinaBurn * 0.68));
+          context.save();
+          context.globalCompositeOperation = "lighter";
+          context.globalAlpha = 0.82 * burn;
+          const flash = context.createRadialGradient(
+            centerX,
+            centerY,
+            Math.min(width, height) * 0.04,
+            centerX,
+            centerY,
+            Math.hypot(width, height) * 0.88
+          );
+          flash.addColorStop(0, `rgba(255, 255, 248, ${0.98 * burn})`);
+          flash.addColorStop(0.18, `rgba(255, 244, 208, ${0.72 * burn})`);
+          flash.addColorStop(0.46, `rgba(255, 214, 140, ${0.36 * burn})`);
+          flash.addColorStop(1, `rgba(255, 255, 255, ${0.06 * burn * edgeFade})`);
+          context.fillStyle = flash;
+          context.fillRect(0, 0, width, height);
+          context.restore();
+        }
 
         particleTuning.renderCostMs = particleTuning.renderCostMs * 0.86 + (performance.now() - startedAt) * 0.14;
         canvas.dataset.frameCost = particleTuning.renderCostMs.toFixed(2);
         canvas.dataset.frameInterval = frameMs.toFixed(2);
         canvas.dataset.hotParticles = hotParticles;
+        canvas.dataset.bloomSegments = bloomSegments;
+        canvas.dataset.maxEnergy = maxEnergy.toFixed(3);
+        canvas.dataset.retinaBurn = retinaBurn.toFixed(3);
+        canvas.dataset.attractorX = attractor.x.toFixed(2);
+        canvas.dataset.attractorY = attractor.y.toFixed(2);
         tuneParticleCount(timestamp, frameMs);
 
         frame += 1;
@@ -675,6 +1079,10 @@
       }
 
       window.addEventListener("pointermove", updateMouseGlow, { passive: true });
+      window.addEventListener("pointerdown", (event) => {
+        updateMouseGlow(event);
+        detonateAttractorPulse();
+      }, { passive: true });
       window.addEventListener("pointerleave", hideMouseGlow);
       window.addEventListener("blur", hideMouseGlow);
       window.addEventListener("resize", resizeCanvas);
