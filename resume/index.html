@@ -1,62 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gabriel Saraiva - Resume PDF</title>
-    <meta name="description" content="PDF resume viewer for Gabriel Saraiva.">
-    <link rel="stylesheet" href="../common.css">
+    <title>Currículo - Gabriel Saraiva</title>
+    <meta name="description" content="Currículo em PDF de Gabriel Saraiva.">
     <style>
       :root {
-        --ink: #17191b;
-        --muted: #5c646d;
-        --paper: #fffaf0;
-        --line: rgba(23, 25, 27, 0.15);
-        --night: #111417;
-        --forest: #1f6f68;
-        --white: #ffffff;
-      }
-
-      @property --curl-x {
-        syntax: "<percentage>";
-        inherits: true;
-        initial-value: 100%;
-      }
-
-      @property --curl-left {
-        syntax: "<percentage>";
-        inherits: true;
-        initial-value: 100%;
-      }
-
-      @property --curl-width {
-        syntax: "<percentage>";
-        inherits: true;
-        initial-value: 0%;
-      }
-
-      @property --curl-opacity {
-        syntax: "<number>";
-        inherits: true;
-        initial-value: 0;
-      }
-
-      @property --curl-skew {
-        syntax: "<angle>";
-        inherits: true;
-        initial-value: 0deg;
-      }
-
-      @property --curl-rotate {
-        syntax: "<angle>";
-        inherits: true;
-        initial-value: 0deg;
-      }
-
-      @property --curl-shadow {
-        syntax: "<number>";
-        inherits: true;
-        initial-value: 0;
+        --ink: #151719;
+        --muted: #6b7178;
+        --paper: #f6f1e8;
+        --white: #fffdf7;
+        --night: #080b0e;
+        --line: rgba(21, 23, 25, 0.14);
+        --teal: #1f6f68;
+        --gold: #e3b15b;
       }
 
       * {
@@ -68,14 +26,14 @@
         margin: 0;
         color: var(--ink);
         background:
-          linear-gradient(180deg, rgba(17, 20, 23, 0.96) 0 310px, transparent 310px),
+          linear-gradient(180deg, rgba(8, 11, 14, 0.98) 0 320px, transparent 320px),
           var(--paper);
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
       body.resume-fullscreen {
         overflow: hidden;
-        background: #ebe7dd;
+        background: #dcd8cf;
       }
 
       a {
@@ -83,79 +41,71 @@
       }
 
       .shell {
-        width: min(1120px, calc(100% - 32px));
+        width: min(1120px, calc(100% - 40px));
         margin: 0 auto;
-        padding: 28px 0 42px;
+        padding-bottom: 48px;
       }
 
       .topbar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 16px;
+        min-height: 64px;
         color: var(--white);
       }
 
-      .back-link,
-      .viewer-link,
-      .viewer button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 40px;
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        border-radius: 6px;
-        padding: 8px 12px;
-        background: rgba(255, 255, 255, 0.08);
-        color: var(--white);
-        font: inherit;
-        font-size: 0.92rem;
-        font-weight: 750;
+      .topbar a {
+        color: rgba(255, 255, 255, 0.78);
+        font-weight: 760;
         text-decoration: none;
       }
 
-      .back-link:hover,
-      .viewer-link:hover,
-      .viewer button:hover:not(:disabled) {
-        background: rgba(255, 255, 255, 0.16);
+      .topbar a:hover,
+      .topbar a:focus {
+        color: var(--white);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 18px;
+        font-size: 0.92rem;
       }
 
       header {
-        max-width: 760px;
-        padding: 58px 0 28px;
+        max-width: 780px;
+        padding: 36px 0 24px;
         color: var(--white);
       }
 
       .eyebrow {
-        margin: 0 0 12px;
-        color: #f0bd5d;
+        margin: 0 0 14px;
+        color: var(--gold);
         font-size: 0.78rem;
-        font-weight: 800;
+        font-weight: 820;
         letter-spacing: 0;
         text-transform: uppercase;
       }
 
       h1 {
-        margin: 0 0 14px;
-        font-size: clamp(2.2rem, 7vw, 4.8rem);
-        line-height: 0.98;
+        margin: 0 0 18px;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1;
         letter-spacing: 0;
       }
 
       header p {
-        max-width: 660px;
         margin: 0;
         color: rgba(255, 255, 255, 0.76);
         font-size: 1.08rem;
-        line-height: 1.55;
+        line-height: 1.58;
       }
 
       .viewer {
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: #fffdf6;
-        box-shadow: 0 24px 80px rgba(17, 20, 23, 0.22);
         overflow: hidden;
+        background: #e8e3d8;
+        box-shadow: 0 24px 80px rgba(21, 23, 25, 0.22);
       }
 
       body.resume-fullscreen .shell {
@@ -186,7 +136,8 @@
         gap: 14px;
         border-bottom: 1px solid var(--line);
         padding: 14px;
-        background: rgba(255, 255, 255, 0.54);
+        background: rgba(255, 253, 247, 0.8);
+        backdrop-filter: blur(14px);
       }
 
       body.resume-fullscreen .viewer-toolbar {
@@ -194,13 +145,11 @@
         top: 14px;
         left: 50%;
         z-index: 6;
-        width: min(720px, calc(100% - 28px));
-        border: 1px solid rgba(23, 25, 27, 0.12);
+        width: min(760px, calc(100% - 28px));
+        border: 1px solid rgba(21, 23, 25, 0.12);
         border-radius: 8px;
-        background: rgba(255, 253, 246, 0.9);
-        box-shadow: 0 14px 38px rgba(17, 20, 23, 0.18);
+        box-shadow: 0 14px 38px rgba(21, 23, 25, 0.18);
         transform: translateX(-50%);
-        backdrop-filter: blur(14px);
       }
 
       .viewer-actions {
@@ -209,410 +158,126 @@
         gap: 10px;
       }
 
-      .viewer-link {
-        border-color: rgba(23, 25, 27, 0.14);
+      .viewer-link,
+      .viewer button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        border: 1px solid rgba(21, 23, 25, 0.14);
+        border-radius: 6px;
+        padding: 8px 12px;
         background: var(--night);
+        color: var(--white);
+        font: inherit;
+        font-size: 0.92rem;
+        font-weight: 760;
+        text-decoration: none;
       }
 
       .viewer button {
-        border-color: rgba(23, 25, 27, 0.14);
-        background: var(--night);
-        color: var(--white);
         cursor: pointer;
       }
 
-      .viewer button:disabled {
-        cursor: not-allowed;
-        opacity: 0.38;
+      .viewer button:hover,
+      .viewer button:focus,
+      .viewer-link:hover,
+      .viewer-link:focus {
+        background: #1a1f24;
       }
 
-      .page-status {
+      .status {
         color: var(--muted);
         font-size: 0.94rem;
-        font-weight: 750;
+        font-weight: 760;
       }
 
-      .book-stage {
-        display: grid;
+      .document-stage {
         position: relative;
-        min-height: 70vh;
-        place-items: center;
-        padding: 28px;
+        min-height: 76vh;
+        overflow: auto;
+        padding: 34px;
         background:
-          linear-gradient(90deg, rgba(23, 25, 27, 0.04), transparent 12%, transparent 88%, rgba(23, 25, 27, 0.04)),
-          #ebe7dd;
-        perspective: 1800px;
+          linear-gradient(90deg, rgba(21, 23, 25, 0.04), transparent 12%, transparent 88%, rgba(21, 23, 25, 0.04)),
+          #e8e3d8;
       }
 
-      body.resume-fullscreen .book-stage {
+      body.resume-fullscreen .document-stage {
         min-height: 100vh;
-        padding: 28px 76px;
+        padding: 92px 34px 34px;
       }
 
-      .page-wrap {
-        position: relative;
-        width: min(100%, 8.5in);
-        min-height: 11in;
-        aspect-ratio: 8.5 / 11;
-        cursor: grab;
-        touch-action: pan-y;
-        transform-style: preserve-3d;
-      }
-
-      .page-wrap:active {
-        cursor: grabbing;
-      }
-
-      body.resume-fullscreen .page-wrap {
-        width: min(calc(100vh * 8.5 / 11 - 92px), calc(100vw - 180px), 8.5in);
-        min-height: 0;
+      .pages {
+        display: grid;
+        justify-items: center;
+        gap: 28px;
       }
 
       .pdf-page {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        min-height: 11in;
+        width: min(100%, 8.5in);
         border-radius: 4px;
-        background: transparent;
+        background: var(--white);
         box-shadow:
-          0 38px 98px rgba(17, 20, 23, 0.32),
-          0 14px 34px rgba(17, 20, 23, 0.2),
-          0 2px 6px rgba(17, 20, 23, 0.12);
-        overflow: visible;
-        transform-origin: left center;
-        transform-style: preserve-3d;
-        --curl-x: 100%;
-        --curl-left: 100%;
-        --curl-width: 0%;
-        --curl-opacity: 0;
-        --curl-skew: 0deg;
-        --curl-rotate: 0deg;
-        --curl-shadow: 0;
-        opacity: 1;
-        transition:
-          transform 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          filter 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          box-shadow 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          border-radius 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          --curl-x 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          --curl-left 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          --curl-width 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          --curl-opacity 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          --curl-skew 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          --curl-rotate 980ms cubic-bezier(0.16, 0.78, 0.18, 1),
-          --curl-shadow 980ms cubic-bezier(0.16, 0.78, 0.18, 1);
-        will-change: transform, filter;
-        z-index: 2;
+          0 38px 98px rgba(21, 23, 25, 0.3),
+          0 12px 28px rgba(21, 23, 25, 0.16),
+          0 2px 6px rgba(21, 23, 25, 0.1);
+        overflow: hidden;
       }
 
       body.resume-fullscreen .pdf-page {
-        min-height: 0;
-      }
-
-      .page-face {
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        overflow: hidden;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        transition:
-          opacity 220ms ease,
-          filter 220ms ease,
-          clip-path 980ms cubic-bezier(0.16, 0.78, 0.18, 1);
-      }
-
-      .page-front {
-        background: var(--white);
-        box-shadow:
-          inset 0 0 0 1px rgba(17, 20, 23, 0.04),
-          inset 0 -18px 42px rgba(17, 20, 23, 0.035);
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-        opacity: 1;
-        transform: translateZ(1px);
-        z-index: 2;
-      }
-
-      .page-back {
-        display: grid;
-        place-items: center;
-        background:
-          linear-gradient(90deg, #fffef9, #f5f0e5 48%, #ebe5d7),
-          #fffdf6;
-        box-shadow:
-          inset 18px 0 34px rgba(17, 20, 23, 0.08),
-          inset -10px 0 28px rgba(255, 255, 255, 0.72);
-        filter: blur(0.8px);
-        opacity: 0;
-        transform: rotateY(180deg) translateZ(1px);
-        z-index: 3;
-      }
-
-      .page-back::before {
-        content: "";
-        position: absolute;
-        inset: 34px;
-        border-radius: 3px;
-        background:
-          repeating-linear-gradient(
-            180deg,
-            rgba(31, 111, 104, 0.045) 0 2px,
-            transparent 2px 18px
-          );
-        opacity: 0.28;
-        z-index: 1;
-      }
-
-      .page-back::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.72), transparent 36%, rgba(17, 20, 23, 0.08)),
-          rgba(255, 253, 246, 0.94);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        z-index: 2;
+        width: min(calc((100vh - 150px) * 8.5 / 11), calc(100vw - 72px), 8.5in);
       }
 
       .pdf-page canvas {
+        display: block;
         width: 100%;
         height: auto;
-        display: block;
-        border-radius: 4px;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-      }
-
-      .page-fold,
-      .pdf-page::before,
-      .pdf-page::after {
-        content: "";
-        position: absolute;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 980ms cubic-bezier(0.16, 0.78, 0.18, 1);
-      }
-
-      .page-fold {
-        top: -3%;
-        bottom: -3%;
-        left: var(--curl-left);
-        width: var(--curl-width);
-        border-radius: 3px 26px 26px 3px;
-        background:
-          linear-gradient(90deg, #fffdf6 0%, #fbf7eb 30%, #e6decf 58%, #fffdf7 78%, #d3c8b6 100%),
-          #fffdf6;
-        box-shadow:
-          -22px 18px 40px rgba(17, 20, 23, 0.26),
-          10px 0 26px rgba(17, 20, 23, 0.12),
-          inset 16px 0 28px rgba(255, 255, 255, 0.76),
-          inset -18px 0 24px rgba(17, 20, 23, 0.16);
-        filter: blur(0.18px);
-        opacity: 1;
-        transform: skewY(var(--curl-skew)) rotate(var(--curl-rotate)) translateZ(8px);
-        transform-origin: left center;
-        z-index: 6;
-      }
-
-      .page-fold::before,
-      .page-fold::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        pointer-events: none;
-      }
-
-      .page-fold::before {
-        background:
-          linear-gradient(90deg, rgba(17, 20, 23, 0.22), transparent 17%, rgba(255, 255, 255, 0.54) 38%, transparent 62%, rgba(17, 20, 23, 0.18)),
-          repeating-linear-gradient(180deg, rgba(31, 111, 104, 0.035) 0 1px, transparent 1px 17px);
-      }
-
-      .page-fold::after {
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42) 46%, rgba(17, 20, 23, 0.2));
-        mix-blend-mode: multiply;
-        opacity: 0.42;
-      }
-
-      .pdf-page::before {
-        left: var(--curl-x);
-        width: 11px;
-        height: 130%;
-        top: -15%;
-        border-radius: 999px;
-        background: linear-gradient(90deg, rgba(17, 20, 23, 0.26), rgba(255, 255, 255, 0.56), rgba(17, 20, 23, 0.16));
-        opacity: var(--curl-shadow);
-        transform: translateX(-50%) skewY(var(--curl-skew)) rotate(var(--curl-rotate)) translateZ(9px);
-        z-index: 7;
-      }
-
-      .pdf-page::after {
-        inset: 0;
-        border-radius: inherit;
-        background:
-          radial-gradient(ellipse at var(--curl-x) center, rgba(0, 0, 0, 0.26), transparent 42%),
-          linear-gradient(90deg, transparent, rgba(17, 20, 23, 0.12));
-        opacity: var(--curl-shadow);
-        z-index: 5;
-      }
-
-      .pdf-page.under-page {
-        filter: brightness(0.96);
-        box-shadow:
-          0 22px 58px rgba(17, 20, 23, 0.22),
-          0 5px 14px rgba(17, 20, 23, 0.12);
-        transform: scale(0.996);
-        z-index: 1;
-      }
-
-      .pdf-page.page-flip-away {
-        --curl-x: 12%;
-        --curl-left: 0%;
-        --curl-width: 36%;
-        --curl-opacity: 1;
-        --curl-skew: -8deg;
-        --curl-rotate: -4deg;
-        --curl-shadow: 0.62;
-        border-radius: 4px 24px 24px 4px;
-        box-shadow:
-          -12px 32px 86px rgba(17, 20, 23, 0.3),
-          0 10px 28px rgba(17, 20, 23, 0.16);
-        filter: brightness(0.96) blur(0.12px);
-        transform: translateX(-4px) rotateZ(-0.8deg) skewY(-1.4deg) scaleX(0.985);
-        z-index: 3;
-      }
-
-      .pdf-page.page-flip-away .page-front {
-        clip-path: polygon(0 0, 12% 2%, 7% 98%, 0 100%);
-      }
-
-      .pdf-page.page-uncurl-prev {
-        --curl-x: 12%;
-        --curl-left: 0%;
-        --curl-width: 36%;
-        --curl-opacity: 1;
-        --curl-skew: -8deg;
-        --curl-rotate: -4deg;
-        --curl-shadow: 0.62;
-        border-radius: 4px 24px 24px 4px;
-        box-shadow:
-          -12px 32px 86px rgba(17, 20, 23, 0.3),
-          0 10px 28px rgba(17, 20, 23, 0.16);
-        filter: brightness(0.96) blur(0.12px);
-        transform: translateX(-4px) rotateZ(-0.8deg) skewY(-1.4deg) scaleX(0.985);
-        z-index: 3;
-      }
-
-      .pdf-page.page-uncurl-prev .page-front {
-        clip-path: polygon(0 0, 12% 2%, 7% 98%, 0 100%);
-      }
-
-      .pdf-page.page-uncurl-prev-active {
-        --curl-x: 100%;
-        --curl-left: 100%;
-        --curl-width: 0%;
-        --curl-opacity: 0;
-        --curl-skew: 0deg;
-        --curl-rotate: 0deg;
-        --curl-shadow: 0;
-        border-radius: 4px;
-        box-shadow:
-          0 38px 98px rgba(17, 20, 23, 0.32),
-          0 14px 34px rgba(17, 20, 23, 0.2),
-          0 2px 6px rgba(17, 20, 23, 0.12);
-        filter: none;
-        transform: translateX(0) rotateY(0) rotateZ(0) skewY(0) scaleX(1);
-      }
-
-      .pdf-page.page-uncurl-prev-active .page-front {
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-      }
-
-      .pdf-page.page-dragging,
-      .pdf-page.page-dragging .page-face,
-      .pdf-page.page-dragging .page-fold,
-      .pdf-page.page-dragging::before,
-      .pdf-page.page-dragging::after {
-        transition: none;
-      }
-
-      .page-arrow {
-        position: fixed;
-        top: 50vh;
-        z-index: 4;
-        width: 52px;
-        height: 74px;
-        border: 1px solid rgba(255, 255, 255, 0.42);
-        border-radius: 999px;
-        padding: 0;
-        background: rgba(17, 20, 23, 0.74);
-        color: var(--white);
-        font-size: 3rem;
-        line-height: 1;
-        transform: translateY(-50%);
-        box-shadow: 0 12px 32px rgba(17, 20, 23, 0.28);
-      }
-
-      .page-arrow.prev {
-        left: max(12px, calc(50vw - 4.25in - 68px));
-      }
-
-      .page-arrow.next {
-        right: max(12px, calc(50vw - 4.25in - 68px));
-      }
-
-      body.resume-fullscreen .page-arrow.prev {
-        left: max(18px, calc(50vw - min(calc(100vh * 8.5 / 11 - 92px), calc(100vw - 180px), 8.5in) / 2 - 68px));
-      }
-
-      body.resume-fullscreen .page-arrow.next {
-        right: max(18px, calc(50vw - min(calc(100vh * 8.5 / 11 - 92px), calc(100vw - 180px), 8.5in) / 2 - 68px));
-      }
-
-      .page-arrow:disabled {
-        display: none;
       }
 
       .loading,
       .fallback {
         display: grid;
-        min-height: 11in;
+        min-height: 60vh;
         place-items: center;
-        padding: 28px;
         color: var(--muted);
         text-align: center;
       }
 
       .fallback {
-        gap: 18px;
+        gap: 16px;
+        padding: 28px;
       }
 
       .fallback object {
         width: min(100%, 8.5in);
-        height: min(78vh, 11in);
+        height: 78vh;
         border: 0;
         background: var(--white);
       }
 
       @media (max-width: 760px) {
-        body {
-          background:
-            linear-gradient(180deg, rgba(17, 20, 23, 0.96) 0 360px, transparent 360px),
-            var(--paper);
+        .shell {
+          width: min(100% - 28px, 1120px);
         }
 
-        .topbar,
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+          justify-content: center;
+          gap: 8px;
+          padding: 14px 0;
+        }
+
+        header {
+          padding-top: 48px;
+        }
+
         .viewer-toolbar {
           align-items: stretch;
           flex-direction: column;
         }
 
-        .viewer-actions,
-        .viewer-toolbar div {
+        .viewer-actions {
           justify-content: stretch;
         }
 
@@ -621,86 +286,48 @@
           flex: 1 1 auto;
         }
 
-        .book-stage {
-          min-height: auto;
-          padding: 12px;
+        .document-stage {
+          padding: 16px;
         }
 
-        .page-wrap,
-        .pdf-page,
-        .loading {
-          min-height: 0;
-        }
-
-        .pdf-page {
-          position: relative;
-        }
-
-        .pdf-page.under-page {
-          position: absolute;
-        }
-
-        .page-arrow {
-          width: 42px;
-          height: 58px;
-          font-size: 2.3rem;
-        }
-
-        .page-arrow.prev {
-          left: 8px;
-        }
-
-        .page-arrow.next {
-          right: 8px;
-        }
-
-        body.resume-fullscreen .book-stage {
-          padding: 70px 12px 12px;
-        }
-
-        body.resume-fullscreen .page-wrap {
-          width: min(100%, calc(100vh * 8.5 / 11 - 104px));
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .pdf-page {
-          transition: none;
+        body.resume-fullscreen .document-stage {
+          padding: 104px 12px 18px;
         }
       }
     </style>
   </head>
   <body>
     <main class="shell">
-      <nav class="topbar" aria-label="Resume navigation">
-        <a class="back-link" href="../index.html">Back home</a>
+      <nav class="topbar" aria-label="Navegação">
+        <a href="../index.html">← Voltar</a>
+        <div class="nav-links">
+          <a href="../index.html">Início</a>
+          <a href="../projects/index.html">Projetos</a>
+          <a href="https://github.com/gabrsar">GitHub</a>
+          <a href="https://br.linkedin.com/in/gabrielsaraiva7">LinkedIn</a>
+        </div>
       </nav>
 
       <header>
-        <p class="eyebrow">Resume PDF</p>
-        <h1>Gabriel Saraiva</h1>
+        <p class="eyebrow">Currículo</p>
+        <h1>Um pouco do que eu já fiz</h1>
         <p>
-          For some reason, some people and companies prefer a PDF version of my resume, so here it is.
-          It is almost the same as what is on LinkedIn, but more polished, with more care and attention
-          to detail. Feel free to get in touch via LinkedIn to get my e-mail or phone number.
+          Por algum motivo, algumas pessoas e empresas preferem uma versão em PDF do meu currículo.
         </p>
       </header>
 
-      <section class="viewer" aria-label="PDF resume viewer">
+      <section class="viewer" aria-label="Visualizador do currículo em PDF">
         <div class="viewer-toolbar">
           <div class="viewer-actions">
-            <a class="viewer-link" href="./Gabriel-Saraiva-Staff-Software-Engineer-Resume.pdf">Open PDF</a>
             <a class="viewer-link" href="./Gabriel-Saraiva-Staff-Software-Engineer-Resume.pdf" download>Download</a>
-            <button id="fullscreen-toggle" type="button" aria-pressed="false">Fullscreen</button>
+            <button id="fullscreen-toggle" type="button" aria-pressed="false">Tela cheia</button>
           </div>
-          <div class="page-status" id="page-status">Loading PDF...</div>
+          <div class="status" id="status">Carregando PDF...</div>
         </div>
-        <div class="book-stage">
-          <button class="page-arrow prev" id="prev-page" type="button" aria-label="Previous page">&lsaquo;</button>
-          <div class="page-wrap" id="page-wrap">
-            <div class="loading" id="loading">Preparing the resume...</div>
+        <div class="document-stage" id="document-stage">
+          <div class="pages" id="pages">
+            <div class="loading">Preparando o currículo...</div>
           </div>
-          <button class="page-arrow next" id="next-page" type="button" aria-label="Next page">&rsaquo;</button>
         </div>
       </section>
     </main>
@@ -708,19 +335,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
       const pdfUrl = "./Gabriel-Saraiva-Staff-Software-Engineer-Resume.pdf";
-      const pageWrap = document.querySelector("#page-wrap");
-      const pageStatus = document.querySelector("#page-status");
-      const previousButton = document.querySelector("#prev-page");
-      const nextButton = document.querySelector("#next-page");
-      const fullscreenButton = document.querySelector("#fullscreen-toggle");
       const viewer = document.querySelector(".viewer");
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const pages = document.querySelector("#pages");
+      const status = document.querySelector("#status");
+      const fullscreenButton = document.querySelector("#fullscreen-toggle");
+      const stage = document.querySelector("#document-stage");
 
       let pdfDocument = null;
-      let currentPage = 1;
-      let rendering = false;
       let fallbackFullscreen = false;
-      let dragState = null;
 
       function isFullscreen() {
         return Boolean(document.fullscreenElement) || fallbackFullscreen;
@@ -729,16 +351,8 @@
       function syncFullscreenState() {
         const active = isFullscreen();
         document.body.classList.toggle("resume-fullscreen", active);
-        fullscreenButton.textContent = active ? "Exit fullscreen" : "Fullscreen";
+        fullscreenButton.textContent = active ? "Sair da tela cheia" : "Tela cheia";
         fullscreenButton.setAttribute("aria-pressed", String(active));
-
-        if (pdfDocument) {
-          rendering = false;
-          pageWrap.querySelectorAll(".page-flip-away, .page-uncurl-prev, .page-uncurl-prev-active, .page-dragging").forEach((page) => {
-            page.remove();
-          });
-          window.requestAnimationFrame(() => renderPage(currentPage, "none"));
-        }
       }
 
       async function toggleFullscreen() {
@@ -765,376 +379,56 @@
         }
       }
 
-      function updateControls() {
-        const pages = pdfDocument ? pdfDocument.numPages : 0;
-        previousButton.disabled = !pdfDocument || currentPage <= 1 || rendering || Boolean(dragState);
-        nextButton.disabled = !pdfDocument || currentPage >= pages || rendering || Boolean(dragState);
-        pageStatus.textContent = pdfDocument
-          ? `Page ${currentPage} of ${pages}`
-          : "Loading PDF...";
-      }
-
-      function clamp(value, min, max) {
-        return Math.min(max, Math.max(min, value));
-      }
-
-      function mix(start, end, progress) {
-        return start + (end - start) * progress;
-      }
-
-      function clearPageMotion(page) {
-        page.style.transition = "";
-        page.style.transform = "";
-        page.style.borderRadius = "";
-        page.style.boxShadow = "";
-        page.style.filter = "";
-        page.style.removeProperty("--curl-x");
-        page.style.removeProperty("--curl-left");
-        page.style.removeProperty("--curl-width");
-        page.style.removeProperty("--curl-opacity");
-        page.style.removeProperty("--curl-skew");
-        page.style.removeProperty("--curl-rotate");
-        page.style.removeProperty("--curl-shadow");
-        page.querySelector(".page-front").style.opacity = "";
-        page.querySelector(".page-front").style.filter = "";
-        page.querySelector(".page-front").style.clipPath = "";
-        page.querySelector(".page-front").style.transitionDelay = "";
-        page.querySelector(".page-front").style.transition = "";
-        page.querySelector(".page-back").style.opacity = "";
-        page.querySelector(".page-back").style.filter = "";
-        page.querySelector(".page-back").style.transitionDelay = "";
-        page.querySelector(".page-back").style.transition = "";
-        page.querySelector(".page-fold").style.transition = "";
-        page.classList.remove("page-dragging");
-      }
-
-      function resetVisiblePage() {
-        pageWrap.querySelectorAll(".pdf-page").forEach((page, index) => {
-          if (index === 0) {
-            clearPageMotion(page);
-            page.classList.remove("under-page", "page-flip-away", "page-uncurl-prev", "page-uncurl-prev-active");
-          } else {
-            page.remove();
-          }
-        });
-      }
-
-      function setDragProgress(page, progress, direction) {
-        const amount = clamp(progress, 0, 1);
-        const curl = Math.sin(amount * Math.PI);
-        const edge = mix(100, 12, amount);
-        const lowerEdge = mix(100, 7, amount);
-        const curlWidth = mix(0, 36, amount) + curl * 10;
-        const curlX = mix(100, 12, amount);
-        const curlLeft = amount === 0 ? 100 : clamp(curlX - curlWidth * 0.9, 0, 100);
-        const translateX = mix(0, -4, amount);
-        const rotateZ = mix(0, -0.8, amount);
-        const skewY = mix(0, -1.4, amount);
-        const scaleX = mix(1, 0.985, amount);
-        const radius = mix(4, 24, amount);
-        const shadowBlur = mix(72, 56, amount);
-        const shadowX = mix(0, -8, amount);
-        const shadowY = mix(18, 22, amount);
-
-        page.style.setProperty("--curl-x", `${curlX}%`);
-        page.style.setProperty("--curl-left", `${curlLeft}%`);
-        page.style.setProperty("--curl-width", `${curlWidth}%`);
-        page.style.setProperty("--curl-opacity", String(clamp(amount * 1.2, 0, 1)));
-        page.style.setProperty("--curl-skew", `${mix(0, -8, amount) - curl * 5}deg`);
-        page.style.setProperty("--curl-rotate", `${mix(0, -4, amount) - curl * 2}deg`);
-        page.style.setProperty("--curl-shadow", String(clamp(amount * 0.62, 0, 0.62)));
-        page.querySelector(".page-front").style.clipPath = `polygon(0 0, ${edge}% 2%, ${lowerEdge}% 98%, 0 100%)`;
-        page.style.transform = `translateX(${translateX}px) rotateZ(${rotateZ}deg) skewY(${skewY}deg) scaleX(${scaleX})`;
-        page.style.borderRadius = `4px ${radius}px ${radius}px 4px`;
-        page.style.boxShadow = `${shadowX}px ${shadowY}px ${shadowBlur}px rgba(17, 20, 23, ${mix(0.32, 0.3, amount)}), 0 14px 34px rgba(17, 20, 23, 0.2), 0 2px 6px rgba(17, 20, 23, 0.12)`;
-        page.style.filter = `brightness(${mix(1, 0.96, amount)}) blur(${mix(0, 0.12, amount)}px)`;
-      }
-
-      function animateDragPage(page, progress, direction) {
-        page.classList.remove("page-dragging");
-        page.style.transition =
-          "transform 300ms cubic-bezier(0.16, 0.78, 0.18, 1), filter 300ms cubic-bezier(0.16, 0.78, 0.18, 1), box-shadow 300ms cubic-bezier(0.16, 0.78, 0.18, 1), border-radius 300ms cubic-bezier(0.16, 0.78, 0.18, 1), --curl-x 300ms cubic-bezier(0.16, 0.78, 0.18, 1), --curl-left 300ms cubic-bezier(0.16, 0.78, 0.18, 1), --curl-width 300ms cubic-bezier(0.16, 0.78, 0.18, 1), --curl-opacity 300ms cubic-bezier(0.16, 0.78, 0.18, 1), --curl-skew 300ms cubic-bezier(0.16, 0.78, 0.18, 1), --curl-rotate 300ms cubic-bezier(0.16, 0.78, 0.18, 1), --curl-shadow 300ms cubic-bezier(0.16, 0.78, 0.18, 1)";
-        page.querySelector(".page-fold").style.transition = "opacity 300ms cubic-bezier(0.16, 0.78, 0.18, 1)";
-        page.querySelectorAll(".page-face").forEach((face) => {
-          face.style.transition = "opacity 260ms ease, filter 260ms ease, clip-path 300ms cubic-bezier(0.16, 0.78, 0.18, 1)";
-        });
-        setDragProgress(page, progress, direction);
-        return new Promise((resolve) => window.setTimeout(resolve, 320));
-      }
-
-      async function startPageDrag(event) {
-        if (!pdfDocument || rendering || dragState || event.button !== 0) {
-          return;
-        }
-
-        const oldPage = pageWrap.querySelector(".pdf-page");
-        if (!oldPage) {
-          return;
-        }
-
-        const bounds = pageWrap.getBoundingClientRect();
-        const edgeSize = Math.max(72, bounds.width * 0.18);
-        const fromRight = event.clientX > bounds.right - edgeSize;
-        const fromLeft = event.clientX < bounds.left + edgeSize;
-        const direction = fromRight && currentPage < pdfDocument.numPages
-          ? "next"
-          : fromLeft && currentPage > 1
-            ? "prev"
-            : null;
-
-        if (!direction) {
-          return;
-        }
-
-        const targetPage = direction === "next" ? currentPage + 1 : currentPage - 1;
-        event.preventDefault();
-        rendering = true;
-        dragState = {
-          direction,
-          dragPage: null,
-          underPage: null,
-          pointerId: event.pointerId,
-          startX: event.clientX,
-          latestX: event.clientX,
-          targetPage,
-          progress: direction === "next" ? 0 : 1,
-          ready: false,
-          released: false,
-        };
-        updateControls();
-        pageWrap.setPointerCapture(event.pointerId);
-
-        const dragPage = direction === "next" ? oldPage : await createPageElement(targetPage);
-        const underPage = direction === "next" ? await createPageElement(targetPage) : oldPage;
-
-        if (!dragState || dragState.pointerId !== event.pointerId) {
-          return;
-        }
-
-        underPage.classList.add("under-page");
-        if (direction === "next") {
-          pageWrap.appendChild(underPage);
-        } else {
-          dragPage.classList.add("page-dragging");
-          setDragProgress(dragPage, 1, "prev");
-          pageWrap.appendChild(dragPage);
-        }
-
-        dragPage.classList.add("page-dragging");
-        dragState.dragPage = dragPage;
-        dragState.underPage = underPage;
-        dragState.ready = true;
-        updateDragProgressFromX(dragState.latestX);
-        updateControls();
-
-        if (dragState.released) {
-          finishReadyDrag(dragState);
-        }
-      }
-
-      function updateDragProgressFromX(clientX) {
-        const bounds = pageWrap.getBoundingClientRect();
-        const distance = Math.max(bounds.width * 0.55, 220);
-        const delta = clientX - dragState.startX;
-        const progress = dragState.direction === "next"
-          ? clamp(-delta / distance, 0, 1)
-          : clamp(1 - delta / distance, 0, 1);
-
-        dragState.progress = progress;
-        if (dragState.ready) {
-          setDragProgress(dragState.dragPage, progress, dragState.direction);
-        }
-      }
-
-      function updatePageDrag(event) {
-        if (!dragState || event.pointerId !== dragState.pointerId) {
-          return;
-        }
-
-        dragState.latestX = event.clientX;
-        updateDragProgressFromX(event.clientX);
-      }
-
-      async function finishReadyDrag(state) {
-        if (!state.ready) {
-          return;
-        }
-
-        dragState = null;
-
-        const shouldComplete = state.direction === "next"
-          ? state.progress > 0.38
-          : state.progress < 0.62;
-        const finalProgress = shouldComplete
-          ? state.direction === "next" ? 1 : 0
-          : state.direction === "next" ? 0 : 1;
-
-        await animateDragPage(state.dragPage, finalProgress, state.direction);
-
-        if (shouldComplete) {
-          if (state.direction === "next") {
-            state.dragPage.remove();
-            state.underPage.classList.remove("under-page");
-          } else {
-            state.underPage.remove();
-            clearPageMotion(state.dragPage);
-          }
-          currentPage = state.targetPage;
-        } else if (state.direction === "next") {
-          state.underPage.remove();
-          clearPageMotion(state.dragPage);
-        } else {
-          state.dragPage.remove();
-          state.underPage.classList.remove("under-page");
-        }
-
-        resetVisiblePage();
-        rendering = false;
-        updateControls();
-      }
-
-      function finishPageDrag(event) {
-        if (!dragState || event.pointerId !== dragState.pointerId) {
-          return;
-        }
-
-        try {
-          pageWrap.releasePointerCapture(event.pointerId);
-        } catch (error) {
-          // The browser may release capture automatically after pointerup.
-        }
-
-        dragState.latestX = event.clientX;
-        updateDragProgressFromX(event.clientX);
-
-        if (!dragState.ready) {
-          dragState.released = true;
-          return;
-        }
-
-        finishReadyDrag(dragState);
-      }
-
       function showFallback() {
-        pageWrap.innerHTML = `
+        pages.innerHTML = `
           <div class="fallback">
-            <p>The animated viewer could not load, but the PDF is still available below.</p>
+            <p>O visualizador animado não carregou, mas o PDF ainda está disponível aqui.</p>
             <object data="${pdfUrl}" type="application/pdf">
-              <a href="${pdfUrl}">Open Gabriel Saraiva's resume PDF</a>
+              <a href="${pdfUrl}">Abrir currículo em PDF</a>
             </object>
           </div>
         `;
-        pageStatus.textContent = "PDF fallback view";
-        previousButton.disabled = true;
-        nextButton.disabled = true;
+        status.textContent = "Visualização alternativa";
       }
 
-      async function createPageElement(pageNumber) {
+      function targetWidth() {
+        const available = Math.max(320, Math.min(stage.clientWidth - 68, 816));
+        return available;
+      }
+
+      async function renderPage(pageNumber) {
         const page = await pdfDocument.getPage(pageNumber);
         const viewport = page.getViewport({ scale: 1 });
-        const targetWidth = Math.min(816, pageWrap.clientWidth || 816);
-        const scale = targetWidth / viewport.width;
+        const scale = targetWidth() / viewport.width;
         const scaledViewport = page.getViewport({ scale });
+        const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+        const pageElement = document.createElement("article");
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
-        const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
 
+        pageElement.className = "pdf-page";
+        pageElement.setAttribute("aria-label", `Página ${pageNumber}`);
         canvas.width = Math.floor(scaledViewport.width * pixelRatio);
         canvas.height = Math.floor(scaledViewport.height * pixelRatio);
-        canvas.style.width = `${scaledViewport.width}px`;
-        canvas.style.height = `${scaledViewport.height}px`;
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-        const pageElement = document.createElement("div");
-        pageElement.className = "pdf-page";
-        const pageFront = document.createElement("div");
-        pageFront.className = "page-face page-front";
-        const pageBack = document.createElement("div");
-        pageBack.className = "page-face page-back";
-        const pageFold = document.createElement("div");
-        pageFold.className = "page-fold";
-        pageFront.appendChild(canvas);
-        pageElement.append(pageFront, pageBack, pageFold);
-
+        pageElement.appendChild(canvas);
         await page.render({ canvasContext: context, viewport: scaledViewport }).promise;
         return pageElement;
       }
 
-      async function renderPage(pageNumber, direction = "next") {
-        if (!pdfDocument || rendering) {
-          return;
+      async function renderDocument() {
+        pages.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+
+        for (let pageNumber = 1; pageNumber <= pdfDocument.numPages; pageNumber += 1) {
+          status.textContent = `Renderizando página ${pageNumber} de ${pdfDocument.numPages}`;
+          fragment.appendChild(await renderPage(pageNumber));
         }
 
-        rendering = true;
-        updateControls();
-
-        const oldPage = pageWrap.querySelector(".pdf-page");
-        const pageElement = await createPageElement(pageNumber);
-
-        if (!oldPage || reduceMotion || direction === "none") {
-          pageWrap.innerHTML = "";
-          pageWrap.appendChild(pageElement);
-          currentPage = pageNumber;
-          rendering = false;
-          updateControls();
-          return;
-        }
-
-        if (direction === "prev") {
-          oldPage.classList.add("under-page");
-          pageElement.classList.add("page-uncurl-prev");
-          pageWrap.appendChild(pageElement);
-
-          window.requestAnimationFrame(() => {
-            pageElement.classList.add("page-uncurl-prev-active");
-          });
-
-          await new Promise((resolve) => window.setTimeout(resolve, 980));
-
-          oldPage.remove();
-          pageElement.classList.remove("page-uncurl-prev", "page-uncurl-prev-active");
-          currentPage = pageNumber;
-          rendering = false;
-          updateControls();
-          return;
-        }
-
-        pageElement.classList.add("under-page");
-        pageWrap.appendChild(pageElement);
-
-        window.requestAnimationFrame(() => {
-          oldPage.classList.add("page-flip-away");
-        });
-
-        await new Promise((resolve) => window.setTimeout(resolve, 980));
-
-        oldPage.remove();
-        pageElement.classList.remove("under-page");
-
-        currentPage = pageNumber;
-        rendering = false;
-        updateControls();
+        pages.appendChild(fragment);
+        status.textContent = `${pdfDocument.numPages} ${pdfDocument.numPages === 1 ? "página" : "páginas"}`;
       }
-
-      previousButton.addEventListener("click", () => {
-        if (pdfDocument && currentPage > 1) {
-          renderPage(currentPage - 1, "prev");
-        }
-      });
-
-      nextButton.addEventListener("click", () => {
-        if (pdfDocument && currentPage < pdfDocument.numPages) {
-          renderPage(currentPage + 1, "next");
-        }
-      });
-
-      pageWrap.addEventListener("pointerdown", startPageDrag);
-      pageWrap.addEventListener("pointermove", updatePageDrag);
-      pageWrap.addEventListener("pointerup", finishPageDrag);
-      pageWrap.addEventListener("pointercancel", finishPageDrag);
-      document.addEventListener("pointermove", updatePageDrag);
-      document.addEventListener("pointerup", finishPageDrag);
-      document.addEventListener("pointercancel", finishPageDrag);
 
       fullscreenButton.addEventListener("click", () => {
         toggleFullscreen();
@@ -1143,12 +437,6 @@
       document.addEventListener("fullscreenchange", () => {
         fallbackFullscreen = false;
         syncFullscreenState();
-      });
-
-      window.addEventListener("resize", () => {
-        if (pdfDocument && !rendering) {
-          renderPage(currentPage, "none");
-        }
       });
 
       async function boot() {
@@ -1161,7 +449,7 @@
           pdfjsLib.GlobalWorkerOptions.workerSrc =
             "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
           pdfDocument = await pdfjsLib.getDocument(pdfUrl).promise;
-          await renderPage(1);
+          await renderDocument();
         } catch (error) {
           console.error("Unable to render PDF", error);
           showFallback();

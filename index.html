@@ -1,710 +1,685 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gabriel Saraiva - Software Engineer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gabriel Saraiva</title>
+    <meta
+      name="description"
+      content="Site pessoal de Gabriel Saraiva: currículo, projetos e experimentos feitos por diversão."
+    >
+    <meta property="og:title" content="Gabriel Saraiva">
+    <meta
+      property="og:description"
+      content="Currículo, projetos e experimentos de programação feitos por diversão."
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.gabrielsaraiva.com.br/">
     <style>
+      :root {
+        --ink: #151719;
+        --muted: #6b7178;
+        --paper: #f6f1e8;
+        --white: #fffdf7;
+        --night: #080b0e;
+        --line: rgba(21, 23, 25, 0.14);
+        --teal: #1f6f68;
+        --gold: #e3b15b;
+        --clay: #b95f4c;
+      }
+
       * {
-        margin: 0;
-        padding: 0;
         box-sizing: border-box;
       }
 
-      body {
-        font-family: 'Roboto', sans-serif;
-        color: #f8f8f8;
-        background-color: #121212;
-        min-height: 100vh;
-        position: relative;
-        overflow-x: hidden;
+      html {
+        min-height: 100%;
+        background: var(--night);
       }
 
-      .background-container {
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--white);
+        background: var(--night);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        letter-spacing: 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .skip-link {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 20;
+        transform: translateY(-150%);
+        border-radius: 6px;
+        background: var(--white);
+        color: var(--ink);
+        padding: 10px 14px;
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      .site-nav {
         position: fixed;
         top: 0;
         left: 0;
+        z-index: 10;
         width: 100%;
-        height: 100%;
-        z-index: -1;
-        overflow: hidden;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(8, 11, 14, 0.62);
+        backdrop-filter: blur(18px);
       }
 
-      .background-project {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        filter: blur(5px);
-        transition: opacity 1.5s ease, filter 0.5s ease;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-      }
-
-      .background-project.active {
-        opacity: 0.2;
-      }
-
-      .background-project.hover {
-        opacity: 0.3;
-        filter: blur(3px);
-      }
-
-      #bg-lightning {
-        mix-blend-mode: lighten;
-      }
-
-      #bg-lightning:not(.active):not(.hover) {
-        filter: contrast(1.2) brightness(1.1) blur(5px);
-      }
-
-      #bg-lightning.active {
-        filter: contrast(1.2) brightness(1.1) blur(5px);
-      }
-
-      #bg-lightning.hover {
-        filter: contrast(1.2) brightness(1.1) blur(3px);
-      }
-
-      .content {
-        max-width: 800px;
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: min(1120px, calc(100% - 40px));
+        min-height: 64px;
         margin: 0 auto;
-        padding: 60px 20px;
+        gap: 24px;
+      }
+
+      .brand,
+      .nav-links a {
+        text-decoration: none;
+      }
+
+      .brand {
+        font-weight: 820;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        color: rgba(255, 255, 255, 0.74);
+        font-size: 0.92rem;
+        font-weight: 720;
+      }
+
+      .nav-links a:hover,
+      .nav-links a:focus {
+        color: var(--white);
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        min-height: 100svh;
+        overflow: hidden;
+        place-items: end start;
+        padding: 128px 0 68px;
+      }
+
+      .field {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 80% 26%, rgba(31, 111, 104, 0.18), transparent 24%),
+          radial-gradient(circle at 62% 72%, rgba(227, 177, 91, 0.12), transparent 26%),
+          #080b0e;
+      }
+
+      .field canvas {
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+      }
+
+      .field::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(8, 11, 14, 0.96) 0%, rgba(8, 11, 14, 0.76) 40%, rgba(8, 11, 14, 0.16) 100%),
+          linear-gradient(180deg, rgba(8, 11, 14, 0.14), rgba(8, 11, 14, 0.86));
+        pointer-events: none;
+      }
+
+      .hero-inner {
         position: relative;
         z-index: 1;
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
       }
 
-      header {
-        text-align: center;
-        margin-bottom: 40px;
-      }
-
-      @keyframes gradientAnimation {
-        0% { background-position: 0% 50%; background-size: 300% 100%; }
-        25% { background-position: 100% 30%; background-size: 400% 100%; }
-        50% { background-position: 50% 100%; background-size: 350% 100%; }
-        75% { background-position: 0% 70%; background-size: 250% 100%; }
-        100% { background-position: 0% 50%; background-size: 300% 100%; }
+      .eyebrow {
+        margin: 0 0 16px;
+        color: var(--gold);
+        font-size: 0.78rem;
+        font-weight: 820;
+        letter-spacing: 0;
+        text-transform: uppercase;
       }
 
       h1 {
-        font-size: 4rem;
-        font-weight: 600;
-        margin-bottom: 10px;
-        letter-spacing: -1px;
-        background: linear-gradient(135deg, #64b5f6, #2196f3, #1976d2, #0d47a1, #1565c0, #0288d1, #03a9f4, #4fc3f7, #2196f3);
-        background-size: 300% 100%;
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        text-shadow: 
-          0px 1px 2px rgba(100, 181, 246, 0.6),
-          0px 2px 4px rgba(33, 150, 243, 0.5),
-          0px 4px 6px rgba(25, 118, 210, 0.4),
-          0px 6px 10px rgba(13, 71, 161, 0.3),
-          0px 8px 16px rgba(3, 37, 76, 0.2),
-          0px 12px 24px rgba(0, 20, 60, 0.1);
-        transform: perspective(1200px) rotateX(12deg) translateZ(10px);
-        transform-origin: center top;
-        transition: all 0.5s ease;
-        animation: gradientAnimation 15s ease-in-out infinite;
-        padding: 10px 0;
-        position: relative;
+        max-width: 820px;
+        margin: 0 0 24px;
+        font-size: clamp(3rem, 9vw, 7rem);
+        line-height: 0.9;
+        letter-spacing: 0;
       }
 
-      h1:hover {
-        transform: perspective(1200px) rotateX(4deg) translateY(-8px) translateZ(20px);
-        text-shadow: 
-          0px 2px 4px rgba(100, 181, 246, 0.7),
-          0px 4px 8px rgba(33, 150, 243, 0.6),
-          0px 8px 12px rgba(25, 118, 210, 0.5),
-          0px 12px 20px rgba(13, 71, 161, 0.4),
-          0px 16px 32px rgba(3, 37, 76, 0.3),
-          0px 24px 48px rgba(0, 20, 60, 0.2);
-        animation-duration: 10s;
+      .intro {
+        max-width: 760px;
+        margin: 0 0 30px;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: clamp(1.05rem, 2vw, 1.34rem);
+        line-height: 1.56;
       }
 
-      h1::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 20%;
-        width: 60%;
-        height: 3px;
-        background: linear-gradient(90deg, transparent, rgba(100, 181, 246, 0.2), rgba(33, 150, 243, 0.5), rgba(100, 181, 246, 0.2), transparent);
-        filter: blur(1px);
-        animation: gradientAnimation 10s ease infinite alternate;
+      .below {
+        background: var(--paper);
+        color: var(--ink);
       }
 
-      .subtitle {
-        font-size: 1.2rem;
-        font-weight: 300;
-        color: #a0a0a0;
-        margin-bottom: 30px;
+      .section {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 70px 0;
       }
 
-      .projects {
+      .section + .section {
+        border-top: 1px solid var(--line);
+      }
+
+      .route-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+      }
+
+      .route {
         display: flex;
+        min-height: 190px;
         flex-direction: column;
-        gap: 20px;
-      }
-
-      .project-link {
-        display: block;
-        padding: 15px 20px;
-        background-color: rgba(30, 30, 30, 0.7);
-        border-left: 4px solid #4a4a4a;
-        color: #f8f8f8;
+        justify-content: space-between;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        background: var(--white);
+        color: var(--ink);
         text-decoration: none;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        border-radius: 0 4px 4px 0;
+        box-shadow: 0 18px 46px rgba(21, 23, 25, 0.08);
       }
 
-      .project-link:hover {
-        background-color: rgba(40, 40, 40, 0.9);
-        border-left-color: #64b5f6;
-        transform: translateX(5px);
+      .route:hover,
+      .route:focus {
+        border-color: rgba(31, 111, 104, 0.46);
+        transform: translateY(-2px);
+      }
+
+      .route span {
+        color: var(--muted);
+        font-size: 0.88rem;
+        font-weight: 760;
+        text-transform: uppercase;
+      }
+
+      .route h2 {
+        margin: 18px 0 8px;
+        font-size: 1.28rem;
+        letter-spacing: 0;
+      }
+
+      .route p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .note {
+        max-width: 720px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.02rem;
+        line-height: 1.62;
       }
 
       footer {
-        text-align: center;
-        margin-top: 60px;
-        padding: 20px;
+        border-top: 1px solid var(--line);
+        background: var(--paper);
+        color: var(--muted);
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 24px 0;
+        gap: 20px;
         font-size: 0.9rem;
-        color: #777;
       }
 
-      .project-preview {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -2;
-        overflow: hidden;
+      @media (max-width: 760px) {
+        .nav-inner,
+        .hero-inner,
+        .section,
+        .footer-inner {
+          width: min(100% - 28px, 1120px);
+        }
+
+        .nav-links {
+          gap: 12px;
+          font-size: 0.86rem;
+        }
+
+        .nav-links a:nth-child(3) {
+          display: none;
+        }
+
+        .hero {
+          min-height: 94svh;
+          padding: 112px 0 44px;
+        }
+
+        .route-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-inner {
+          flex-direction: column;
+        }
       }
 
-      .project-iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-        opacity: 0;
-        filter: blur(10px) sepia(20%) hue-rotate(190deg);
-        transform: scale(1) rotate(0deg) translateX(0);
-        transition: opacity 1s cubic-bezier(0.25, 0.1, 0.25, 1), 
-                    filter 1.5s cubic-bezier(0.25, 0.1, 0.25, 1),
-                    transform 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition: none !important;
+        }
+
+        .field canvas {
+          opacity: 0.42;
+        }
       }
-
-      .project-iframe.visible {
-        opacity: 0.2;
-        filter: blur(2px) sepia(20%) hue-rotate(190deg);
-      }
-
-      /* Animation effects for transitions */
-      .project-iframe.changing {
-        filter: blur(15px) sepia(20%) hue-rotate(190deg);
-        transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-      }
-
-      .project-iframe.effect-zoom-in {
-        transform: scale(1.2);
-        filter: blur(15px) sepia(20%) hue-rotate(190deg);
-        transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.5s ease-in;
-      }
-
-      .project-iframe.effect-zoom-out {
-        transform: scale(0.8);
-        filter: blur(15px) sepia(20%) hue-rotate(190deg);
-        transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.5s ease-out;
-      }
-
-      .project-iframe.effect-rotate {
-        transform: rotate(5deg);
-        filter: blur(15px) sepia(20%) hue-rotate(190deg);
-        transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.5s ease;
-      }
-
-      .project-iframe.effect-slide-left {
-        transform: translateX(-50px);
-        filter: blur(15px) sepia(20%) hue-rotate(190deg);
-        transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.5s ease;
-      }
-
-      .project-iframe.effect-slide-right {
-        transform: translateX(50px);
-        filter: blur(15px) sepia(20%) hue-rotate(190deg);
-        transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.5s ease;
-      }
-
-      .project-iframe.effect-color-shift {
-        filter: blur(15px) sepia(80%) hue-rotate(90deg);
-        transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), filter 0.5s ease;
-      }
-    /* Half hover style for random project selection when no project is hovered */
-    .project-link.half-hover {
-      background-color: rgba(35, 35, 35, 0.8);
-      border-left-color: rgba(100, 181, 246, 0.5);
-      transform: translateX(2px);
-    }
-
-    /* Progress bar styles */
-    .project-link {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 3px;
-      width: 0%;
-      background: linear-gradient(to right, #64b5f6, #2196f3);
-      transition: width 0.1s linear;
-      opacity: 0;
-    }
-
-    .project-link.half-hover .progress-bar {
-      opacity: 1;
-    }
     </style>
   </head>
   <body>
-    <div class="background-container">
-      <div class="background-project" id="bg-lemos" data-project="lemos-2022"></div>
-      <div class="background-project" id="bg-infinite" data-project="infinite"></div>
-      <div class="background-project" id="bg-lightning" data-project="lightning"></div>
-      <div class="background-project" id="bg-unit-circle" data-project="unit-circle"></div>
-      <div class="background-project" id="bg-monkey" data-project="monkey-rotator"></div>
-      <div class="background-project" id="bg-resume" data-project="resume"></div>
-      <div class="background-project" id="bg-goes-wallpaper" data-project="goes-wallpaper"></div>
-    </div>
+    <a class="skip-link" href="#content">Pular para o conteúdo</a>
 
-    <div class="project-preview" id="project-preview">
-      <iframe id="iframe-lemos-2022" class="project-iframe" src="./lemos-2022/index.html" title="Diego Lemos 2022"></iframe>
-      <iframe id="iframe-infinite" class="project-iframe" src="./infinite/index.html" title="Infinite Drawer"></iframe>
-      <iframe id="iframe-lightning" class="project-iframe" src="./lightning/index.html" title="Lightning"></iframe>
-      <iframe id="iframe-unit-circle" class="project-iframe" src="./unit-circle/index.html" title="Unit Circle"></iframe>
-      <iframe id="iframe-monkey-rotator" class="project-iframe" src="./monkey-rotator/index.html" title="Monkey Spinner"></iframe>
-      <iframe id="iframe-resume" class="project-iframe" src="./resume/index.html" title="Resume"></iframe>
-      <iframe id="iframe-goes-wallpaper" class="project-iframe" src="./goes-wallpaper-js/index.html" title="GOES Wallpaper"></iframe>
-    </div>
-
-    <div class="content">
-      <header>
-        <h1>Gabriel Saraiva</h1>
-        <p class="subtitle">Software Engineer & Curious & Amateur Astronomer</p>
-        <p>
-          <a href="https://www.linkedin.com/in/gabriel-saraiva" target="_blank" style="color: #64b5f6; text-decoration: none; margin-right: 15px;">LinkedIn Profile</a>
-          <a href="https://github.com/gabrsar" target="_blank" style="color: #64b5f6; text-decoration: none;">GitHub Profile</a>
-        </p>
-      </header>
-
-      <div class="projects">
-        <a href="./resume/index.html" class="project-link" data-project="resume">Resume (A4 Document)<div class="progress-bar"></div></a>
-        <a href="./lemos-2022/index.html" class="project-link" data-project="lemos-2022">Diego Lemos 2022<div class="progress-bar"></div></a>
-        <a href="./infinite/index.html" class="project-link" data-project="infinite">Infinite Drawer<div class="progress-bar"></div></a>
-        <a href="./lightning/index.html" class="project-link" data-project="lightning">Lightning<div class="progress-bar"></div></a>
-        <a href="./unit-circle/index.html" class="project-link" data-project="unit-circle">Unit Circle (Trigonometry Utility)<div class="progress-bar"></div></a>
-        <a href="./monkey-rotator/index.html" class="project-link" data-project="monkey-rotator">Monkey Spinner<div class="progress-bar"></div></a>
-        <a href="./goes-wallpaper-js/index.html" class="project-link" data-project="goes-wallpaper">GOES Wallpaper<div class="progress-bar"></div></a>
+    <nav class="site-nav" aria-label="Navegação principal">
+      <div class="nav-inner">
+        <a class="brand" href="./index.html">Gabriel Saraiva</a>
+        <div class="nav-links">
+          <a href="./projects/index.html">Projetos</a>
+          <a href="./resume/index.html">Currículo</a>
+          <a href="https://github.com/gabrsar">GitHub</a>
+          <a href="https://br.linkedin.com/in/gabrielsaraiva7">LinkedIn</a>
+        </div>
       </div>
+    </nav>
 
-      <footer>
-        <p>Copyleft <span id="current-year"></span> - Gabriel Saraiva</p>
-      </footer>
+    <header class="hero">
+      <div class="field" aria-hidden="true">
+        <canvas id="lorenz-canvas"></canvas>
+      </div>
+      <div class="hero-inner">
+        <p class="eyebrow">Software, currículo e pequenas coisas estranhas</p>
+        <h1>Oi. Eu sou o Gabriel Saraiva.</h1>
+        <p class="intro">
+          Tenho esse site pra guardar algumas coisas que eu escrevo quando tenho vontade de programar
+          por diversão, sem compromisso com nada, a não ser, me divertir. Aqui você pode encontrar
+          outros projetos e meu currículo também. Mas é só isso mesmo. Obrigado pela visita.
+        </p>
+      </div>
+    </header>
 
-      <script>
-        // Set the current year for the copyleft notice
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-      </script>
-    </div>
+    <main class="below" id="content">
+      <section class="section" aria-label="Rotas do site">
+        <div class="route-grid">
+          <a class="route" href="./resume/index.html">
+            <span>Currículo</span>
+            <div>
+              <h2>Um pouco do que eu já fiz</h2>
+              <p>Tem muito mais coisas, mas isso é o que cabe em duas páginas rsrs.</p>
+            </div>
+          </a>
+          <a class="route" href="./projects/index.html">
+            <span>Projetos</span>
+            <div>
+              <h2>O laboratório</h2>
+              <p>Uma lista dos experimentos que já estão online, de p5.js a satélites.</p>
+            </div>
+          </a>
+          <a class="route" href="https://br.linkedin.com/in/gabrielsaraiva7">
+            <span>Contato</span>
+            <div>
+              <h2>LinkedIn</h2>
+              <p>O jeito mais simples de falar comigo e pedir e-mail ou telefone.</p>
+            </div>
+          </a>
+          <a class="route" href="https://github.com/gabrsar">
+            <span>Código</span>
+            <div>
+              <h2>GitHub</h2>
+              <p>Onde ficam meus repositórios, experimentos e algumas ideias em andamento.</p>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Nota">
+        <p class="note">
+          A ideia aqui é ser profissional sem ficar solene demais: um lugar pequeno, estável, com
+          um pouco de engenharia à mostra e espaço para coisas que talvez só existam porque era
+          divertido fazer.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <span>Gabriel Saraiva</span>
+        <span>Feito com IA, mas pedido com carinho.</span>
+      </div>
+    </footer>
 
     <script>
-      // Background images for projects
-      const projectImages = {
-        'resume': 'linear-gradient(45deg, rgba(33, 150, 243, 0.3), rgba(3, 169, 244, 0.1)), linear-gradient(45deg, rgba(0, 50, 255, 0.15), rgba(100, 181, 246, 0.05))',
-        'lemos-2022': 'linear-gradient(45deg, rgba(63, 81, 181, 0.3), rgba(156, 39, 176, 0.1)), linear-gradient(45deg, rgba(0, 50, 255, 0.15), rgba(186, 104, 200, 0.05))',
-        'infinite': 'linear-gradient(45deg, rgba(0, 150, 136, 0.3), rgba(76, 175, 80, 0.1)), linear-gradient(45deg, rgba(0, 50, 255, 0.15), rgba(129, 199, 132, 0.05))',
-        'lightning': 'linear-gradient(45deg, rgba(103, 58, 183, 0.3), rgba(33, 150, 243, 0.1)), linear-gradient(45deg, rgba(0, 50, 255, 0.15), rgba(179, 157, 219, 0.05))',
-        'unit-circle': 'linear-gradient(45deg, rgba(255, 152, 0, 0.3), rgba(244, 67, 54, 0.1)), linear-gradient(45deg, rgba(0, 50, 255, 0.15), rgba(255, 138, 128, 0.05))',
-        'monkey-rotator': 'linear-gradient(45deg, rgba(121, 85, 72, 0.3), rgba(255, 87, 34, 0.1)), linear-gradient(45deg, rgba(0, 50, 255, 0.15), rgba(255, 171, 145, 0.05))',
-        'goes-wallpaper': 'linear-gradient(45deg, rgba(0, 188, 212, 0.3), rgba(0, 172, 193, 0.1)), linear-gradient(45deg, rgba(0, 50, 255, 0.15), rgba(77, 208, 225, 0.05))'
+      const canvas = document.querySelector("#lorenz-canvas");
+      const context = canvas.getContext("2d");
+      context.lineCap = "round";
+      context.lineJoin = "round";
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const particles = [];
+      let frame = 0;
+      const mouseGlow = {
+        x: 0,
+        y: 0,
+        active: false,
+        radius: 150
+      };
+      const particleTuning = {
+        min: 640,
+        max: 4200,
+        minObservedFrameMs: 1000 / 60,
+        renderCostMs: 0,
+        lastTimestamp: 0,
+        lastAdjustment: 0,
+        stableFrames: 0
       };
 
-      // Set background images
-      Object.keys(projectImages).forEach(project => {
-        const bgElement = document.querySelector(`[data-project="${project}"]`);
-        if (bgElement) {
-          bgElement.style.background = projectImages[project];
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function lerp(start, end, amount) {
+        return start + (end - start) * amount;
+      }
+
+      function updateMouseGlow(event) {
+        const bounds = canvas.getBoundingClientRect();
+        mouseGlow.x = event.clientX - bounds.left;
+        mouseGlow.y = event.clientY - bounds.top;
+        mouseGlow.active =
+          mouseGlow.x >= 0 &&
+          mouseGlow.x <= bounds.width &&
+          mouseGlow.y >= 0 &&
+          mouseGlow.y <= bounds.height;
+        canvas.dataset.glow = mouseGlow.active ? "on" : "off";
+      }
+
+      function hideMouseGlow() {
+        mouseGlow.active = false;
+        canvas.dataset.glow = "off";
+      }
+
+      function resizeCanvas() {
+        const bounds = canvas.getBoundingClientRect();
+        const scale = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.max(1, Math.floor(bounds.width * scale));
+        canvas.height = Math.max(1, Math.floor(bounds.height * scale));
+        context.setTransform(scale, 0, 0, scale, 0, 0);
+        particleTuning.max = Math.max(1400, Math.min(7600, Math.floor((bounds.width * bounds.height) / 180)));
+        if (particles.length === 0) {
+          setParticleCount(Math.min(particleTuning.max, Math.max(960, Math.floor(particleTuning.max * 0.22))));
+        } else {
+          setParticleCount(clamp(particles.length, particleTuning.min, particleTuning.max));
         }
-      });
-
-      // Background rotation
-      const backgrounds = document.querySelectorAll('.background-project');
-      let currentBgIndex = 0;
-
-      function rotateBackground() {
-        backgrounds.forEach(bg => bg.classList.remove('active'));
-        backgrounds[currentBgIndex].classList.add('active');
-        currentBgIndex = (currentBgIndex + 1) % backgrounds.length;
       }
 
-      // Initial activation
-      rotateBackground();
+      function makeParticle() {
+        const particle = {
+          x: -12 + Math.random() * 24,
+          y: -14 + Math.random() * 28,
+          z: 8 + Math.random() * 24,
+          hue: 34 + Math.random() * 160,
+          heat: 0
+        };
 
-      // Set interval for rotation
-      setInterval(rotateBackground, 1000);
+        for (let warmup = 0; warmup < 320; warmup += 1) {
+          stepLorenz(particle);
+        }
 
-      // Initialize random project selection
-      setTimeout(() => {
-        startRandomProjectSelection();
-      }, 1000); // Start after a short delay to allow page to load
-
-      // Hover effect for project links
-      const projectLinks = document.querySelectorAll('.project-link');
-      const projectIframes = document.querySelectorAll('.project-iframe');
-      let currentVisibleIframe = null;
-      let isAnyProjectHovered = false;
-      let randomProjectTimer = null;
-      let currentRandomProject = null;
-      let progressAnimationId = null;
-      let progressValue = 0;
-
-      // Animation effects for transitions
-      const transitionEffects = [
-        'changing',              // Default blur effect
-        'effect-zoom-in',        // Zoom in effect
-        'effect-zoom-out',       // Zoom out effect
-        'effect-rotate',         // Rotation effect
-        'effect-slide-left',     // Slide left effect
-        'effect-slide-right',    // Slide right effect
-        'effect-color-shift'     // Color shift effect
-      ];
-
-      // Function to get a random transition effect
-      function getRandomEffect() {
-        const randomIndex = Math.floor(Math.random() * transitionEffects.length);
-        return transitionEffects[randomIndex];
+        return particle;
       }
 
-      // Function to get a random project
-      function getRandomProject() {
-        const randomIndex = Math.floor(Math.random() * projectLinks.length);
-        return projectLinks[randomIndex];
+      function setParticleCount(count) {
+        const nextCount = Math.round(clamp(count, particleTuning.min, particleTuning.max));
+        while (particles.length < nextCount) {
+          particles.push(makeParticle());
+        }
+        if (particles.length > nextCount) {
+          particles.length = nextCount;
+        }
+        canvas.dataset.particles = particles.length;
       }
 
-      // Function to get a random interval between 5 and 30 seconds
-      function getRandomInterval() {
-        return (Math.floor(Math.random() * 26) + 5) * 1000; // 5-30 seconds in milliseconds
+      function stepLorenz(point) {
+        const sigma = 10;
+        const rho = 28;
+        const beta = 8 / 3;
+        const dt = 0.0015;
+        const dx = sigma * (point.y - point.x);
+        const dy = point.x * (rho - point.z) - point.y;
+        const dz = point.x * point.y - beta * point.z;
+        point.x += dx * dt;
+        point.y += dy * dt;
+        point.z += dz * dt;
       }
 
-      // Function to animate the progress bar with a specific duration
-      function animateProgressWithDuration(duration) {
-        if (!currentRandomProject || isAnyProjectHovered) {
+      function drawGrid(width, height) {
+        context.strokeStyle = "rgba(255,255,255,0.045)";
+        context.lineWidth = 1;
+        for (let x = 0; x < width; x += 76) {
+          context.beginPath();
+          context.moveTo(x, 0);
+          context.lineTo(x, height);
+          context.stroke();
+        }
+        for (let y = 0; y < height; y += 76) {
+          context.beginPath();
+          context.moveTo(0, y);
+          context.lineTo(width, y);
+          context.stroke();
+        }
+      }
+
+      function drawMouseHalo(glowFade) {
+        if (glowFade <= 0) {
           return;
         }
 
-        const progressBar = currentRandomProject.querySelector('.progress-bar');
-        if (!progressBar) {
+        const gradient = context.createRadialGradient(
+          mouseGlow.x,
+          mouseGlow.y,
+          0,
+          mouseGlow.x,
+          mouseGlow.y,
+          mouseGlow.radius * 1.18
+        );
+        gradient.addColorStop(0, `rgba(227, 177, 91, ${0.09 * glowFade})`);
+        gradient.addColorStop(0.34, `rgba(31, 111, 104, ${0.07 * glowFade})`);
+        gradient.addColorStop(1, "rgba(31, 111, 104, 0)");
+        context.fillStyle = gradient;
+        context.fillRect(
+          mouseGlow.x - mouseGlow.radius * 1.2,
+          mouseGlow.y - mouseGlow.radius * 1.2,
+          mouseGlow.radius * 2.4,
+          mouseGlow.radius * 2.4
+        );
+      }
+
+      function heatParticle(point, amount) {
+        if (amount <= 0) {
           return;
         }
 
-        // Get the current time
-        const now = performance.now();
-
-        // If this is the first frame, store the start time
-        if (!progressBar.dataset.startTime) {
-          progressBar.dataset.startTime = now;
-        }
-
-        // Calculate elapsed time
-        const startTime = parseFloat(progressBar.dataset.startTime);
-        const elapsedTime = now - startTime;
-
-        // Calculate progress as a percentage of the duration
-        progressValue = (elapsedTime / duration) * 100;
-
-        // Cap at 100%
-        if (progressValue > 100) {
-          progressValue = 100;
-
-          // Clear the start time for the next animation
-          delete progressBar.dataset.startTime;
-        }
-
-        // Update the progress bar width
-        progressBar.style.width = `${progressValue}%`;
-
-        // Continue the animation if we haven't reached 100%
-        if (progressValue < 100) {
-          progressAnimationId = requestAnimationFrame(() => {
-            animateProgressWithDuration(duration);
-          });
-        }
+        point.heat = clamp(point.heat + amount * (1 - point.heat * 0.48), 0, 1);
       }
 
-      // Legacy function for backward compatibility
-      function animateProgress() {
-        // This function is kept for backward compatibility
-        // It's no longer used directly, but might be called from elsewhere
-        if (!currentRandomProject || isAnyProjectHovered) {
+      function drawParticleSegment(point, index, x1, y1, x2, y2) {
+        const heat = point.heat;
+        const heatCurve = heat * heat;
+        const baseHue = (point.hue + index * 0.08) % 360;
+        const hue = lerp(baseHue, 35, heat);
+        const saturation = lerp(74, 94, heat);
+        const lightness = lerp(64, 74, heat);
+        const alpha = lerp(0.5, 0.86, heat);
+
+        context.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+        context.lineWidth = 0.78 + 1.45 * heatCurve;
+        context.beginPath();
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.stroke();
+      }
+
+      function tuneParticleCount(timestamp, frameMs) {
+        if (prefersReducedMotion || frame < 14 || timestamp - particleTuning.lastAdjustment < 240) {
           return;
         }
 
-        const progressBar = currentRandomProject.querySelector('.progress-bar');
-        if (!progressBar) {
+        const frameBudget = clamp(particleTuning.minObservedFrameMs * 0.82, 6, 14);
+        const tooExpensive = particleTuning.renderCostMs > frameBudget;
+
+        if (tooExpensive) {
+          setParticleCount(Math.max(particleTuning.min, particles.length * 0.8));
+          particleTuning.stableFrames = 0;
+          particleTuning.lastAdjustment = timestamp;
           return;
         }
 
-        // Use the new duration-based animation instead
-        animateProgressWithDuration(getRandomInterval());
-      }
-
-      // Function to select a random project when no project is hovered
-      function selectRandomProject() {
-        // Reset progress value
-        progressValue = 0;
-
-        // Clear any existing animation
-        if (progressAnimationId) {
-          cancelAnimationFrame(progressAnimationId);
-          progressAnimationId = null;
+        if (particleTuning.renderCostMs < frameBudget * 0.7) {
+          particleTuning.stableFrames += 1;
+        } else {
+          particleTuning.stableFrames = 0;
         }
 
-        // Clear any existing timer
-        if (randomProjectTimer) {
-          clearTimeout(randomProjectTimer);
-          randomProjectTimer = null;
-        }
-
-        // Clear any existing half-hover state
-        if (currentRandomProject) {
-          currentRandomProject.classList.remove('half-hover');
-
-          // Reset the progress bar
-          const oldProgressBar = currentRandomProject.querySelector('.progress-bar');
-          if (oldProgressBar) {
-            oldProgressBar.style.width = '0%';
-          }
-
-          // Remove hover effect from background
-          const projectId = currentRandomProject.getAttribute('data-project');
-          const bgElement = document.querySelector(`.background-project[data-project="${projectId}"]`);
-          if (bgElement) {
-            bgElement.classList.remove('hover');
-          }
-        }
-
-        // Select a new random project
-        const randomProject = getRandomProject();
-        randomProject.classList.add('half-hover');
-        currentRandomProject = randomProject;
-
-        // Apply a subtle hover effect to the background
-        const projectId = randomProject.getAttribute('data-project');
-        const bgElement = document.querySelector(`.background-project[data-project="${projectId}"]`);
-        if (bgElement) {
-          bgElement.classList.add('hover');
-        }
-
-        // Show the corresponding iframe with a subtle effect
-        const iframe = document.getElementById(`iframe-${projectId}`);
-        if (iframe) {
-          // Hide any currently visible iframe with a transition effect
-          if (currentVisibleIframe && currentVisibleIframe !== iframe) {
-            currentVisibleIframe.classList.remove('visible');
-            const randomEffect = getRandomEffect();
-            currentVisibleIframe.classList.add(randomEffect);
-            setIframeFPS(currentVisibleIframe, 5);
-
-            setTimeout(() => {
-              currentVisibleIframe.classList.remove(randomEffect);
-            }, 500);
-          }
-
-          // Show the new iframe
-          iframe.classList.add('visible');
-          setIframeFPS(iframe, 30); // Medium FPS for random selection
-          currentVisibleIframe = iframe;
-        }
-
-        // Get a random interval between 5 and 30 seconds for the next project selection
-        const randomInterval = getRandomInterval();
-
-        // Set up the progress bar animation to match the random interval
-        progressValue = 0;
-        const progressBar = currentRandomProject.querySelector('.progress-bar');
-        if (progressBar) {
-          progressBar.style.width = '0%';
-        }
-
-        // Start the progress animation
-        progressAnimationId = requestAnimationFrame(() => {
-          animateProgressWithDuration(randomInterval);
-        });
-
-        // Set a timer to select the next project after the random interval
-        randomProjectTimer = setTimeout(() => {
-          if (!isAnyProjectHovered) {
-            selectRandomProject();
-          }
-        }, randomInterval);
-      }
-
-      // Function to start random project selection
-      function startRandomProjectSelection() {
-        if (!isAnyProjectHovered && !randomProjectTimer) {
-          selectRandomProject();
+        if (particleTuning.stableFrames >= 10 && particles.length < particleTuning.max) {
+          setParticleCount(Math.min(particleTuning.max, particles.length + Math.max(120, particles.length * 0.16)));
+          particleTuning.stableFrames = 0;
+          particleTuning.lastAdjustment = timestamp;
         }
       }
 
-      // Function to stop random project selection
-      function stopRandomProjectSelection() {
-        // Clear any existing timer
-        if (randomProjectTimer) {
-          clearTimeout(randomProjectTimer);
-          randomProjectTimer = null;
+      function render(timestamp = performance.now()) {
+        const startedAt = performance.now();
+        const previousTimestamp = particleTuning.lastTimestamp || timestamp;
+        const frameMs = Math.max(1, timestamp - previousTimestamp);
+        particleTuning.lastTimestamp = timestamp;
+        if (frameMs < particleTuning.minObservedFrameMs && frameMs > 4) {
+          particleTuning.minObservedFrameMs = frameMs;
         }
 
-        // Stop the progress animation
-        if (progressAnimationId) {
-          cancelAnimationFrame(progressAnimationId);
-          progressAnimationId = null;
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        context.fillStyle = frame < 2 ? "#080b0e" : "rgba(8, 11, 14, 0.072)";
+        context.fillRect(0, 0, width, height);
+        drawGrid(width, height);
+
+        const glowFade = mouseGlow.active ? 1 : 0;
+        const glowRadiusSquared = mouseGlow.radius * mouseGlow.radius;
+        if (glowFade <= 0 && canvas.dataset.glow !== "off") {
+          canvas.dataset.glow = "off";
         }
+        drawMouseHalo(glowFade);
 
-        // Reset progress value
-        progressValue = 0;
+        const orbit = frame * 0.00075;
+        const cosOrbit = Math.cos(orbit);
+        const sinOrbit = Math.sin(orbit);
+        const scale = Math.min(width, height) * 0.022;
+        const centerX = width * 0.72;
+        const centerY = height * 0.52;
+        const cooling = Math.pow(0.5, frameMs / 1050);
+        let hotParticles = 0;
 
-        if (currentRandomProject) {
-          currentRandomProject.classList.remove('half-hover');
+        particles.forEach((point, index) => {
+          for (let i = 0; i < 2; i += 1) {
+            const previousX = point.x;
+            const previousY = point.y;
+            const previousZ = point.z;
+            stepLorenz(point);
 
-          // Reset the progress bar
-          const progressBar = currentRandomProject.querySelector('.progress-bar');
-          if (progressBar) {
-            progressBar.style.width = '0%';
-          }
+            const px = previousX * cosOrbit - previousZ * sinOrbit;
+            const pz = previousX * sinOrbit + previousZ * cosOrbit;
+            const nx = point.x * cosOrbit - point.z * sinOrbit;
+            const nz = point.x * sinOrbit + point.z * cosOrbit;
+            const x1 = centerX + px * scale;
+            const y1 = centerY + (previousY - 14) * scale - pz * scale * 0.08;
+            const x2 = centerX + nx * scale;
+            const y2 = centerY + (point.y - 14) * scale - nz * scale * 0.08;
+            let glowPower = 0;
 
-          // Remove hover effect from background
-          const projectId = currentRandomProject.getAttribute('data-project');
-          const bgElement = document.querySelector(`.background-project[data-project="${projectId}"]`);
-          if (bgElement) {
-            bgElement.classList.remove('hover');
-          }
+            if (glowFade > 0) {
+              const middleX = (x1 + x2) * 0.5;
+              const middleY = (y1 + y2) * 0.5;
+              const distanceX = middleX - mouseGlow.x;
+              const distanceY = middleY - mouseGlow.y;
+              const distanceSquared = distanceX * distanceX + distanceY * distanceY;
 
-          currentRandomProject = null;
-        }
-      }
-
-      // Function to control FPS in iframes
-      function setIframeFPS(iframe, fps) {
-        try {
-          if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage({ type: 'setFPS', fps: fps }, '*');
-          }
-        } catch (e) {
-          console.error('Error setting FPS:', e);
-        }
-      }
-
-      // Set initial low FPS for all iframes
-      projectIframes.forEach(iframe => {
-        setIframeFPS(iframe, 5);
-      });
-
-      projectLinks.forEach(link => {
-        const projectId = link.getAttribute('data-project');
-        const bgElement = document.querySelector(`.background-project[data-project="${projectId}"]`);
-        const iframe = document.getElementById(`iframe-${projectId}`);
-
-        link.addEventListener('mouseenter', () => {
-          // Set the hover flag
-          isAnyProjectHovered = true;
-
-          // Stop random project selection
-          stopRandomProjectSelection();
-
-          // Remove half-hover class from all projects
-          projectLinks.forEach(p => p.classList.remove('half-hover'));
-
-          // Update background
-          backgrounds.forEach(bg => {
-            bg.classList.remove('active');
-            bg.classList.remove('hover');
-          });
-          bgElement.classList.add('hover');
-
-          // Hide any currently visible iframe
-          if (currentVisibleIframe) {
-            currentVisibleIframe.classList.remove('visible');
-
-            // Apply a random transition effect
-            const randomEffect = getRandomEffect();
-            currentVisibleIframe.classList.add(randomEffect);
-
-            // Set low FPS for the previously visible iframe
-            setIframeFPS(currentVisibleIframe, 5);
-
-            // Remove the effect class after the transition completes
-            setTimeout(() => {
-              if (currentVisibleIframe !== iframe) {
-                currentVisibleIframe.classList.remove(randomEffect);
+              if (distanceSquared < glowRadiusSquared) {
+                glowPower = (1 - distanceSquared / glowRadiusSquared) * glowFade;
+                heatParticle(point, glowPower * 0.24);
               }
-            }, 500);
-          }
-
-          // Show the corresponding iframe and set max FPS
-          iframe.classList.add('visible');
-          setIframeFPS(iframe, 60); // Set to maximum FPS when visible
-          currentVisibleIframe = iframe;
-        });
-
-        link.addEventListener('mouseleave', () => {
-          // Reset the hover flag
-          isAnyProjectHovered = false;
-
-          bgElement.classList.remove('hover');
-          rotateBackground();
-
-          // Hide iframe
-          if (currentVisibleIframe) {
-            currentVisibleIframe.classList.remove('visible');
-
-            // Apply a random transition effect
-            const randomEffect = getRandomEffect();
-            currentVisibleIframe.classList.add(randomEffect);
-
-            // Set low FPS when not visible
-            setIframeFPS(currentVisibleIframe, 5);
-
-            // Remove the effect class after the transition completes
-            const iframe = currentVisibleIframe;
-            setTimeout(() => {
-              iframe.classList.remove(randomEffect);
-            }, 500);
-
-            currentVisibleIframe = null;
-          }
-
-          // Start random project selection after a short delay
-          setTimeout(() => {
-            if (!isAnyProjectHovered) {
-              startRandomProjectSelection();
             }
-          }, 500);
+
+            drawParticleSegment(point, index, x1, y1, x2, y2);
+          }
+
+          point.heat *= cooling;
+          if (point.heat < 0.035) {
+            point.heat = 0;
+          } else {
+            hotParticles += 1;
+          }
+
+          if (Math.abs(point.x) > 50 || Math.abs(point.y) > 60 || point.z > 80) {
+            point.x = -12 + Math.random() * 24;
+            point.y = -14 + Math.random() * 28;
+            point.z = 8 + Math.random() * 24;
+            point.heat = Math.min(point.heat, 0.18);
+          }
         });
-      });
+
+        particleTuning.renderCostMs = particleTuning.renderCostMs * 0.86 + (performance.now() - startedAt) * 0.14;
+        canvas.dataset.frameCost = particleTuning.renderCostMs.toFixed(2);
+        canvas.dataset.frameInterval = frameMs.toFixed(2);
+        canvas.dataset.hotParticles = hotParticles;
+        tuneParticleCount(timestamp, frameMs);
+
+        frame += 1;
+        if (!prefersReducedMotion) {
+          window.requestAnimationFrame(render);
+        }
+      }
+
+      window.addEventListener("pointermove", updateMouseGlow, { passive: true });
+      window.addEventListener("pointerleave", hideMouseGlow);
+      window.addEventListener("blur", hideMouseGlow);
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+      render();
     </script>
   </body>
 </html>
