@@ -316,9 +316,14 @@
       .note {
         max-width: 720px;
         margin: 0;
-        color: var(--muted);
+        color: var(--ink);
         font-size: 1.02rem;
         line-height: 1.62;
+      }
+
+      .note-fade {
+        color: rgba(122, 130, 133, 0.18);
+        filter: blur(0.65px);
       }
 
       footer {
@@ -405,9 +410,12 @@
         <p class="eyebrow">Software, currículo e pequenas coisas estranhas</p>
         <h1>Oi. <span class="welcome">Bem vindo.</span></h1>
         <p class="intro">
-          Tenho esse site pra guardar algumas coisas que eu escrevo quando tenho vontade de programar
-          por diversão, sem compromisso com nada, a não ser, me divertir. Aqui você pode encontrar
-          outros projetos e meu currículo também. Mas é só isso mesmo. Obrigado pela visita.
+          Tenho esse site para guardar algumas coisas que faço quando tenho vontade de programar por diversão,
+          sem compromisso com nada, a não ser me divertir.
+          <br><br>
+          Tem alguns links úteis, caso você esteja buscando meu currículo ou queira entrar em contato.
+          <br><br>
+          Mas é só isso mesmo. Obrigado pela visita.
         </p>
       </div>
     </header>
@@ -425,8 +433,8 @@
           <a class="route" href="./projects/index.html">
             <span>Projetos</span>
             <div>
-              <h2>O laboratório</h2>
-              <p>Uma lista dos experimentos que já estão online, de p5.js a satélites.</p>
+              <h2>Experimentos</h2>
+              <p>Coisas que eu fiz para me divertir, dar risada ou porque fiquei curioso no meio de uma conversa de bar.</p>
             </div>
           </a>
           <a class="route" href="https://br.linkedin.com/in/gabrielsaraiva7">
@@ -444,10 +452,17 @@
             </div>
           </a>
           <a class="route" href="https://www.instagram.com/olhanoceu/">
-            <span>Imagem</span>
+            <span>Astronomia</span>
             <div>
-              <h2>Instagram</h2>
-              <p>Olhares, registros e outras coisas que eu acabo deixando por lá.</p>
+              <h2>Olha No Céu</h2>
+              <p>Um projeto que tenho no meu tempo livre. Ótimo para conhecer gente nova.</p>
+            </div>
+          </a>
+          <a class="route" href="https://www.printables.com/@gabrsar">
+            <span>Fabricação</span>
+            <div>
+              <h2>3D Printing</h2>
+              <p>Meu perfil no Printables, com peças, suportes e pequenas soluções físicas para ideias que escaparam da tela.</p>
             </div>
           </a>
         </div>
@@ -455,9 +470,7 @@
 
       <section class="section" aria-label="Nota">
         <p class="note">
-          A ideia aqui é ser profissional sem ficar solene demais: um lugar pequeno, estável, com
-          um pouco de engenharia à mostra e espaço para coisas que talvez só existam porque era
-          divertido fazer.
+          É só isso. Acabou. <span class="note-fade">Boa sorte...</span>
         </p>
       </section>
     </main>
@@ -516,6 +529,10 @@
       let retinaBurn = 0;
       let clickBurst = 0;
       let clickChain = 0;
+      let attractorEnergy = 0;
+      let attractorLooseness = 0;
+      const clickFlashes = [];
+      let explosionUntil = 0;
       let nextClickAllowedAt = 0;
       let lastClickAt = 0;
       const eddingtonThreshold = 18;
@@ -690,11 +707,12 @@
         canvas.dataset.particles = particles.length;
       }
 
-      function stepLorenz(point) {
-        const sigma = 10;
-        const rho = 28;
-        const beta = 8 / 3;
-        const dt = 0.0015;
+      function stepLorenz(point, heat = 0) {
+        const looseness = clamp(heat, 0, 1);
+        const sigma = 10 - looseness * 2.6;
+        const rho = 28 + looseness * 9;
+        const beta = (8 / 3) - looseness * 0.42;
+        const dt = 0.0005;
         const dx = sigma * (point.y - point.x);
         const dy = point.x * (rho - point.z) - point.y;
         const dz = point.x * point.y - beta * point.z;
@@ -750,9 +768,9 @@
           return;
         }
 
-        const boost = 0.008 + multiplier * 0.045;
-        point.energy = Math.min(point.energy * (1 + multiplier) + boost, 1e8);
-        point.heat = Math.min((point.heat || 0) + 0.08 + multiplier * 0.55, 8);
+        const boost = 0.004 + multiplier * 0.024;
+        point.energy = Math.min(point.energy * (1 + multiplier * 0.36) + boost, 1e8);
+        point.heat = Math.min((point.heat || 0) + 0.036 + multiplier * 0.28, 8);
       }
 
       function doubleHotParticle(point, multiplier) {
@@ -764,16 +782,16 @@
 
         const streak = point.hoverCharge || 0;
         const ramp = 1 / (1 + Math.exp((streak - 2.4) * 1.35));
-        const gentleGain = multiplier * (0.2 + 0.9 * ramp);
-        const heatGain = currentHeat * (0.03 + 0.09 * ramp);
+        const gentleGain = multiplier * (0.045 + 0.2 * ramp);
+        const heatGain = currentHeat * (0.007 + 0.021 * ramp);
 
         point.hoverCharge = Math.min(8, streak + 1);
-        point.heat = Math.min(currentHeat * (1.01 + 0.01 * ramp) + heatGain, 24);
-        point.energy = Math.min(point.energy * (1.005 + 0.025 * ramp) + gentleGain + heatGain * 0.35, 1e8);
+        point.heat = Math.min(currentHeat * (1.004 + 0.004 * ramp) + heatGain, 24);
+        point.energy = Math.min(point.energy * (1.002 + 0.011 * ramp) + gentleGain + heatGain * 0.15, 1e8);
 
         if (streak >= 6) {
-          point.energy = Math.min(point.energy + currentHeat * 0.85 + 0.5, 1e8);
-          point.heat = Math.min(point.heat * 1.08 + 0.4, 24);
+          point.energy = Math.min(point.energy + currentHeat * 0.18 + 0.12, 1e8);
+          point.heat = Math.min(point.heat * 1.018 + 0.1, 24);
           point.hoverCharge = 0;
         }
       }
@@ -791,25 +809,93 @@
         point.z += impulse * 0.02;
       }
 
+      function spawnClickFlash(x, y, strength, reach = 1, duration = 360) {
+        clickFlashes.push({
+          x,
+          y,
+          strength,
+          reach,
+          startedAt: performance.now(),
+          duration
+        });
+      }
+
+      function drawClickFlashes(width, height, timestamp) {
+        for (let index = clickFlashes.length - 1; index >= 0; index -= 1) {
+          const flash = clickFlashes[index];
+          const progress = clamp((timestamp - flash.startedAt) / flash.duration, 0, 1);
+          if (progress >= 1) {
+            clickFlashes.splice(index, 1);
+            continue;
+          }
+
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const maxRadius = Math.hypot(
+            Math.max(flash.x, width - flash.x),
+            Math.max(flash.y, height - flash.y)
+          ) * flash.reach;
+          const radius = maxRadius * eased;
+          const alpha = (1 - progress) * flash.strength;
+
+          context.save();
+          context.globalCompositeOperation = "lighter";
+          context.lineWidth = Math.max(2, 12 * flash.strength * (1 - progress * 0.55));
+          context.strokeStyle = `rgba(255, 247, 218, ${0.68 * alpha})`;
+          context.beginPath();
+          context.arc(flash.x, flash.y, Math.max(1, radius), 0, Math.PI * 2);
+          context.stroke();
+
+          context.fillStyle = `rgba(255, 225, 154, ${0.09 * alpha})`;
+          context.beginPath();
+          context.arc(flash.x, flash.y, Math.max(1, radius * 0.55), 0, Math.PI * 2);
+          context.fill();
+
+          if (flash.reach > 0.95) {
+            const wash = context.createRadialGradient(flash.x, flash.y, 0, flash.x, flash.y, radius * 0.86);
+            wash.addColorStop(0, `rgba(255, 255, 246, ${0.16 * alpha})`);
+            wash.addColorStop(0.34, `rgba(255, 215, 150, ${0.07 * alpha})`);
+            wash.addColorStop(1, "rgba(255, 255, 255, 0)");
+            context.fillStyle = wash;
+            context.fillRect(0, 0, width, height);
+          }
+          context.restore();
+        }
+      }
+
       function detonateAttractorPulse() {
         const now = performance.now();
         if (now < nextClickAllowedAt) {
           return;
         }
+
         if (now - lastClickAt > 1200) {
           clickChain = 0;
         }
+
         clickChain = Math.min(4, clickChain + 1);
+        const chainLevel = clickChain;
         lastClickAt = now;
-        nextClickAllowedAt = now + 120 * Math.pow(1.72, clickChain - 1);
+        nextClickAllowedAt = now + 80 * Math.pow(1.45, chainLevel - 1);
+
         const pulseCenterX = mouseGlow.active ? mouseGlow.x : attractor.x;
         const pulseCenterY = mouseGlow.active ? mouseGlow.y : attractor.y;
-        const pulseRadius = mouseGlow.radius * 3.2;
+        const pulseRadius = chainLevel < 4
+          ? mouseGlow.radius * (0.9 + chainLevel * 0.28)
+          : mouseGlow.radius * 3.2;
         const pulseRadiusSquared = pulseRadius * pulseRadius;
-        const chainScale = clickChain < 4
-          ? 0.16 * Math.pow(1.75, clickChain - 1)
+        const chainScale = chainLevel < 4
+          ? 0.16 * Math.pow(1.75, chainLevel - 1)
           : 4.2;
-        clickBurst = Math.max(clickBurst, clickChain < 4 ? 0.045 * chainScale : 1.0);
+        clickBurst = Math.max(clickBurst, chainLevel < 4 ? 0.045 * chainScale : 1);
+        const flashReach = chainLevel < 4 ? 0.16 + chainLevel * 0.1 : 1.08;
+        const flashStrength = chainLevel < 4 ? 0.16 + chainLevel * 0.08 : 1;
+        const flashDuration = chainLevel < 4 ? 240 + chainLevel * 45 : 560;
+        spawnClickFlash(pulseCenterX, pulseCenterY, flashStrength, flashReach, flashDuration);
+        if (chainLevel >= 4) {
+          explosionUntil = now + 1300;
+          clickChain = 0;
+          nextClickAllowedAt = now + 220;
+        }
 
         particles.forEach((point) => {
           const px = attractor.x + point.x * 0.01;
@@ -823,14 +909,11 @@
 
           const falloff = 1 - distanceSquared / pulseRadiusSquared;
           const burst = falloff * falloff * falloff;
-          const explosiveGain = clickChain < 4
+          const explosiveGain = chainLevel < 4
             ? (0.12 + burst * 0.55) * chainScale
             : (2.4 + burst * 14) * chainScale;
           point.energy = Math.min(point.energy + explosiveGain, 1e8);
-          point.heat = Math.min((point.heat || 0) + (clickChain < 4 ? 0.06 : 1.2) + burst * (clickChain < 4 ? 0.22 : 4.2) * chainScale, 24);
-          point.x += dx * burst * (clickChain < 4 ? -0.008 : -0.03) * chainScale;
-          point.y += dy * burst * (clickChain < 4 ? -0.008 : -0.03) * chainScale;
-          point.z += burst * (clickChain < 4 ? 0.18 : 0.9) * chainScale;
+          point.heat = Math.min((point.heat || 0) + (chainLevel < 4 ? 0.06 : 1.2) + burst * (chainLevel < 4 ? 0.22 : 4.2) * chainScale, 24);
         });
       }
 
@@ -903,8 +986,10 @@
         const baseAttractorY = height * 0.52;
         const targetAttractorX = baseAttractorX;
         const targetAttractorY = baseAttractorY;
-        const attractorHeat = clamp((maxEnergy * 0.015) + (retinaBurn * 0.75) + (clickChain * 0.08), 0, 1);
-        const attractorLerp = 0.03 + attractorHeat * 0.12;
+        const targetLooseness = clamp((attractorEnergy * 0.012) + (retinaBurn * 0.5), 0, 1);
+        attractorLooseness = lerp(attractorLooseness, targetLooseness, 0.018);
+        const attractorHeat = attractorLooseness;
+        const attractorLerp = 0.03 + attractorHeat * 0.04;
         attractor.x = lerp(attractor.x, targetAttractorX, attractorLerp);
         attractor.y = lerp(attractor.y, targetAttractorY, attractorLerp);
         context.fillStyle = frame < 2 ? "#080b0e" : "rgba(8, 11, 14, 0.072)";
@@ -914,17 +999,17 @@
         const glowFade = mouseGlow.active ? 1 : 0;
         const glowRadiusSquared = mouseGlow.radius * mouseGlow.radius;
         const coreRadiusSquared = glowRadiusSquared * 0.03;
-        const energizeRadiusSquared = glowRadiusSquared * 0.12;
+        const energizeRadiusSquared = glowRadiusSquared * 0.24;
         if (glowFade <= 0 && canvas.dataset.glow !== "off") {
           canvas.dataset.glow = "off";
         }
         drawMouseHalo(glowFade);
 
-        const orbitSpeed = 0.00075 + attractorHeat * 0.0022;
+        const orbitSpeed = 0.00025 + attractorHeat * 0.00073;
         const orbit = frame * orbitSpeed;
         const cosOrbit = Math.cos(orbit);
         const sinOrbit = Math.sin(orbit);
-        const scale = Math.min(width, height) * 0.022;
+        const scale = Math.min(width, height) * (0.022 + attractorHeat * 0.004);
         const centerX = attractor.x;
         const centerY = attractor.y;
         const cooling = Math.pow(0.5, frameMs / 1050);
@@ -947,7 +1032,7 @@
             const previousX = point.x;
             const previousY = point.y;
             const previousZ = point.z;
-            stepLorenz(point);
+            stepLorenz(point, attractorHeat);
 
             if (radiationPressure > 0) {
               const push = radiationPressure * 0.0018;
@@ -985,7 +1070,7 @@
                 }
                 if (!chargedThisFrame && distanceSquared < energizeRadiusSquared) {
                   const hoverBoost = distanceSquared < coreRadiusSquared ? point.hoverCharge * 0.004 : 0;
-                  doubleHotParticle(point, 0.22 * glowPower + hoverBoost);
+                  doubleHotParticle(point, 0.42 * glowPower + hoverBoost);
                   chargedThisFrame = true;
                 }
                 perturbParticle(point, glowPower * 0.72, scale);
@@ -1002,7 +1087,7 @@
           }
 
           point.energy = Math.max(0, point.energy * cooling - emittedLoss - radiationPressure * 0.12);
-          point.heat = Math.max(0, (point.heat || 0) * Math.pow(0.5, frameMs / 2200) - emittedLoss * 0.34);
+          point.heat = Math.max(0, (point.heat || 0) * Math.pow(0.5, frameMs / 5200) - emittedLoss * 0.01);
           point.hoverCharge = Math.max(0, (point.hoverCharge || 0) * Math.pow(0.5, frameMs / 650));
           point.energy += 0.00016 * point.life * (0.5 + 0.5 * Math.sin(frame * 0.01 + point.pulse)) + (clickChain < 4 ? burstFade * 0.008 : burstFade * 0.06);
           if (point.energy < 0.015) {
@@ -1020,9 +1105,13 @@
           }
         });
 
-        const sceneRadiance = (startupHeat + (clickChain < 4 ? burstFade * 0.08 : burstFade * 0.7)) * (maxEnergy > 0.18 ? temperatureRadiance(energyToTemperature(maxEnergy)) : 0);
+        const explosionActive = performance.now() < explosionUntil;
+        const sceneRadiance = explosionActive
+          ? (startupHeat + burstFade * 0.7) * (maxEnergy > 0.18 ? temperatureRadiance(energyToTemperature(maxEnergy)) : 0)
+          : 0;
+        attractorEnergy = attractorEnergy * 0.84 + maxEnergy * 0.16;
         const hotCharge = particles.reduce((sum, point) => sum + Math.min(1, point.hoverCharge || 0), 0);
-        const superHot = clickChain >= 4 && (maxEnergy > 24 || sceneRadiance > 0.72 || retinaBurn > 0.85 || hotCharge > 2600);
+        const superHot = explosionActive && (maxEnergy > 24 || sceneRadiance > 0.72 || retinaBurn > 0.85 || hotCharge > 2600);
         document.body.dataset.superhot = superHot ? "on" : "off";
         retinaBurn = Math.max(retinaBurn * Math.pow(0.5, frameMs / 1800), sceneRadiance * 1.15);
         if (sceneRadiance > 0.02) {
@@ -1060,6 +1149,8 @@
           context.fillRect(0, 0, width, height);
           context.restore();
         }
+
+        drawClickFlashes(width, height, timestamp);
 
         particleTuning.renderCostMs = particleTuning.renderCostMs * 0.86 + (performance.now() - startedAt) * 0.14;
         canvas.dataset.frameCost = particleTuning.renderCostMs.toFixed(2);

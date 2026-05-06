@@ -105,28 +105,65 @@
 
       .project-list {
         display: grid;
-        border-top: 1px solid var(--line);
-        background: rgba(255, 253, 247, 0.52);
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 14px;
       }
 
       .project {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 24px;
-        align-items: center;
-        border-bottom: 1px solid var(--line);
-        padding: 22px 0;
+        position: relative;
+        display: flex;
+        min-height: 218px;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        overflow: hidden;
+        background: var(--white);
+        box-shadow: 0 18px 46px rgba(21, 23, 25, 0.08);
         text-decoration: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
       }
 
-      .project:hover h2,
-      .project:focus h2 {
-        color: var(--teal);
+      .project::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        background:
+          radial-gradient(circle at 18% 18%, rgba(227, 177, 91, 0.16), transparent 12rem),
+          radial-gradient(circle at 88% 92%, rgba(31, 111, 104, 0.12), transparent 13rem);
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      }
+
+      .project:hover,
+      .project:focus {
+        border-color: rgba(31, 111, 104, 0.46);
+        box-shadow: 0 24px 64px rgba(21, 23, 25, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .project:hover::before,
+      .project:focus::before {
+        opacity: 1;
+      }
+
+      .project > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .project-label {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 820;
+        text-transform: uppercase;
       }
 
       .project h2 {
-        margin: 0 0 8px;
-        font-size: 1.2rem;
+        margin: 18px 0 8px;
+        font-size: 1.35rem;
         letter-spacing: 0;
       }
 
@@ -139,13 +176,15 @@
 
       .arrow {
         display: grid;
-        width: 42px;
-        height: 42px;
+        align-self: flex-end;
+        width: 38px;
+        height: 38px;
         place-items: center;
         border: 1px solid var(--line);
         border-radius: 999px;
         color: var(--teal);
         font-size: 1.2rem;
+        background: rgba(255, 253, 247, 0.58);
       }
 
       footer {
@@ -175,9 +214,8 @@
           padding-top: 48px;
         }
 
-        .project {
-          grid-template-columns: 1fr auto;
-          gap: 10px 16px;
+        .project-list {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -194,10 +232,9 @@
 
     <header>
       <p class="eyebrow">Projetos</p>
-      <h1>Pequenas coisas que ficaram online.</h1>
+      <h1>Experimentos</h1>
       <p>
-        Uma lista sem muita cerimônia dos experimentos que vivem aqui. Alguns são úteis,
-        outros são só uma desculpa para mexer com canvas, matemática, satélite ou 3D.
+        Coisas que eu fiz para me divertir ou dar risada, ou porque eu fiquei curioso de como seria no meio de uma conversa de bar...
       </p>
     </header>
 
@@ -205,6 +242,7 @@
       <div class="project-list">
         <a class="project" href="https://github.com/gabrsar/goes-wallpaper">
           <div>
+            <span class="project-label">Desktop</span>
             <h2>GOES Wallpaper</h2>
             <p>Um programa que deixa seu papel de parede com foto da Terra em tempo real, usando dados dos satélites GOES/NOAA.</p>
           </div>
@@ -212,6 +250,7 @@
         </a>
         <a class="project" href="../lightning/index.html">
           <div>
+            <span class="project-label">Canvas</span>
             <h2>Lightning Drawer</h2>
             <p>Um desenho generativo de raios, ramificações e flashes de céu.</p>
           </div>
@@ -219,6 +258,7 @@
         </a>
         <a class="project" href="../unit-circle/index.html">
           <div>
+            <span class="project-label">Matemática</span>
             <h2>Unit Circle</h2>
             <p>Um brinquedo visual para seno, cosseno, tangente e ângulos.</p>
           </div>
@@ -226,6 +266,7 @@
         </a>
         <a class="project" href="../infinite/index.html">
           <div>
+            <span class="project-label">Generativo</span>
             <h2>Infinite Drawer</h2>
             <p>Uma curva que continua desenhando e passeando pela tela.</p>
           </div>
@@ -233,6 +274,7 @@
         </a>
         <a class="project" href="../lemos-2022/index.html">
           <div>
+            <span class="project-label">Presente</span>
             <h2>Birthday Balloons</h2>
             <p>Uma pequena cena animada de aniversário com balões e tipografia colorida.</p>
           </div>
@@ -240,6 +282,7 @@
         </a>
         <a class="project" href="../monkey-rotator/index.html">
           <div>
+            <span class="project-label">3D</span>
             <h2>Monkey Spinner</h2>
             <p>Um experimento WEBGL/p5.js com um modelo 3D girando no espaço.</p>
           </div>
