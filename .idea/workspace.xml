@@ -5,13 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd2acb1f-55fb-494e-aa92-12f5875e435a" name="Default Changelist" comment="">
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/infinite/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/infinite/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lightning/drawer.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lightning/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/lightning/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lightning/sketch.js" beforeDir="false" afterPath="$PROJECT_DIR$/lightning/sketch.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monkey-rotator/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/monkey-rotator/index.html" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< Updated upstream
+=======
+  <component name="DatadogProjectSettings">
+    <option name="accountId" value="029c8fa0-e560-11ee-8d05-da7ad0900003" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="53" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+>>>>>>> Stashed changes
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
@@ -95,9 +115,19 @@
       </list>
     </option>
   </component>
+<<<<<<< Updated upstream
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 6
 }]]></component>
+=======
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+>>>>>>> Stashed changes
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="width" value="1284" />
     <option name="height" value="1408" />
@@ -154,9 +184,21 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+<<<<<<< Updated upstream
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
+=======
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "master",
+    "javascript.preferred.runtime.type.id": "node",
+>>>>>>> Stashed changes
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/Users/gabriel/gabriel/gabrsar.github.com.io",
     "node.js.detected.package.eslint": "true",
@@ -164,13 +206,21 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+<<<<<<< Updated upstream
+=======
+    "to.speed.mode.migration.done": "true",
+>>>>>>> Stashed changes
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
+<<<<<<< Updated upstream
         <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-WS-251.25410.117" />
+=======
+        <option value="bundled-js-predefined-d6986cc7102b-3bd3a6803838-JavaScript-WS-261.22158.274" />
+>>>>>>> Stashed changes
       </set>
     </attachedChunks>
   </component>
@@ -179,14 +229,22 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+<<<<<<< Updated upstream
       <changelist id="" name="Default Changelist" comment="" />
+=======
+>>>>>>> Stashed changes
       <created>1542840293371</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1542840293371</updated>
       <workItem from="1542840294570" duration="4075000" />
       <workItem from="1543027722225" duration="642000" />
+<<<<<<< Updated upstream
       <workItem from="1749411190701" duration="4172000" />
+=======
+      <workItem from="1749411190701" duration="6207000" />
+      <workItem from="1749428228797" duration="1803000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
@@ -272,6 +330,17 @@
       </provider>
     </entry>
   </component>
+<<<<<<< Updated upstream
+=======
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+>>>>>>> Stashed changes
   <component name="masterDetails">
     <states>
       <state key="ProjectJDKs.UI">

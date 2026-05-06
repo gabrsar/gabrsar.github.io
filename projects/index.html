@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Projetos - Gabriel Saraiva</title>
+    <meta name="description" content="Projetos e experimentos online de Gabriel Saraiva.">
+    <style>
+      :root {
+        --ink: #151719;
+        --muted: #6b7178;
+        --paper: #f6f1e8;
+        --white: #fffdf7;
+        --night: #080b0e;
+        --line: rgba(21, 23, 25, 0.14);
+        --teal: #1f6f68;
+        --gold: #e3b15b;
+        --clay: #b95f4c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ink);
+        background:
+          linear-gradient(180deg, rgba(8, 11, 14, 0.98) 0 480px, transparent 480px),
+          var(--paper);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar,
+      header,
+      main,
+      footer {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 64px;
+        color: var(--white);
+      }
+
+      .topbar a {
+        color: rgba(255, 255, 255, 0.78);
+        font-weight: 760;
+        text-decoration: none;
+      }
+
+      .topbar a:hover,
+      .topbar a:focus {
+        color: var(--white);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 18px;
+        font-size: 0.92rem;
+      }
+
+      header {
+        padding: 70px 0 78px;
+        color: var(--white);
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        color: var(--gold);
+        font-size: 0.78rem;
+        font-weight: 820;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 800px;
+        margin: 0 0 18px;
+        font-size: clamp(2.8rem, 7.2vw, 5.2rem);
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      header p {
+        max-width: 720px;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 1.12rem;
+        line-height: 1.58;
+      }
+
+      main {
+        padding: 0 0 70px;
+      }
+
+      .project-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 14px;
+      }
+
+      .project {
+        position: relative;
+        display: flex;
+        min-height: 218px;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        overflow: hidden;
+        background: var(--white);
+        box-shadow: 0 18px 46px rgba(21, 23, 25, 0.08);
+        text-decoration: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      }
+
+      .project::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        background:
+          radial-gradient(circle at 18% 18%, rgba(227, 177, 91, 0.16), transparent 12rem),
+          radial-gradient(circle at 88% 92%, rgba(31, 111, 104, 0.12), transparent 13rem);
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      }
+
+      .project:hover,
+      .project:focus {
+        border-color: rgba(31, 111, 104, 0.46);
+        box-shadow: 0 24px 64px rgba(21, 23, 25, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .project:hover::before,
+      .project:focus::before {
+        opacity: 1;
+      }
+
+      .project > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .project-label {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 820;
+        text-transform: uppercase;
+      }
+
+      .project h2 {
+        margin: 18px 0 8px;
+        font-size: 1.35rem;
+        letter-spacing: 0;
+      }
+
+      .project p {
+        max-width: 720px;
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.52;
+      }
+
+      .arrow {
+        display: grid;
+        align-self: flex-end;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--teal);
+        font-size: 1.2rem;
+        background: rgba(255, 253, 247, 0.58);
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 24px 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 760px) {
+        .topbar,
+        header,
+        main,
+        footer {
+          width: min(100% - 28px, 1120px);
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+          justify-content: center;
+          gap: 8px;
+          padding: 14px 0;
+        }
+
+        header {
+          padding-top: 48px;
+        }
+
+        .project-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="topbar" aria-label="Navegação">
+      <a href="../index.html">Gabriel Saraiva</a>
+      <div class="nav-links">
+        <a href="../resume/index.html">Currículo</a>
+        <a href="https://github.com/gabrsar">GitHub</a>
+        <a href="https://br.linkedin.com/in/gabrielsaraiva7">LinkedIn</a>
+      </div>
+    </nav>
+
+    <header>
+      <p class="eyebrow">Projetos</p>
+      <h1>Experimentos</h1>
+      <p>
+        Coisas que eu fiz para me divertir ou dar risada, ou porque eu fiquei curioso de como seria no meio de uma conversa de bar...
+      </p>
+    </header>
+
+    <main>
+      <div class="project-list">
+        <a class="project" href="https://github.com/gabrsar/goes-wallpaper">
+          <div>
+            <span class="project-label">Desktop</span>
+            <h2>GOES Wallpaper</h2>
+            <p>Um programa que deixa seu papel de parede com foto da Terra em tempo real, usando dados dos satélites GOES/NOAA.</p>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a class="project" href="../lightning/index.html">
+          <div>
+            <span class="project-label">Canvas</span>
+            <h2>Lightning Drawer</h2>
+            <p>Um desenho generativo de raios, ramificações e flashes de céu.</p>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a class="project" href="../unit-circle/index.html">
+          <div>
+            <span class="project-label">Matemática</span>
+            <h2>Unit Circle</h2>
+            <p>Um brinquedo visual para seno, cosseno, tangente e ângulos.</p>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a class="project" href="../infinite/index.html">
+          <div>
+            <span class="project-label">Generativo</span>
+            <h2>Infinite Drawer</h2>
+            <p>Uma curva que continua desenhando e passeando pela tela.</p>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a class="project" href="../lemos-2022/index.html">
+          <div>
+            <span class="project-label">Presente</span>
+            <h2>Birthday Balloons</h2>
+            <p>Uma pequena cena animada de aniversário com balões e tipografia colorida.</p>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a class="project" href="../monkey-rotator/index.html">
+          <div>
+            <span class="project-label">3D</span>
+            <h2>Monkey Spinner</h2>
+            <p>Um experimento WEBGL/p5.js com um modelo 3D girando no espaço.</p>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+      </div>
+    </main>
+
+    <footer>
+      <span>Feito com IA, mas pedido com carinho.</span>
+    </footer>
+  </body>
+</html>
