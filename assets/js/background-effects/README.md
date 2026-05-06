@@ -9,6 +9,7 @@ owns only its canvas, input handlers, animation loop, and cleanup.
 Current effects:
 
 - `lorenz-attractor/effect.js`: particle simulation based on the Lorenz attractor.
+- `game-of-life/effect.js`: Conway's Game of Life on the same hero canvas plane.
 
 Expected shape for new effects:
 
@@ -16,15 +17,24 @@ Expected shape for new effects:
 window.BackgroundEffects.mountSomeEffect(canvas);
 ```
 
-The next planned effect can follow the same contract:
+The Game of Life effect follows this interaction model:
 
-- `game-of-life/effect.js`
 - grid coordinates based on the existing hero plane
 - click toggles a cell
-- `Enter` pauses/resumes
+- click pauses the simulation for 3 seconds
+- clicking the small timer turns that into a manual pause
+- `Space` pauses/resumes
 - keyboard letters spawn known patterns near the mouse
-- mouse wheel zooms
+- arrow keys pan the grid
+- `+` and `-` zoom
 - drag pans the grid
+
+Current pattern keys: every letter from `a` to `z` spawns a known or
+recognizable Life object/seed. Examples: `a` acorn, `b` blinker, `e` block,
+`f`/`g` glider/flyer, `p` pulsar, `r` R-pentomino, `t` toad.
+
+When a temporary pause ends, the simulation resumes slowly and accelerates back
+to its normal step interval.
 
 ## Lorenz Attractor Notes
 

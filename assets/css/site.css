@@ -151,6 +151,17 @@ a {
   pointer-events: none;
 }
 
+body[data-background-effect="game-of-life"] .field::after {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(4, 18, 11, 0.62) 0%,
+      rgba(4, 18, 11, 0.42) 40%,
+      rgba(4, 18, 11, 0.08) 100%
+    ),
+    linear-gradient(180deg, rgba(4, 18, 11, 0.04), rgba(4, 18, 11, 0.36));
+}
+
 body[data-superhot="on"] .field::after {
   opacity: 0;
 }
