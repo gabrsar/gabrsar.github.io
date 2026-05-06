@@ -44,6 +44,8 @@
         background: var(--night);
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         letter-spacing: 0;
+        user-select: none;
+        -webkit-user-select: none;
       }
 
       a {
@@ -321,11 +323,6 @@
         line-height: 1.62;
       }
 
-      .note-fade {
-        color: rgba(122, 130, 133, 0.18);
-        filter: blur(0.65px);
-      }
-
       footer {
         border-top: 1px solid var(--line);
         background: var(--paper);
@@ -470,7 +467,7 @@
 
       <section class="section" aria-label="Nota">
         <p class="note">
-          É só isso. Acabou. <span class="note-fade">Boa sorte...</span>
+          É só isso mesmo. Tenha um ótimo dia. :)
         </p>
       </section>
     </main>
@@ -682,6 +679,11 @@
           energy: 0.002 + Math.random() * 0.01,
           heat: 0,
           hoverCharge: 0,
+          insistenceHold: 0,
+          insistenceScale: 1,
+          starScale: 1,
+          starBrightness: 1,
+          canBecomeStar: Math.random() < 0.01,
           coolA: Math.floor(Math.random() * synthwavePalette.length),
           coolB: Math.floor(Math.random() * synthwavePalette.length),
           coolPhase: Math.random() * Math.PI * 2,
@@ -912,6 +914,10 @@
           const explosiveGain = chainLevel < 4
             ? (0.12 + burst * 0.55) * chainScale
             : (2.4 + burst * 14) * chainScale;
+          const wasStar = (point.starScale || 1) > 1.05;
+          point.canBecomeStar = true;
+          point.starScale = Math.max(point.starScale || 1, 3.2 + burst * 1.4);
+          point.starBrightness = wasStar ? Math.min((point.starBrightness || 1) * 2, 64) : 1;
           point.energy = Math.min(point.energy + explosiveGain, 1e8);
           point.heat = Math.min((point.heat || 0) + (chainLevel < 4 ? 0.06 : 1.2) + burst * (chainLevel < 4 ? 0.22 : 4.2) * chainScale, 24);
         });
@@ -921,20 +927,69 @@
         return;
       }
 
+      function starPowerForScale(insistenceScale) {
+        return clamp(Math.log2(Math.max(1, insistenceScale)) / 5, 0, 1);
+      }
+
+      function drawDiffractionStar(point, energy, x, y, radiance, insistenceScale) {
+        const starPower = starPowerForScale(insistenceScale);
+        if (starPower <= 0.02) {
+          return;
+        }
+
+        const easedStar = starPower * starPower * (3 - 2 * starPower);
+        const starBrightness = clamp(point.starBrightness || 1, 1, 64);
+        const brightnessLift = Math.log2(starBrightness);
+        const spikeLength = clamp(5 + easedStar * (120 + radiance * 42 + brightnessLift * 9), 3, 220);
+        const coreRadius = clamp(1 + easedStar * 16, 1, 18);
+        const color = colorForPoint(point, energy + brightnessLift * 0.18, clamp(0.12 + easedStar * (0.52 + brightnessLift * 0.08), 0, 1));
+
+        context.save();
+        context.globalCompositeOperation = "lighter";
+        context.strokeStyle = color;
+        context.lineCap = "round";
+
+        for (let spike = 0; spike < 2; spike += 1) {
+          const angle = -Math.PI / 2 + spike * (Math.PI / 2);
+          const dx = Math.cos(angle) * spikeLength;
+          const dy = Math.sin(angle) * spikeLength;
+          const width = (spike === 0 ? 1.08 : 0.86) * (0.25 + easedStar * (1.45 + brightnessLift * 0.22));
+
+          context.lineWidth = width;
+          context.beginPath();
+          context.moveTo(x - dx, y - dy);
+          context.lineTo(x + dx, y + dy);
+          context.stroke();
+        }
+
+        context.fillStyle = colorForPoint(point, energy + brightnessLift * 0.18, clamp(0.1 + easedStar * (0.42 + brightnessLift * 0.08), 0, 1));
+        context.beginPath();
+        context.arc(x, y, coreRadius, 0, Math.PI * 2);
+        context.fill();
+        context.restore();
+      }
+
       function drawParticleSegment(point, x1, y1, x2, y2, energy, bloomEligible) {
         const temperature = energyToTemperature(energy);
         const radiance = temperatureRadiance(temperature);
-        const alpha = lerp(0.42, 0.98, radiance);
-        const trailScale = 1 + radiance * 1.55;
+        const insistenceScale = Math.max(point.insistenceScale || 1, point.starScale || 1);
+        const insistenceGlow = Math.log2(insistenceScale);
+        const starPower = starPowerForScale(insistenceScale);
+        const trailFade = 1 - starPower;
+        const alpha = clamp((lerp(0.42, 0.98, radiance) + insistenceGlow * 0.035) * trailFade, 0, 1);
+        const trailScale = 1 + (radiance * 1.55 + insistenceGlow * 0.08) * trailFade;
         const tailX = x2 - (x2 - x1) * trailScale;
         const tailY = y2 - (y2 - y1) * trailScale;
 
-        context.strokeStyle = colorForPoint(point, energy, alpha);
-        context.lineWidth = 0.74 + 2.2 * radiance;
-        context.beginPath();
-        context.moveTo(tailX, tailY);
-        context.lineTo(x2, y2);
-        context.stroke();
+        if (alpha > 0.02) {
+          context.strokeStyle = colorForPoint(point, energy, alpha);
+          context.lineWidth = (0.74 + 2.2 * radiance) * lerp(insistenceScale, 1, starPower);
+          context.beginPath();
+          context.moveTo(tailX, tailY);
+          context.lineTo(x2, y2);
+          context.stroke();
+        }
+        drawDiffractionStar(point, energy, x2, y2, radiance, insistenceScale);
 
         if (bloomEligible) {
           drawBloomSegment(point, energy, x1, y1, x2, y2);
@@ -1017,6 +1072,7 @@
         const startupHeat = clamp(frame / startupWarmupFrames, 0, 1);
         const burstFade = clickBurst;
         clickBurst *= Math.pow(0.5, frameMs / 140);
+        const insistenceRadiusSquared = 24 * 24;
         let hotParticles = 0;
         let bloomSegments = 0;
         let maxEnergy = 0;
@@ -1024,7 +1080,12 @@
         particles.forEach((point, index) => {
           const pulse = 0.03 + 0.035 * point.life * (0.5 + 0.5 * Math.sin(frame * 0.018 + point.pulse));
           let chargedThisFrame = false;
+          let insistedThisFrame = false;
           let emittedLoss = 0;
+          if (!point.canBecomeStar) {
+            point.insistenceHold = 0;
+            point.insistenceScale = 1;
+          }
           const heatEnergy = (point.heat || 0) * 0.11;
           const clickRadiation = clickChain < 4 ? burstFade * 8 : burstFade * 26;
           const radiationPressure = clamp((point.energy + heatEnergy + clickRadiation - eddingtonThreshold) / 40, 0, 5);
@@ -1065,6 +1126,11 @@
               if (distanceSquared < glowRadiusSquared) {
                 const falloff = 1 - distanceSquared / glowRadiusSquared;
                 glowPower = falloff * falloff * falloff * glowFade;
+                if (point.canBecomeStar && !insistedThisFrame && distanceSquared < insistenceRadiusSquared) {
+                  const insistenceProximity = 1 - distanceSquared / insistenceRadiusSquared;
+                  point.insistenceHold = Math.min(10, (point.insistenceHold || 0) + (frameMs / 1000) * (0.68 + insistenceProximity * 0.32));
+                  insistedThisFrame = true;
+                }
                 if (distanceSquared < coreRadiusSquared && (point.heat || 0) > 0.22) {
                   point.hoverCharge = Math.min(8, (point.hoverCharge || 0) + falloff * 0.03);
                 }
@@ -1089,6 +1155,12 @@
           point.energy = Math.max(0, point.energy * cooling - emittedLoss - radiationPressure * 0.12);
           point.heat = Math.max(0, (point.heat || 0) * Math.pow(0.5, frameMs / 5200) - emittedLoss * 0.01);
           point.hoverCharge = Math.max(0, (point.hoverCharge || 0) * Math.pow(0.5, frameMs / 650));
+          if (!insistedThisFrame) {
+            point.insistenceHold = Math.max(0, (point.insistenceHold || 0) - frameMs / 700);
+          }
+          const insistenceSeconds = clamp(point.insistenceHold || 0, 0, 10);
+          const targetInsistenceScale = Math.pow(2, insistenceSeconds);
+          point.insistenceScale = lerp(point.insistenceScale || 1, targetInsistenceScale, 0.12);
           point.energy += 0.00016 * point.life * (0.5 + 0.5 * Math.sin(frame * 0.01 + point.pulse)) + (clickChain < 4 ? burstFade * 0.008 : burstFade * 0.06);
           if (point.energy < 0.015) {
             point.energy = 0;
@@ -1102,6 +1174,10 @@
             point.y = -14 + Math.random() * 28;
             point.z = 8 + Math.random() * 24;
             point.energy = Math.min(point.energy, 0.2);
+            point.insistenceHold = 0;
+            point.insistenceScale = 1;
+            point.starScale = 1;
+            point.starBrightness = 1;
           }
         });
 
