@@ -13,6 +13,9 @@
         "Projetos e experimentos online de Gabriel Saraiva.",
       "meta.resume.title": "Currículo - Gabriel Saraiva",
       "meta.resume.description": "Currículo em PDF de Gabriel Saraiva.",
+      "meta.fabrication.title": "3D Printing - Gabriel Saraiva",
+      "meta.fabrication.description":
+        "Projetos de impressão 3D, modelagem CAD e pequenas soluções físicas de Gabriel Saraiva.",
       "nav.projects": "Projetos",
       "nav.resume": "Currículo",
       "nav.back": "Voltar",
@@ -64,7 +67,7 @@
       "home.card.printables.label": "Fabricação",
       "home.card.printables.title": "3D Printing",
       "home.card.printables.text":
-        "Meu perfil no Printables, com peças, suportes e pequenas soluções físicas para ideias que escaparam da tela.",
+        "Uma coleção de peças, modelos CAD, suportes e pequenas soluções físicas para ideias que escaparam da tela.",
       "home.note.label": "Nota",
       "home.note": "Viu? Falei que era só isso.",
       "home.note.day": "Tenha um ótimo dia. :)",
@@ -116,6 +119,38 @@
       "resume.page2": "Página 2",
       "resume.page1Alt": "Página 1 do currículo de Gabriel Saraiva",
       "resume.page2Alt": "Página 2 do currículo de Gabriel Saraiva",
+      "fabrication.eyebrow": "Fabricação",
+      "fabrication.intro":
+        "Adoro construir coisas, resolver problemas. Com impressão 3D e modelagem CAD eu tenho muita motivação e diversão. Aqui algumas das coisas que eu já fiz...",
+      "fabrication.profileLabel": "Perfil",
+      "fabrication.item.minipa": "Case Gridfinity Para o Minipa ET-1002",
+      "fabrication.item.necklace": "Porta Colar",
+      "fabrication.item.caliper":
+        "Case Gridfinity Para Paquimetro MTX e outro paquimetro genérico",
+      "fabrication.item.gridfinityGenerator":
+        "Gerador de Gridfinity Importável para o OnShape",
+      "fabrication.item.gridfinityGeneratorText":
+        "Um gerador para importar via Derived tool e ajustar configurações sem deixar scripts bagunçando o workspace.",
+      "fabrication.item.lttScrewdriver": "LTT ScrewDriver Gridfinity case",
+      "fabrication.item.showerRubber":
+        "Borrachinha de reparo de registro de chuveiro (TPU)",
+      "fabrication.item.conduitCap": "Tampa de Eletroduto",
+      "fabrication.item.filamentHolder": "Suporte de rolo de filamento",
+      "fabrication.item.airExhaust": "Exaustor de Ar",
+      "fabrication.item.wolfbox": "Gridfinity para WolfBox MF-50",
+      "fabrication.item.wardrobeOrnament": "Enfeite de Guardaroupas",
+      "fabrication.item.printerDuct":
+        "Duto de exaustão de Ar para impressora 3D",
+      "fabrication.item.tableLegConnector":
+        "Conector de Perna de mesa dobrável",
+      "fabrication.item.lowProfileLunchboxLid":
+        "Tampa de marmita de baixo perfil",
+      "fabrication.item.lowProfileLunchboxLidText":
+        "Para caber melhor na geladeira.",
+      "fabrication.item.fanAdapter":
+        "Adaptador de FAN 120MM para duto de exaustão",
+      "fabrication.item.shimanoReplacement":
+        "Replacement part para Molinete da Shimano",
     },
     EN_US: {
       "meta.home.description":
@@ -127,6 +162,9 @@
         "Online projects and experiments by Gabriel Saraiva.",
       "meta.resume.title": "Resume - Gabriel Saraiva",
       "meta.resume.description": "Gabriel Saraiva's PDF resume.",
+      "meta.fabrication.title": "3D Printing - Gabriel Saraiva",
+      "meta.fabrication.description":
+        "Gabriel Saraiva's 3D printing projects, CAD models, and small physical problem-solving pieces.",
       "nav.projects": "Projects",
       "nav.resume": "Resume",
       "nav.back": "Back",
@@ -179,7 +217,7 @@
       "home.card.printables.label": "Fabrication",
       "home.card.printables.title": "3D Printing",
       "home.card.printables.text":
-        "My Printables profile, with parts, supports, and small physical solutions for ideas that escaped the screen.",
+        "A collection of parts, CAD models, supports, and small physical solutions for ideas that escaped the screen.",
       "home.note.label": "Note",
       "home.note": "See? I told you that was it.",
       "home.note.day": "Have a great day. :)",
@@ -231,6 +269,33 @@
       "resume.page2": "Page 2",
       "resume.page1Alt": "Page 1 of Gabriel Saraiva's resume",
       "resume.page2Alt": "Page 2 of Gabriel Saraiva's resume",
+      "fabrication.eyebrow": "Fabrication",
+      "fabrication.intro":
+        "I love building things and solving problems. 3D printing and CAD modeling give me a lot of motivation and joy. Here are some of the things I have made...",
+      "fabrication.profileLabel": "Profile",
+      "fabrication.item.minipa": "Gridfinity case for the Minipa ET-1002",
+      "fabrication.item.necklace": "Necklace holder",
+      "fabrication.item.caliper":
+        "Gridfinity case for an MTX caliper and another generic caliper",
+      "fabrication.item.gridfinityGenerator":
+        "Importable Gridfinity generator for OnShape",
+      "fabrication.item.gridfinityGeneratorText":
+        "A generator designed to be imported through the Derived tool, so configurations can be adjusted without leaving scripts cluttering the workspace.",
+      "fabrication.item.lttScrewdriver": "LTT Screwdriver Gridfinity case",
+      "fabrication.item.showerRubber": "Shower valve repair rubber piece (TPU)",
+      "fabrication.item.conduitCap": "Electrical conduit cap",
+      "fabrication.item.filamentHolder": "Filament spool holder",
+      "fabrication.item.airExhaust": "Air exhaust",
+      "fabrication.item.wolfbox": "Gridfinity case for WolfBox MF-50",
+      "fabrication.item.wardrobeOrnament": "Wardrobe ornament",
+      "fabrication.item.printerDuct": "Air exhaust duct for a 3D printer",
+      "fabrication.item.tableLegConnector": "Folding table leg connector",
+      "fabrication.item.lowProfileLunchboxLid": "Low-profile lunchbox lid",
+      "fabrication.item.lowProfileLunchboxLidText":
+        "Made to fit better in the fridge.",
+      "fabrication.item.fanAdapter": "120MM fan adapter for an exhaust duct",
+      "fabrication.item.shimanoReplacement":
+        "Replacement part for a Shimano fishing reel",
     },
   };
 

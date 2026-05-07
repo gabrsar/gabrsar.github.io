@@ -122,21 +122,40 @@
     }
 
     const patterns = {
-      a: patternFromRows([".OO.....", "OO......", "..O.....", "..OOO..."]), // acorn
-      b: patternFromRows(["OOO"]), // blinker
-      c: patternFromRows([".OO", "OO.", ".O."]), // clock
-      d: patternFromRows([".O.", "O.O", ".O."]), // diamond
-      e: patternFromRows(["OO", "OO"]), // block
-      f: patternFromRows([".O.", "..O", "OOO"]), // flyer / glider
-      g: patternFromRows([".O.", "..O", "OOO"]), // glider
-      h: patternFromRows(["OO.OO", "OO.OO"]), // house-ish still life
-      i: patternFromRows(["OO.", "O.O", ".OO"]), // integral sign
-      j: patternFromRows([".OOO", "O..O", "...O"]), // lightweight spark
-      k: patternFromRows(["OO.OO", ".O.O.", "OO.OO"]), // kiss
-      l: patternFromRows(["O..", "O..", "OOO"]), // L
-      m: patternFromRows(["OOO...OOO", "O.O...O.O", "OOO...OOO"]), // twin blocks
-      n: patternFromRows(["OO..", "O.O.", "..O.", "..OO"]), // long snake
-      o: patternFromRows([".OO.", "O..O", "O..O", ".OO."]), // ring
+      a: patternFromRows([".O.....", "...O...", "OO..OOO"]), // Acorn
+      b: patternFromRows(["OOO"]), // Blinker
+      c: patternFromRows(["..OO", "OOO.", ".O.."]), // Century
+      d: patternFromRows(["......O.", "OO......", ".O...OOO"]), // Diehard
+      e: patternFromRows([".OOO", "OO..", ".OO."]), // E-heptomino
+      f: patternFromRows([".O..O", "O....", "O...O", "OOOO."]), // Lightweight spaceship
+      g: patternFromRows([
+        "........................O...........",
+        "......................O.O...........",
+        "............OO......OO............OO",
+        "...........O...O....OO............OO",
+        "OO........O.....O...OO..............",
+        "OO........O...O.OO....O.O...........",
+        "..........O.....O.......O...........",
+        "...........O...O....................",
+        "............OO......................",
+      ]), // Gosper glider gun
+      h: patternFromRows(["OOO", "O.O", "O.."]), // Herschel
+      i: patternFromRows(["OO..", "O.O.", ".O.O", "..OO"]), // Integral sign
+      j: patternFromRows(["OOOOOO"]), // Line-of-six spark
+      k: patternFromRows([
+        "OOOOOO.OO",
+        "OOOOOO.OO",
+        ".......OO",
+        "OO.......",
+        "OO.......",
+        "OO.......",
+        "OO.OOOOOO",
+        "OO.OOOOOO",
+      ]), // Kok's galaxy
+      l: patternFromRows([".OO.", "O..O", ".O.O", "..O."]), // Loaf
+      m: patternFromRows(["...O..", ".O...O", "O.....", "O....O", "OOOOO."]), // Middleweight spaceship
+      n: patternFromRows(["OO..", "O.O.", "..O.", "..OO"]), // Long snake
+      o: patternFromRows(["OOO", "OOO", ".O.", "..O", "..O"]), // O-pentomino
       p: patternFromRows([
         "..OOO...OOO..",
         ".............",
@@ -151,46 +170,54 @@
         "O....O.O....O",
         ".............",
         "..OOO...OOO..",
-      ]), // pulsar
-      q: patternFromRows([".OO.", "O..O", "O.O.", ".OOO"]), // quasi-loop
+      ]), // Pulsar
+      q: patternFromRows([
+        ".........O.........",
+        ".......O.O.........",
+        "......O.O..........",
+        "OO...O..O.......OO.",
+        "OO....O.O.......OO.",
+        ".......O.O.........",
+        ".........O.........",
+      ]), // Queen bee shuttle
       r: patternFromRows([".OO", "OO.", ".O."]), // R-pentomino
-      s: patternFromRows([".OO", "OO.", ".OO"]), // snake
-      t: patternFromRows([".OOO", "OOO."]), // toad
-      u: patternFromRows(["O.O", "O.O", "OOO"]), // U
-      v: patternFromRows(["O...O", ".O.O.", "..O.."]), // V
-      w: patternFromRows(["O...O", "O.O.O", ".O.O."]), // W
-      x: patternFromRows(["O.O", ".O.", "O.O"]), // cross
-      y: patternFromRows(["O...O", ".O.O.", "..O..", "..O.."]), // Y
-      z: patternFromRows(["OOO", "..O", ".O.", "OOO"]), // Z
+      s: patternFromRows(["OOO", "O.O", "OOO"]), // Switch engine predecessor
+      t: patternFromRows([".OOO", "OOO."]), // Toad
+      u: patternFromRows(["O.O", "OOO"]), // U-pentomino
+      v: patternFromRows(["O..", "O..", "OOO"]), // V-pentomino
+      w: patternFromRows(["O..", "OO.", ".OO"]), // W-pentomino
+      x: patternFromRows([".O.", "OOO", ".O."]), // X-pentomino
+      y: patternFromRows(["O.", "OO", "O.", "O."]), // Y-pentomino
+      z: patternFromRows(["OO.", ".O.", ".O.", ".OO"]), // Z-hexomino
     };
 
     const patternNames = {
       a: "Acorn",
       b: "Blinker",
-      c: "Clock",
-      d: "Diamond",
-      e: "Block",
-      f: "Flyer",
-      g: "Glider",
-      h: "House",
-      i: "Integral",
-      j: "Lightweight spark",
-      k: "Kiss",
-      l: "L",
-      m: "Twin blocks",
+      c: "Century",
+      d: "Diehard",
+      e: "E-heptomino",
+      f: "Lightweight spaceship",
+      g: "Gosper glider gun",
+      h: "Herschel",
+      i: "Integral sign",
+      j: "Line-of-six spark",
+      k: "Kok's galaxy",
+      l: "Loaf",
+      m: "Middleweight spaceship",
       n: "Long snake",
-      o: "Ring",
+      o: "O-pentomino",
       p: "Pulsar",
-      q: "Quasi-loop",
+      q: "Queen bee shuttle",
       r: "R-pentomino",
-      s: "Snake",
+      s: "Switch engine predecessor",
       t: "Toad",
-      u: "U",
-      v: "V",
-      w: "W",
-      x: "Cross",
-      y: "Y",
-      z: "Z",
+      u: "U-pentomino",
+      v: "V-pentomino",
+      w: "W-pentomino",
+      x: "X-pentomino",
+      y: "Y-pentomino",
+      z: "Z-hexomino",
     };
     function t(key, replacements) {
       return window.SiteI18n?.t?.(key, replacements) || key;
@@ -470,7 +497,7 @@
       pointer.active = true;
 
       [
-        ["g", center.x - 12, center.y - 7],
+        ["f", center.x - 12, center.y - 7],
         ["b", center.x + 4, center.y - 3],
         ["r", center.x - 4, center.y + 5],
         ["t", center.x + 10, center.y + 6],

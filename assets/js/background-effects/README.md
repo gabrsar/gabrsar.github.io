@@ -30,9 +30,10 @@ The Game of Life effect follows this interaction model:
 - drag pans the grid
 - small yellow hint cells invite keyboard actions and disappear when completed
 
-Current pattern keys: every letter from `a` to `z` spawns a known or
-recognizable Life object/seed. Examples: `a` acorn, `b` blinker, `e` block,
-`f`/`g` glider/flyer, `p` pulsar, `r` R-pentomino, `t` toad.
+Current pattern keys: every letter from `a` to `z` spawns a named Life
+object/seed. Examples: `a` Acorn, `d` Diehard, `g` Gosper glider gun, `k`
+Kok's galaxy, `p` Pulsar, `q` Queen bee shuttle, `r` R-pentomino, and `z`
+Z-hexomino.
 
 When the simulation resumes, it starts at `2` ticks per second and ramps toward
 the current target. The default target is `3` ticks per second.

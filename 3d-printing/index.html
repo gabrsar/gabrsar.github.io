@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="meta.fabrication.title">
+      3D Printing - Gabriel Saraiva
+    </title>
+    <meta
+      name="description"
+      content="Projetos de impressão 3D, modelagem CAD e pequenas soluções físicas de Gabriel Saraiva."
+      data-i18n-attr="content: meta.fabrication.description"
+    />
+    <style>
+      :root {
+        --ink: #151719;
+        --muted: #6b7178;
+        --paper: #f6f1e8;
+        --white: #fffdf7;
+        --night: #080b0e;
+        --line: rgba(21, 23, 25, 0.14);
+        --teal: #1f6f68;
+        --gold: #e3b15b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ink);
+        background:
+          linear-gradient(
+            180deg,
+            rgba(8, 11, 14, 0.98) 0 520px,
+            transparent 520px
+          ),
+          var(--paper);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar,
+      header,
+      main,
+      footer {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 64px;
+        color: var(--white);
+      }
+
+      .topbar a {
+        color: rgba(255, 255, 255, 0.78);
+        font-weight: 760;
+        text-decoration: none;
+      }
+
+      .topbar a:hover,
+      .topbar a:focus {
+        color: var(--white);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 0.92rem;
+      }
+
+      .language-toggle {
+        display: inline-grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--white);
+        cursor: pointer;
+        font: inherit;
+        line-height: 1;
+      }
+
+      .language-toggle:hover,
+      .language-toggle:focus-visible {
+        border-color: rgba(255, 255, 255, 0.36);
+        background: rgba(255, 255, 255, 0.15);
+        outline: none;
+      }
+
+      header {
+        padding: 70px 0 78px;
+        color: var(--white);
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        color: var(--gold);
+        font-size: 0.78rem;
+        font-weight: 820;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 860px;
+        margin: 0 0 18px;
+        font-size: clamp(2.8rem, 7.2vw, 5.2rem);
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      header p {
+        max-width: 760px;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 1.12rem;
+        line-height: 1.58;
+      }
+
+      main {
+        padding: 0 0 70px;
+      }
+
+      .feature-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin: 0 0 16px;
+        border: 1px solid rgba(31, 111, 104, 0.28);
+        border-radius: 8px;
+        padding: 18px;
+        background: var(--white);
+        box-shadow: 0 18px 46px rgba(21, 23, 25, 0.08);
+        text-decoration: none;
+      }
+
+      .feature-link span:first-child {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 820;
+        text-transform: uppercase;
+      }
+
+      .feature-link strong {
+        display: block;
+        margin-top: 6px;
+        font-size: 1.28rem;
+      }
+
+      .cad-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 14px;
+      }
+
+      .cad-card {
+        position: relative;
+        display: flex;
+        min-height: 198px;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        overflow: hidden;
+        background: var(--white);
+        box-shadow: 0 18px 46px rgba(21, 23, 25, 0.08);
+        text-decoration: none;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .cad-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        background:
+          radial-gradient(
+            circle at 18% 18%,
+            rgba(227, 177, 91, 0.16),
+            transparent 12rem
+          ),
+          radial-gradient(
+            circle at 88% 92%,
+            rgba(31, 111, 104, 0.12),
+            transparent 13rem
+          );
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      }
+
+      .cad-card:hover,
+      .cad-card:focus {
+        border-color: rgba(31, 111, 104, 0.46);
+        box-shadow: 0 24px 64px rgba(21, 23, 25, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .cad-card:hover::before,
+      .cad-card:focus::before {
+        opacity: 1;
+      }
+
+      .cad-card > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .cad-card span,
+      .arrow {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 820;
+        text-transform: uppercase;
+      }
+
+      .cad-card h2 {
+        margin: 16px 0 8px;
+        font-size: 1.25rem;
+        letter-spacing: 0;
+      }
+
+      .cad-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.52;
+      }
+
+      .arrow {
+        align-self: flex-end;
+        color: var(--teal);
+        font-size: 1.2rem;
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 24px 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 760px) {
+        .topbar,
+        header,
+        main,
+        footer {
+          width: min(100% - 28px, 1120px);
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+          justify-content: center;
+          gap: 8px;
+          padding: 14px 0;
+        }
+
+        .nav-links {
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+
+        header {
+          padding-top: 48px;
+        }
+
+        .feature-link {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .cad-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav
+      class="topbar"
+      aria-label="Navegação"
+      data-i18n-attr="aria-label: nav.main"
+    >
+      <a href="../index.html">Gabriel Saraiva</a>
+      <div class="nav-links">
+        <a href="../index.html" data-i18n="nav.back">Voltar</a>
+        <a href="../projects/index.html" data-i18n="nav.projects">Projetos</a>
+        <a href="../resume/index.html" data-i18n="nav.resume">Currículo</a>
+        <a
+          href="https://github.com/gabrsar"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-i18n="nav.github"
+          >GitHub</a
+        >
+        <a
+          href="https://br.linkedin.com/in/gabrielsaraiva7"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-i18n="nav.linkedin"
+          >LinkedIn</a
+        >
+        <button
+          class="language-toggle"
+          type="button"
+          data-language-toggle
+          aria-label="Translate to English"
+          title="Translate to English"
+        >
+          🇺🇸
+        </button>
+      </div>
+    </nav>
+
+    <header>
+      <p class="eyebrow" data-i18n="fabrication.eyebrow">Fabricação</p>
+      <h1>3D Printing</h1>
+      <p data-i18n="fabrication.intro">
+        Adoro construir coisas, resolver problemas. Com impressão 3D e modelagem
+        CAD eu tenho muita motivação e diversão. Aqui algumas das coisas que eu
+        já fiz...
+      </p>
+    </header>
+
+    <main>
+      <a
+        class="feature-link"
+        href="https://www.printables.com/@gabrsar"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <div>
+          <span data-i18n="fabrication.profileLabel">Perfil</span>
+          <strong>Printables</strong>
+        </div>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <div class="cad-grid">
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/a355fa2e546a7a92da532731/w/2202d1ad3debedcd789745c8/e/bab6f10b6f43abd63b51ced2"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.minipa">
+              Case Gridfinity Para o Minipa ET-1002
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/fb2b2c98c1bee1152b2bd26c/w/7f799855b492818daa8165d7/e/64fc10152c929bf739190856"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.necklace">Porta Colar</h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/f82b3a34674ce3ec8526e7e0/w/0f0079d38b701ab32c68091d/e/90eda81fc4ff28b38354d196"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.caliper">
+              Case Gridfinity Para Paquimetro MTX e outro paquimetro genérico
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/992b2dad9b90b0f7148251e3/w/c815eded18da753b3a7fd13b/e/0bb3d9812053b4f1992a170d"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.gridfinityGenerator">
+              Gerador de Gridfinity Importável para o OnShape
+            </h2>
+            <p data-i18n="fabrication.item.gridfinityGeneratorText">
+              Um gerador para importar via Derived tool e ajustar configurações
+              sem deixar scripts bagunçando o workspace.
+            </p>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/0925adb4adea69c276ad9c38/w/9fa0468124de74aa0ac93a0d/e/7e4b44f145cefe9d5eb970c4"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.lttScrewdriver">
+              LTT ScrewDriver Gridfinity case
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/ae96e012f611254f8fef634b/w/ca749fdf5e083d786ed5a0cd/e/d0bbde9ed5f2df578fb550a9"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.showerRubber">
+              Borrachinha de reparo de registro de chuveiro (TPU)
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/88cb8f559af7e077bf014eca/w/c0cbb6a4c59b118e80c34f61/e/59eca177cca2b025416cd7a3"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.conduitCap">Tampa de Eletroduto</h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/2d2330896d3fa591273bc8e5/w/57046d139f11409de7b224d1/e/a71ff6c8a816a4f06a69e108"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.filamentHolder">
+              Suporte de rolo de filamento
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/c33f6b052dfa51feb7a2d59a/w/3c4e67fb85f84a7e5e50ed25/e/20bd824176a0467ca9959a5d"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.airExhaust">Exaustor de Ar</h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/a656973b41ebfe43ceb99dc7/w/f0b806ee07189f02699aaa84/e/8cea4b7cbe2d9422aa5c91b7"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.wolfbox">
+              Gridfinity para WolfBox MF-50
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/eda5ee9b469ab99223b6a277/w/a724ee88c45461ebc319fb90/e/604b2c323365551f4faec8b4"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.wardrobeOrnament">
+              Enfeite de Guardaroupas
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/cd8a4dd89a8722743b54cf2f/w/2c060cfae8aecc6e5d0f03fd/e/1722b416077e8deaa13dde13"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.printerDuct">
+              Duto de exaustão de Ar para impressora 3D
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/05cc987a78dda4b6046747aa/w/c42bceb0f4144b669914b53b/e/dd02e4f569c39a2cc1c9cf06"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.tableLegConnector">
+              Conector de Perna de mesa dobrável
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/8a8f1b620b6b6b16b4d05bfb/w/bc94b70c9692328c8af4d8ff/e/866e4316de15861a86298690"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.lowProfileLunchboxLid">
+              Tampa de marmita de baixo perfil
+            </h2>
+            <p data-i18n="fabrication.item.lowProfileLunchboxLidText">
+              Para caber melhor na geladeira.
+            </p>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/93daf0143cc2aab8ab96ece6/w/832a86932e8b9ad0ebf00b59/e/bda1aecf723e51864d41d478"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.fanAdapter">
+              Adaptador de FAN 120MM para duto de exaustão
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+        <a
+          class="cad-card"
+          href="https://cad.onshape.com/documents/733c7cf4c645ba810a7f8e76/w/92271195462dd3a8d6062fc8/e/0caa2f64b80590e32668374b"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div>
+            <span>OnShape</span>
+            <h2 data-i18n="fabrication.item.shimanoReplacement">
+              Replacement part para Molinete da Shimano
+            </h2>
+          </div>
+          <span class="arrow" aria-hidden="true">›</span>
+        </a>
+      </div>
+    </main>
+
+    <footer>
+      <span data-i18n="footer.made.short"
+        >Feito com IA, mas pedido com carinho.</span
+      >
+    </footer>
+    <script src="../assets/js/i18n.js" defer></script>
+  </body>
+</html>
