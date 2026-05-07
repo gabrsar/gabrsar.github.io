@@ -24,12 +24,8 @@ function setup() {
   height = window.innerHeight;
   let canvas = createCanvas(width, height);
   // Ensure the canvas has a lower z-index than the home button
-<<<<<<< Updated upstream
-  canvas.style('z-index', '-1');
-=======
   canvas.elt.style.position = 'relative';
   canvas.elt.style.zIndex = '0';
->>>>>>> Stashed changes
   angleMode(DEGREES);
 
   groundY = height / 5 * 4;

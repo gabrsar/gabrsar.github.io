@@ -32,6 +32,7 @@
     const cellIntensities = new Map();
     const floatingLetters = [];
     const clickBursts = [];
+    const keyPresses = [];
     const pointer = {
       x: 0,
       y: 0,
@@ -55,7 +56,8 @@
     let lastStepAt = performance.now();
     let lastFrameAt = performance.now();
     let running = true;
-    let toolbarFlashUntil = performance.now() + 4200;
+    let hasInteracted = false;
+    let toolbarFlashUntil = 0;
     let currentTicksPerSecond = 2;
     let targetTicksPerSecond = 3;
     let generation = 0;
@@ -70,6 +72,7 @@
     const minCellSize = 7;
     const maxCellSize = 46;
     const fadeMs = 360;
+    const hintLifeMs = 7400;
     const hintPromptMs = 3000;
     const touchFirstInput = window.matchMedia(
       "(hover: none), (pointer: coarse)",
@@ -81,6 +84,11 @@
       { r: 57, g: 211, b: 83 },
       { r: 126, g: 231, b: 135 },
     ];
+
+    function markInteracted() {
+      hasInteracted = true;
+      toolbarFlashUntil = Math.max(toolbarFlashUntil, performance.now() + 1800);
+    }
 
     function patternFromRows(rows) {
       const cells = [];
@@ -427,7 +435,7 @@
       };
     }
 
-    function completeHint(action) {
+    function completeHint(action, options = {}) {
       if (!activeHint) {
         return;
       }
@@ -441,13 +449,15 @@
       }
 
       const screen = cellToScreen(activeHint.x, activeHint.y);
-      addFloatingLabel(
-        typeof activeHint.resultLabel === "function"
-          ? activeHint.resultLabel()
-          : activeHint.resultLabel || "ok :)",
-        screen.x + view.cellSize * 0.5,
-        screen.y,
-      );
+      if (options.showResult !== false) {
+        addFloatingLabel(
+          typeof activeHint.resultLabel === "function"
+            ? activeHint.resultLabel()
+            : activeHint.resultLabel || "ok :)",
+          screen.x + view.cellSize * 0.5,
+          screen.y,
+        );
+      }
       activeHint = null;
       nextHintAt = performance.now() + randomHintDelay();
     }
@@ -700,6 +710,55 @@
       }
     }
 
+    function addKeyPressAnimation(key, x, y) {
+      keyPresses.push({
+        key: key.toUpperCase(),
+        x,
+        y,
+        startedAt: performance.now(),
+      });
+    }
+
+    function drawKeyPresses(timestamp) {
+      for (let index = keyPresses.length - 1; index >= 0; index -= 1) {
+        const item = keyPresses[index];
+        const progress = (timestamp - item.startedAt) / 780;
+        if (progress >= 1) {
+          keyPresses.splice(index, 1);
+          continue;
+        }
+
+        const press = Math.sin(Math.min(1, progress * 2.2) * Math.PI);
+        const alpha = progress < 0.68 ? 1 : 1 - (progress - 0.68) / 0.32;
+        const width = Math.max(42, view.cellSize * 3.1);
+        const height = Math.max(34, view.cellSize * 2.35);
+        const x = item.x - width * 0.5;
+        const y = item.y - height - 52 + press * 5;
+
+        context.save();
+        context.globalAlpha = Math.max(0, alpha);
+        context.shadowColor = "rgba(230, 236, 240, 0.38)";
+        context.shadowBlur = 18 - press * 8;
+        context.fillStyle =
+          press > 0.45
+            ? "rgba(176, 185, 194, 0.96)"
+            : "rgba(226, 232, 238, 0.96)";
+        roundedRect(x, y, width, height, 8);
+        context.fill();
+        context.shadowBlur = 0;
+        context.strokeStyle = "rgba(36, 42, 48, 0.58)";
+        context.lineWidth = 2;
+        context.stroke();
+        context.fillStyle = "rgba(18, 22, 26, 0.92)";
+        context.font =
+          "900 18px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(item.key, item.x, y + height * 0.52);
+        context.restore();
+      }
+    }
+
     function drawFloatingLetters(timestamp) {
       for (let index = floatingLetters.length - 1; index >= 0; index -= 1) {
         const item = floatingLetters[index];
@@ -753,18 +812,26 @@
       const hint = activeHint;
       const index = hint.bornAt || 0;
       const screen = cellToScreen(hint.x, hint.y);
+      const age = timestamp - hint.bornAt;
+      const fade = Math.max(0, 1 - age / hintLifeMs);
+      if (fade <= 0) {
+        activeHint = null;
+        nextHintAt = timestamp + randomHintDelay();
+        return;
+      }
       const pulse = 0.5 + Math.sin(timestamp * 0.003 + index) * 0.5;
       const isHovered = hint === hoveredHint;
       const pad = view.cellSize * 0.08;
       const size = view.cellSize - pad * 2;
-      const glow = isHovered ? 30 : 16 + pulse * 18;
+      const glow = (isHovered ? 76 : 46 + pulse * 58) * fade;
+      const intensity = 0.44 + fade * 0.86;
 
       context.save();
-      context.shadowColor = `rgba(255, 213, 92, ${0.48 + pulse * 0.38})`;
+      context.shadowColor = `rgba(255, 244, 154, ${(0.84 + pulse * 0.5) * fade})`;
       context.shadowBlur = glow;
       context.fillStyle = isHovered
-        ? "rgba(255, 225, 92, 0.92)"
-        : `rgba(255, 213, 92, ${0.5 + pulse * 0.28})`;
+        ? `rgba(255, 252, 132, ${Math.min(1, 1.05 * intensity)})`
+        : `rgba(255, 228, 72, ${Math.min(1, (0.86 + pulse * 0.34) * intensity)})`;
       roundedRect(
         screen.x + pad,
         screen.y + pad,
@@ -774,12 +841,14 @@
       );
       context.fill();
       context.shadowBlur = 0;
-      context.strokeStyle = `rgba(42, 30, 0, ${0.38 + pulse * 0.2})`;
+      context.strokeStyle = `rgba(42, 30, 0, ${(0.42 + pulse * 0.22) * fade})`;
       context.lineWidth = Math.max(1, view.cellSize * 0.2);
       context.stroke();
+      context.shadowColor = `rgba(255, 247, 179, ${0.72 * fade})`;
+      context.shadowBlur = 18 * fade;
       context.strokeStyle = isHovered
-        ? "rgba(255, 255, 236, 0.96)"
-        : `rgba(255, 245, 173, ${0.72 + pulse * 0.22})`;
+        ? `rgba(255, 255, 236, ${0.98 * fade})`
+        : `rgba(255, 252, 200, ${(0.9 + pulse * 0.28) * fade})`;
       context.lineWidth = Math.max(1, view.cellSize * 0.07);
       context.stroke();
       context.restore();
@@ -801,7 +870,9 @@
     }
 
     function updateToolbar(timestamp) {
-      const visible = Boolean(!running || timestamp < toolbarFlashUntil);
+      const visible = Boolean(
+        hasInteracted && (!running || timestamp < toolbarFlashUntil),
+      );
       document.body.dataset.lifeToolbar = visible ? "on" : "off";
       if (!toolbar || !toolbarToggle) {
         return;
@@ -874,6 +945,7 @@
       drawCells(timestamp);
       drawClickBursts(timestamp);
       drawHintCells(timestamp);
+      drawKeyPresses(timestamp);
       drawPointerCell();
       drawFloatingLetters(timestamp);
       updateToolbar(timestamp);
@@ -938,23 +1010,34 @@
 
     function onPointerUp() {
       if (drag.active && !drag.moved && pointer.active) {
+        markInteracted();
         const hint = getHintUnderPointer();
-        if (hint && touchFirstInput) {
+        let shouldPauseAfterClick = true;
+        if (hint && !touchFirstInput && hint.action.startsWith("key:")) {
+          const key = hint.action.replace("key:", "");
+          addKeyPressAnimation(key, pointer.x, pointer.y);
+          spawnPatternAtPointer(patterns[key] ? key : randomPatternKey());
+          completeHint(hint.action, { showResult: false });
+          shouldPauseAfterClick = false;
+        } else if (hint && touchFirstInput) {
           if (hint.action === "space") {
             toggleSimulation();
             completeHint("space");
           } else {
             const key = hint.action.replace("key:", "");
             spawnPatternAtPointer(patterns[key] ? key : randomPatternKey());
-            completeHint(hint.action);
+            completeHint(hint.action, { showResult: false });
           }
+          shouldPauseAfterClick = false;
         } else {
           toggleCellAtPointer();
           if (hint) {
             completeHint("dismiss");
           }
         }
-        pauseForInteraction();
+        if (shouldPauseAfterClick) {
+          pauseForInteraction();
+        }
       }
       drag.active = false;
     }
@@ -966,6 +1049,7 @@
       }
 
       event.preventDefault();
+      markInteracted();
       const action = control.dataset.lifeAction;
 
       if (action === "toggle") {
@@ -992,6 +1076,7 @@
 
     function onKeyDown(event) {
       if (event.key === " " || event.code === "Space") {
+        markInteracted();
         event.preventDefault();
         toggleSimulation();
         completeHint("space");
@@ -999,48 +1084,56 @@
       }
 
       if (event.key === "Enter") {
+        markInteracted();
         event.preventDefault();
         resetTargetTicksPerSecond();
         return;
       }
 
       if (event.key === "," || event.key === "<") {
+        markInteracted();
         event.preventDefault();
         adjustTargetTicksPerSecond(-2);
         return;
       }
 
       if (event.key === "." || event.key === ">") {
+        markInteracted();
         event.preventDefault();
         adjustTargetTicksPerSecond(2);
         return;
       }
 
       if (event.key === "ArrowLeft") {
+        markInteracted();
         event.preventDefault();
         view.offsetX += view.cellSize * 2;
         return;
       }
 
       if (event.key === "ArrowRight") {
+        markInteracted();
         event.preventDefault();
         view.offsetX -= view.cellSize * 2;
         return;
       }
 
       if (event.key === "ArrowUp") {
+        markInteracted();
         event.preventDefault();
         view.offsetY += view.cellSize * 2;
         return;
       }
 
       if (event.key === "ArrowDown") {
+        markInteracted();
         event.preventDefault();
         view.offsetY -= view.cellSize * 2;
         return;
       }
 
       if (event.key === "+" || event.key === "=") {
+        markInteracted();
         event.preventDefault();
         const bounds = canvas.getBoundingClientRect();
         zoomAt(
@@ -1052,6 +1145,7 @@
       }
 
       if (event.key === "-" || event.key === "_") {
+        markInteracted();
         event.preventDefault();
         const bounds = canvas.getBoundingClientRect();
         zoomAt(
@@ -1063,8 +1157,9 @@
       }
 
       if (event.key.length === 1 && /[a-z]/i.test(event.key)) {
+        markInteracted();
         spawnPatternAtPointer(event.key);
-        completeHint(`key:${event.key.toLowerCase()}`);
+        completeHint(`key:${event.key.toLowerCase()}`, { showResult: false });
       }
     }
 
