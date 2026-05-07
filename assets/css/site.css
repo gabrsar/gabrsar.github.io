@@ -130,7 +130,121 @@ a {
 .field canvas {
   width: 100%;
   height: 100%;
+  cursor: pointer;
   opacity: 1;
+}
+
+.life-toolbar {
+  position: absolute;
+  top: 78px;
+  left: 18px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: min(1120px, calc(100% - 36px));
+  border: 1px solid rgba(57, 211, 83, 0.3);
+  border-radius: 8px;
+  padding: 9px 11px;
+  background: rgba(4, 18, 11, 0.76);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.22);
+  color: rgba(185, 255, 196, 0.9);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+body[data-life-toolbar="on"] .life-toolbar {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.life-toolbar span {
+  white-space: nowrap;
+}
+
+.life-toolbar span + span {
+  border-left: 1px solid rgba(57, 211, 83, 0.24);
+  padding-left: 10px;
+}
+
+.life-toolbar a {
+  color: rgba(126, 231, 135, 1);
+  text-decoration-color: rgba(126, 231, 135, 0.5);
+  text-underline-offset: 3px;
+}
+
+.life-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.life-tps-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  border: 1px solid rgba(126, 231, 135, 0.32);
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: rgba(4, 18, 11, 0.36);
+  color: rgba(185, 255, 196, 0.95);
+  white-space: nowrap;
+}
+
+.life-tps-meter-label {
+  min-width: 64px;
+  font-weight: 800;
+}
+
+.life-tps-meter-track {
+  width: 86px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(57, 211, 83, 0.13);
+}
+
+.life-tps-meter-fill {
+  display: block;
+  width: 10%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #1f883d, #39d353, #b9ffc4);
+  box-shadow: 0 0 12px rgba(57, 211, 83, 0.42);
+  transition: width 0.16s ease;
+}
+
+.life-toolbar-button {
+  appearance: none;
+  border: 1px solid rgba(126, 231, 135, 0.48);
+  border-radius: 6px;
+  background: rgba(57, 211, 83, 0.14);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 4px 8px;
+  touch-action: manipulation;
+  white-space: nowrap;
+}
+
+.life-toolbar-button:hover,
+.life-toolbar-button:focus-visible {
+  background: rgba(57, 211, 83, 0.24);
+  outline: none;
 }
 
 .field::after {
@@ -169,6 +283,7 @@ body[data-superhot="on"] .field::after {
 .hero-inner {
   position: relative;
   z-index: 1;
+  isolation: isolate;
   display: block;
   width: min(1120px, calc(100% - 40px));
   margin: 0 auto;
@@ -179,6 +294,26 @@ body[data-superhot="on"] .field::after {
     opacity 0.5s ease,
     transform 0.5s ease,
     color 0.5s ease;
+}
+
+.hero-inner::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -26px;
+  bottom: -22px;
+  left: -26px;
+  width: min(900px, calc(100% + 52px));
+  border-radius: 8px;
+  background: linear-gradient(
+    4deg,
+    rgba(0, 0, 0, 0.48) 0%,
+    rgba(0, 0, 0, 0.32) 42%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  pointer-events: none;
 }
 
 body[data-superhot="on"] .hero-inner {
@@ -225,6 +360,11 @@ h1 {
   transition: color 0.5s ease;
 }
 
+.intro .small {
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 0.72em;
+}
+
 body[data-superhot="on"] .hero-inner .eyebrow {
   color: #060606;
 }
@@ -233,6 +373,10 @@ body[data-superhot="on"] .hero-inner h1,
 body[data-superhot="on"] .hero-inner .intro {
   color: #060606;
   text-shadow: none;
+}
+
+body[data-superhot="on"] .hero-inner .intro .small {
+  color: rgba(6, 6, 6, 0.48);
 }
 
 .below {
@@ -380,6 +524,28 @@ footer {
   .hero {
     min-height: 94svh;
     padding: 112px 0 44px;
+  }
+
+  .life-toolbar {
+    top: 76px;
+    left: 14px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+    max-width: calc(100% - 28px);
+    max-height: 44svh;
+    overflow-y: auto;
+    padding: 10px;
+    font-size: 0.72rem;
+  }
+
+  .life-toolbar span + span {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .life-toolbar-actions {
+    width: 100%;
   }
 
   .route-grid {

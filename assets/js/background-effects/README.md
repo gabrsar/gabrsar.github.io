@@ -34,7 +34,7 @@ recognizable Life object/seed. Examples: `a` acorn, `b` blinker, `e` block,
 `f`/`g` glider/flyer, `p` pulsar, `r` R-pentomino, `t` toad.
 
 When a temporary pause ends, the simulation resumes slowly and accelerates back
-to its normal step interval.
+from `2` ticks per second to its cruising speed of `20` ticks per second.
 
 ## Lorenz Attractor Notes
 

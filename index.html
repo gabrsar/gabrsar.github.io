@@ -33,21 +33,65 @@
     </nav>
 
     <header class="hero">
-      <div class="field" aria-hidden="true">
-        <canvas id="hero-background-canvas"></canvas>
+      <div class="field">
+        <canvas id="hero-background-canvas" aria-hidden="true"></canvas>
+        <div class="life-toolbar" id="life-toolbar">
+          <span>
+            Isso é um
+            <a
+              href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Game of Life</a
+            >.
+          </span>
+          <div class="life-toolbar-actions" aria-label="Controles do jogo">
+            <button
+              class="life-toolbar-button"
+              id="life-toolbar-toggle"
+              data-life-action="toggle"
+            >
+              Pause (space)
+            </button>
+            <button class="life-toolbar-button" data-life-action="zoom-out">
+              -
+            </button>
+            <button class="life-toolbar-button" data-life-action="zoom-in">
+              +
+            </button>
+            <button class="life-toolbar-button" data-life-action="tps-down">
+              TPS -(,)
+            </button>
+            <button class="life-toolbar-button" data-life-action="tps-up">
+              TPS +(.)
+            </button>
+            <button class="life-toolbar-button" data-life-action="tps-reset">
+              Reset TPS (enter)
+            </button>
+            <span class="life-tps-meter" id="life-tps-meter">
+              <span class="life-tps-meter-label" id="life-tps-meter-label"
+                >TPS 2.0</span
+              >
+              <span class="life-tps-meter-track" aria-hidden="true">
+                <span class="life-tps-meter-fill" id="life-tps-meter-fill">
+                </span>
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
       <div class="hero-inner">
-        <p class="eyebrow">Software, currículo e pequenas coisas estranhas</p>
+        <p class="eyebrow">Software, algoritmos, e outras coisas estranhas...</p>
         <h1>Oi. <span class="welcome">Bem vindo.</span></h1>
         <p class="intro">
-          Tenho esse site para guardar algumas coisas que faço quando tenho
-          vontade de programar por diversão, sem compromisso com nada, a não ser
-          me divertir.
+          Sou apaixonado em resolver problemas complexos e entender como as coisas realmente funcionam.
+          Uso isso para desenvolver soluções reais, eficientes e elegantes, as vezes, com software.
+          <br/> <br/>
+
+          Caso você esteja procurando meu currículo ou queira entrar em contato, tem um botãozinho por aí.
+
           <br /><br />
-          Tem alguns links úteis, caso você esteja buscando meu currículo ou
-          queira entrar em contato.
-          <br /><br />
-          Mas é só isso mesmo. Obrigado pela visita.
+          No mais, é isso mesmo. Obrigado pela visita.
         </p>
       </div>
     </header>
@@ -118,19 +162,24 @@
       </section>
 
       <section class="section" aria-label="Nota">
-        <p class="note">É só isso mesmo. Tenha um ótimo dia. :)</p>
+        <p class="note">Viu? Falei que era só isso.</p>
+        <p>Tenha um ótimo dia. :)</p>
       </section>
     </main>
 
     <footer>
       <div class="footer-inner">
         <span>Gabriel Saraiva</span>
-        <span>Feito com IA, mas pedido com carinho.</span>
+        <span>Feito com IA, mas pedido com carinho por um humano.</span>
       </div>
     </footer>
 
     <script
       src="./assets/js/background-effects/game-of-life/effect.js"
+      defer
+    ></script>
+    <script
+      src="./assets/js/background-effects/lorenz-attractor/effect.js"
       defer
     ></script>
     <script src="./assets/js/site.js" defer></script>

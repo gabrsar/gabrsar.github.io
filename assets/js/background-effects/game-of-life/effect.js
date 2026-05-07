@@ -9,6 +9,8 @@
 //   arrow keys: pan the grid
 //   + / -: zoom in/out
 //   Space: pause/resume simulation
+//   , / .: decrease/increase target ticks per second
+//   Enter: reset target ticks per second
 //   letter keys: spawn known Life patterns at the cursor
 (function () {
   const BackgroundEffects =
@@ -20,11 +22,16 @@
     }
 
     const context = canvas.getContext("2d");
+    const toolbar = document.querySelector("#life-toolbar");
+    const toolbarToggle = document.querySelector("#life-toolbar-toggle");
+    const tpsMeterLabel = document.querySelector("#life-tps-meter-label");
+    const tpsMeterFill = document.querySelector("#life-tps-meter-fill");
     const liveCells = new Set();
     const bornCells = new Map();
     const fadedCells = new Map();
     const cellIntensities = new Map();
     const floatingLetters = [];
+    const clickBursts = [];
     const pointer = {
       x: 0,
       y: 0,
@@ -46,18 +53,27 @@
 
     let frameHandle = 0;
     let lastStepAt = performance.now();
-    let nextAutoSpawnAt = performance.now() + 2600;
+    let lastFrameAt = performance.now();
     let running = true;
-    let temporaryPauseUntil = 0;
-    let userPausedFromTimer = false;
-    let currentStepMs = 140;
+    let toolbarFlashUntil = performance.now() + 4200;
+    let currentTicksPerSecond = 2;
+    let targetTicksPerSecond = 3;
     let generation = 0;
+    let activeHint = null;
+    let nextHintAt = performance.now() + 1400;
 
-    const stepMs = 140;
-    const resumeStepMs = 560;
+    const defaultTicksPerSecond = 3;
+    const resumeTicksPerSecond = 2;
+    const tpsRampPerSecond = 2;
+    const minTicksPerSecond = 1;
+    const maxTicksPerSecond = 60;
     const minCellSize = 7;
     const maxCellSize = 46;
     const fadeMs = 360;
+    const hintPromptMs = 3000;
+    const touchFirstInput = window.matchMedia(
+      "(hover: none), (pointer: coarse)",
+    ).matches;
     const greenRamp = [
       { r: 14, g: 68, b: 41 },
       { r: 0, g: 109, b: 50 },
@@ -140,6 +156,43 @@
       z: patternFromRows(["OOO", "..O", ".O.", "OOO"]), // Z
     };
 
+    const patternNames = {
+      a: "Acorn",
+      b: "Blinker",
+      c: "Clock",
+      d: "Diamond",
+      e: "Block",
+      f: "Flyer",
+      g: "Glider",
+      h: "House",
+      i: "Integral",
+      j: "Lightweight spark",
+      k: "Kiss",
+      l: "L",
+      m: "Twin blocks",
+      n: "Long snake",
+      o: "Ring",
+      p: "Pulsar",
+      q: "Quasi-loop",
+      r: "R-pentomino",
+      s: "Snake",
+      t: "Toad",
+      u: "U",
+      v: "V",
+      w: "W",
+      x: "Cross",
+      y: "Y",
+      z: "Z",
+    };
+    const hintTemplates = [
+      { label: "Espaço", action: "space", resultLabel: "Pause" },
+      ...Object.keys(patternNames).map((key) => ({
+        label: key.toUpperCase(),
+        action: `key:${key}`,
+        resultLabel: patternNames[key],
+      })),
+    ];
+
     function keyForCell(x, y) {
       return `${x},${y}`;
     }
@@ -215,12 +268,39 @@
 
     function toggleCellAtPointer() {
       const cell = screenToCell(pointer.x, pointer.y);
-      setCell(cell.x, cell.y, !liveCells.has(keyForCell(cell.x, cell.y)));
+      const key = keyForCell(cell.x, cell.y);
+      const shouldLive = !liveCells.has(key);
+      setCell(cell.x, cell.y, shouldLive);
+
+      if (shouldLive) {
+        clickBursts.push({
+          x: cell.x,
+          y: cell.y,
+          alive: true,
+          startedAt: performance.now(),
+        });
+      } else {
+        clickBursts.push({
+          x: cell.x,
+          y: cell.y,
+          alive: false,
+          startedAt: performance.now(),
+        });
+      }
     }
 
-    function addFloatingLetter(letter, x, y) {
+    function randomPatternKey() {
+      const keys = Object.keys(patterns);
+      return keys[Math.floor(Math.random() * keys.length)];
+    }
+
+    function randomHintDelay() {
+      return 2400 + Math.random() * 5200;
+    }
+
+    function addFloatingLabel(label, x, y) {
       floatingLetters.push({
-        letter: letter.toUpperCase(),
+        label,
         x,
         y,
         startedAt: performance.now(),
@@ -244,8 +324,122 @@
       });
 
       if (options.showLetter !== false) {
-        addFloatingLetter(patternKey, pointer.x, pointer.y);
+        const normalizedKey = patternKey.toLowerCase();
+        addFloatingLabel(
+          patternNames[normalizedKey] || normalizedKey.toUpperCase(),
+          pointer.x,
+          pointer.y,
+        );
       }
+    }
+
+    function pointPointerAtCanvasCenter() {
+      const bounds = canvas.getBoundingClientRect();
+      pointer.x = bounds.width * 0.5;
+      pointer.y = bounds.height * 0.5;
+      pointer.active = true;
+      return bounds;
+    }
+
+    function spawnPatternAtPointer(patternKey = randomPatternKey()) {
+      if (!pointer.active) {
+        pointPointerAtCanvasCenter();
+      }
+      spawnPattern(patternKey);
+    }
+
+    function randomVisibleCell() {
+      const bounds = canvas.getBoundingClientRect();
+      const left = Math.ceil(
+        (-view.offsetX + bounds.width * 0.08) / view.cellSize,
+      );
+      const right = Math.floor(
+        (-view.offsetX + bounds.width * 0.92) / view.cellSize,
+      );
+      const top = Math.ceil(
+        (-view.offsetY + bounds.height * 0.12) / view.cellSize,
+      );
+      const bottom = Math.floor(
+        (-view.offsetY + bounds.height * 0.84) / view.cellSize,
+      );
+
+      for (let attempt = 0; attempt < 80; attempt += 1) {
+        const candidate = {
+          x: left + Math.floor(Math.random() * Math.max(1, right - left + 1)),
+          y: top + Math.floor(Math.random() * Math.max(1, bottom - top + 1)),
+        };
+
+        if (isHintPositionClear(candidate, bounds)) {
+          return candidate;
+        }
+      }
+
+      return { x: right, y: top };
+    }
+
+    function isHintPositionClear(candidate, canvasBounds) {
+      const screen = cellToScreen(candidate.x, candidate.y);
+      const margin = Math.max(16, view.cellSize * 2);
+      const hintRect = {
+        left: canvasBounds.left + screen.x - margin,
+        top: canvasBounds.top + screen.y - margin,
+        right: canvasBounds.left + screen.x + view.cellSize + margin,
+        bottom: canvasBounds.top + screen.y + view.cellSize + margin,
+      };
+      const blockedRects = [
+        document.querySelector(".hero-inner")?.getBoundingClientRect(),
+        toolbar?.getBoundingClientRect(),
+      ].filter(Boolean);
+
+      return !blockedRects.some((rect) => {
+        const expanded = {
+          left: rect.left - margin,
+          top: rect.top - margin,
+          right: rect.right + margin,
+          bottom: rect.bottom + margin,
+        };
+        return !(
+          hintRect.right < expanded.left ||
+          hintRect.left > expanded.right ||
+          hintRect.bottom < expanded.top ||
+          hintRect.top > expanded.bottom
+        );
+      });
+    }
+
+    function spawnHint(timestamp) {
+      const template =
+        hintTemplates[Math.floor(Math.random() * hintTemplates.length)];
+      const position = randomVisibleCell();
+      activeHint = {
+        ...template,
+        ...position,
+        lastShownAt: 0,
+        bornAt: timestamp,
+      };
+    }
+
+    function completeHint(action) {
+      if (!activeHint) {
+        return;
+      }
+
+      const completed =
+        action === "dismiss" ||
+        activeHint.action === action ||
+        (activeHint.action.startsWith("key:") && activeHint.action === action);
+      if (!completed) {
+        return;
+      }
+
+      const screen = cellToScreen(activeHint.x, activeHint.y);
+      addFloatingLabel(
+        activeHint.resultLabel || "ok :)",
+        screen.x + view.cellSize * 0.5,
+        screen.y,
+      );
+      activeHint = null;
+      nextHintAt = performance.now() + randomHintDelay();
     }
 
     function seedInitialLife() {
@@ -271,37 +465,47 @@
       });
     }
 
-    function timerCenter() {
-      return {
-        x: canvas.clientWidth * 0.5,
-        y: canvas.clientHeight * 0.5,
-      };
-    }
-
-    function isTimerHit() {
-      const center = timerCenter();
-      return Math.hypot(pointer.x - center.x, pointer.y - center.y) <= 78;
-    }
-
     function pauseForInteraction() {
-      const now = performance.now();
-      if (temporaryPauseUntil > now && isTimerHit()) {
-        temporaryPauseUntil = 0;
-        userPausedFromTimer = true;
-        running = false;
-        return;
-      }
-
-      if (userPausedFromTimer) {
-        userPausedFromTimer = false;
-        running = true;
-        currentStepMs = resumeStepMs;
-        lastStepAt = now;
-        return;
-      }
-
       running = false;
-      temporaryPauseUntil = now + 3000;
+      toolbarFlashUntil = 0;
+    }
+
+    function resumeSimulation() {
+      running = true;
+      currentTicksPerSecond = Math.min(
+        currentTicksPerSecond,
+        resumeTicksPerSecond,
+      );
+      lastStepAt = performance.now();
+      toolbarFlashUntil = performance.now() + 1800;
+    }
+
+    function toggleSimulation() {
+      if (running) {
+        running = false;
+        toolbarFlashUntil = 0;
+        return;
+      }
+
+      resumeSimulation();
+    }
+
+    function adjustTargetTicksPerSecond(delta) {
+      targetTicksPerSecond = Math.max(
+        minTicksPerSecond,
+        Math.min(maxTicksPerSecond, targetTicksPerSecond + delta),
+      );
+      if (currentTicksPerSecond > targetTicksPerSecond) {
+        currentTicksPerSecond = targetTicksPerSecond;
+      }
+      toolbarFlashUntil = performance.now() + 1800;
+    }
+
+    function resetTargetTicksPerSecond() {
+      targetTicksPerSecond = defaultTicksPerSecond;
+      currentTicksPerSecond = resumeTicksPerSecond;
+      lastStepAt = performance.now();
+      toolbarFlashUntil = performance.now() + 1800;
     }
 
     function zoomAt(x, y, factor) {
@@ -318,6 +522,7 @@
     function stepLife() {
       const neighborCounts = new Map();
 
+      context.shadowBlur = 0;
       liveCells.forEach((key) => {
         const { x, y } = parseCell(key);
         for (let dy = -1; dy <= 1; dy += 1) {
@@ -368,23 +573,7 @@
       const right = Math.ceil((width - view.offsetX) / view.cellSize) + 1;
       const top = Math.floor(-view.offsetY / view.cellSize) - 1;
       const bottom = Math.ceil((height - view.offsetY) / view.cellSize) + 1;
-      const pad = Math.max(1, view.cellSize * 0.16);
-
-      for (let y = top; y <= bottom; y += 1) {
-        for (let x = left; x <= right; x += 1) {
-          const screen = cellToScreen(x, y);
-          const shimmer = Math.abs((x * 19 + y * 23 + generation) % 5) / 5;
-          context.fillStyle = `rgba(14, 68, 41, ${0.07 + shimmer * 0.025})`;
-          context.fillRect(
-            screen.x + pad,
-            screen.y + pad,
-            view.cellSize - pad * 2,
-            view.cellSize - pad * 2,
-          );
-        }
-      }
-
-      context.strokeStyle = "rgba(57, 211, 83, 0.035)";
+      context.strokeStyle = "rgba(57, 211, 83, 0.145)";
       context.lineWidth = 1;
       context.beginPath();
 
@@ -444,11 +633,11 @@
         );
         context.fillStyle = colorForIntensity(intensity, 0.92);
         context.globalAlpha = pulse;
-        context.shadowColor = colorForIntensity(intensity, 0.5);
-        context.shadowBlur = Math.max(
-          6,
-          view.cellSize * (0.28 + intensity * 0.012),
-        );
+        const glowEnabled = liveCells.size < 260;
+        if (glowEnabled) {
+          context.shadowColor = colorForIntensity(intensity, 0.42);
+          context.shadowBlur = Math.max(3, view.cellSize * 0.28);
+        }
         roundedRect(
           screen.x + pad,
           screen.y + pad,
@@ -458,7 +647,9 @@
         );
         context.fill();
         context.globalAlpha = 1;
-        context.shadowBlur = 0;
+        if (liveCells.size < 260) {
+          context.shadowBlur = 0;
+        }
 
         if (age < 1) {
           context.strokeStyle = `rgba(185, 255, 196, ${0.6 * (1 - age)})`;
@@ -467,70 +658,152 @@
       });
     }
 
+    function drawClickBursts(timestamp) {
+      for (let index = clickBursts.length - 1; index >= 0; index -= 1) {
+        const burst = clickBursts[index];
+        const progress = (timestamp - burst.startedAt) / 720;
+        if (progress >= 1) {
+          clickBursts.splice(index, 1);
+          continue;
+        }
+
+        const screen = cellToScreen(burst.x, burst.y);
+        const centerX = screen.x + view.cellSize * 0.5;
+        const centerY = screen.y + view.cellSize * 0.5;
+        const alpha = 1 - progress;
+        const ringSize = view.cellSize * (0.9 + progress * 1.35);
+        const color = burst.alive ? "255, 213, 92" : "255, 92, 92";
+        const fillColor = burst.alive ? "255, 252, 224" : "255, 140, 140";
+
+        context.save();
+        context.strokeStyle = `rgba(${color}, ${alpha * 0.78})`;
+        context.lineWidth = Math.max(1, view.cellSize * 0.08 * alpha);
+        context.shadowColor = `rgba(${color}, ${alpha * 0.7})`;
+        context.shadowBlur = 18 * alpha;
+        context.beginPath();
+        context.arc(centerX, centerY, ringSize * 0.5, 0, Math.PI * 2);
+        context.stroke();
+
+        context.fillStyle = `rgba(${fillColor}, ${alpha * 0.22})`;
+        context.fillRect(screen.x, screen.y, view.cellSize, view.cellSize);
+        context.restore();
+      }
+    }
+
     function drawFloatingLetters(timestamp) {
       for (let index = floatingLetters.length - 1; index >= 0; index -= 1) {
         const item = floatingLetters[index];
-        const progress = (timestamp - item.startedAt) / 1200;
+        const progress = (timestamp - item.startedAt) / 2400;
         if (progress >= 1) {
           floatingLetters.splice(index, 1);
           continue;
         }
 
-        const y = item.y - progress * 42;
-        const alpha = 1 - progress;
+        const y = item.y - progress * 34;
+        const hold = progress < 0.55 ? 1 : 1 - (progress - 0.55) / 0.45;
+        const alpha = Math.max(0, hold);
         context.save();
         context.font =
-          "800 18px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+          "800 16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
         context.textAlign = "center";
         context.textBaseline = "middle";
+        context.lineJoin = "round";
+        context.strokeStyle = `rgba(4, 18, 11, ${0.72 * alpha})`;
+        context.lineWidth = 5;
         context.fillStyle = `rgba(185, 255, 196, ${alpha})`;
         context.shadowColor = `rgba(57, 211, 83, ${alpha})`;
         context.shadowBlur = 18;
-        context.fillText(item.letter, item.x, y);
+        context.strokeText(item.label, item.x, y);
+        context.fillText(item.label, item.x, y);
         context.restore();
       }
     }
 
-    function drawPauseTimer(timestamp) {
-      if (!temporaryPauseUntil && !userPausedFromTimer && running) {
+    function getHintUnderPointer() {
+      if (!pointer.active || !activeHint) {
+        return null;
+      }
+
+      const cell = screenToCell(pointer.x, pointer.y);
+      return cell.x === activeHint.x && cell.y === activeHint.y
+        ? activeHint
+        : null;
+    }
+
+    function drawHintCells(timestamp) {
+      if (!activeHint && timestamp >= nextHintAt) {
+        spawnHint(timestamp);
+      }
+
+      if (!activeHint) {
         return;
       }
 
-      const remaining = Math.max(0, temporaryPauseUntil - timestamp);
-      const text = userPausedFromTimer
-        ? "PAUSADO"
-        : remaining > 0
-          ? `${Math.ceil(remaining / 1000)}`
-          : "";
-
-      if (!text) {
-        return;
-      }
+      const hoveredHint = getHintUnderPointer();
+      const hint = activeHint;
+      const index = hint.bornAt || 0;
+      const screen = cellToScreen(hint.x, hint.y);
+      const pulse = 0.5 + Math.sin(timestamp * 0.003 + index) * 0.5;
+      const isHovered = hint === hoveredHint;
+      const pad = view.cellSize * 0.08;
+      const size = view.cellSize - pad * 2;
+      const glow = isHovered ? 30 : 16 + pulse * 18;
 
       context.save();
-      const pulse = userPausedFromTimer
-        ? 1
-        : 1 + Math.sin(timestamp * 0.014) * 0.08;
-      context.font = `${userPausedFromTimer ? 800 : 900} ${userPausedFromTimer ? 28 : 72}px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif`;
-      context.textAlign = "center";
-      context.textBaseline = "middle";
-      const center = timerCenter();
-      context.translate(center.x, center.y);
-      context.scale(pulse, pulse);
-      context.fillStyle = "rgba(4, 18, 11, 0.48)";
-      context.beginPath();
-      context.arc(0, 0, userPausedFromTimer ? 76 : 84, 0, Math.PI * 2);
+      context.shadowColor = `rgba(255, 213, 92, ${0.48 + pulse * 0.38})`;
+      context.shadowBlur = glow;
+      context.fillStyle = isHovered
+        ? "rgba(255, 225, 92, 0.92)"
+        : `rgba(255, 213, 92, ${0.5 + pulse * 0.28})`;
+      roundedRect(
+        screen.x + pad,
+        screen.y + pad,
+        size,
+        size,
+        Math.min(7, view.cellSize * 0.28),
+      );
       context.fill();
-      context.strokeStyle = "rgba(57, 211, 83, 0.56)";
-      context.lineWidth = 2;
-      context.beginPath();
-      context.arc(0, 0, userPausedFromTimer ? 76 : 84, 0, Math.PI * 2);
+      context.shadowBlur = 0;
+      context.strokeStyle = `rgba(42, 30, 0, ${0.38 + pulse * 0.2})`;
+      context.lineWidth = Math.max(1, view.cellSize * 0.2);
       context.stroke();
-      context.fillStyle = "rgba(185, 255, 196, 0.94)";
-      context.shadowColor = "rgba(57, 211, 83, 0.62)";
-      context.shadowBlur = userPausedFromTimer ? 18 : 34;
-      context.fillText(text, 0, userPausedFromTimer ? 0 : 2);
+      context.strokeStyle = isHovered
+        ? "rgba(255, 255, 236, 0.96)"
+        : `rgba(255, 245, 173, ${0.72 + pulse * 0.22})`;
+      context.lineWidth = Math.max(1, view.cellSize * 0.07);
+      context.stroke();
       context.restore();
+
+      if (
+        hoveredHint &&
+        !touchFirstInput &&
+        timestamp - hoveredHint.lastShownAt > hintPromptMs
+      ) {
+        hoveredHint.lastShownAt = timestamp;
+        addFloatingLabel(hoveredHint.label, pointer.x, pointer.y - 14);
+      }
+    }
+
+    function updateToolbar(timestamp) {
+      const visible = Boolean(!running || timestamp < toolbarFlashUntil);
+      document.body.dataset.lifeToolbar = visible ? "on" : "off";
+      if (!toolbar || !toolbarToggle) {
+        return;
+      }
+      toolbar.dataset.running = String(running);
+      toolbar.dataset.tps = targetTicksPerSecond.toFixed(0);
+      toolbarToggle.textContent = running ? "Pause (space)" : "Play (space)";
+      toolbarToggle.setAttribute("aria-pressed", String(!running));
+
+      if (tpsMeterLabel && tpsMeterFill) {
+        const currentTps = currentTicksPerSecond.toFixed(1);
+        const progress = Math.max(
+          0.04,
+          Math.min(1, currentTicksPerSecond / maxTicksPerSecond),
+        );
+        tpsMeterLabel.textContent = `TPS ${currentTps}`;
+        tpsMeterFill.style.width = `${progress * 100}%`;
+      }
     }
 
     function drawPointerCell() {
@@ -553,18 +826,20 @@
     function render(timestamp = performance.now()) {
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
-
-      if (temporaryPauseUntil && timestamp >= temporaryPauseUntil) {
-        temporaryPauseUntil = 0;
-        running = true;
-        currentStepMs = resumeStepMs;
-        lastStepAt = timestamp;
-      }
+      const frameSeconds = Math.min(
+        0.1,
+        Math.max(0, (timestamp - lastFrameAt) / 1000),
+      );
+      lastFrameAt = timestamp;
 
       if (running) {
-        currentStepMs = Math.max(stepMs, currentStepMs * 0.985);
+        currentTicksPerSecond = Math.min(
+          targetTicksPerSecond,
+          currentTicksPerSecond + tpsRampPerSecond * frameSeconds,
+        );
       }
 
+      const currentStepMs = 1000 / currentTicksPerSecond;
       if (running && timestamp - lastStepAt >= currentStepMs) {
         const steps = Math.min(
           4,
@@ -576,36 +851,23 @@
         lastStepAt = timestamp;
       }
 
-      if (timestamp >= nextAutoSpawnAt) {
-        const keys = Object.keys(patterns);
-        const previousPointer = { ...pointer };
-        if (!pointer.active) {
-          pointer.x = width * (0.55 + Math.random() * 0.28);
-          pointer.y = height * (0.24 + Math.random() * 0.36);
-          pointer.active = true;
-        }
-        spawnPattern(keys[Math.floor(Math.random() * keys.length)]);
-        pointer.x = previousPointer.x;
-        pointer.y = previousPointer.y;
-        pointer.active = previousPointer.active;
-        nextAutoSpawnAt = timestamp + 6400 + Math.random() * 3600;
-      }
-
       context.clearRect(0, 0, width, height);
       context.fillStyle = "rgba(4, 18, 11, 0.96)";
       context.fillRect(0, 0, width, height);
       drawGrid(width, height);
       drawCells(timestamp);
+      drawClickBursts(timestamp);
+      drawHintCells(timestamp);
       drawPointerCell();
       drawFloatingLetters(timestamp);
-      drawPauseTimer(timestamp);
+      updateToolbar(timestamp);
 
       canvas.dataset.generation = String(generation);
       canvas.dataset.cells = String(liveCells.size);
       canvas.dataset.running = String(running);
-      canvas.dataset.temporaryPause = String(temporaryPauseUntil > timestamp);
       canvas.dataset.zoom = view.cellSize.toFixed(2);
-      canvas.dataset.stepMs = currentStepMs.toFixed(1);
+      canvas.dataset.tps = currentTicksPerSecond.toFixed(1);
+      canvas.dataset.targetTps = targetTicksPerSecond.toFixed(1);
 
       frameHandle = window.requestAnimationFrame(render);
     }
@@ -623,6 +885,10 @@
 
     function onPointerDown(event) {
       if (event.button !== 0) {
+        return;
+      }
+
+      if (event.target !== canvas) {
         return;
       }
 
@@ -656,35 +922,81 @@
 
     function onPointerUp() {
       if (drag.active && !drag.moved && pointer.active) {
-        if (!isTimerHit()) {
+        const hint = getHintUnderPointer();
+        if (hint && touchFirstInput) {
+          if (hint.action === "space") {
+            toggleSimulation();
+            completeHint("space");
+          } else {
+            const key = hint.action.replace("key:", "");
+            spawnPatternAtPointer(patterns[key] ? key : randomPatternKey());
+            completeHint(hint.action);
+          }
+        } else {
           toggleCellAtPointer();
+          if (hint) {
+            completeHint("dismiss");
+          }
         }
         pauseForInteraction();
       }
       drag.active = false;
     }
 
+    function handleToolbarClick(event) {
+      const control = event.target.closest("[data-life-action]");
+      if (!control || !toolbar?.contains(control)) {
+        return;
+      }
+
+      event.preventDefault();
+      const action = control.dataset.lifeAction;
+
+      if (action === "toggle") {
+        toggleSimulation();
+        return;
+      }
+
+      if (action === "zoom-in") {
+        const bounds = pointPointerAtCanvasCenter();
+        zoomAt(bounds.width * 0.5, bounds.height * 0.5, 1.18);
+      } else if (action === "zoom-out") {
+        const bounds = pointPointerAtCanvasCenter();
+        zoomAt(bounds.width * 0.5, bounds.height * 0.5, 1 / 1.18);
+      } else if (action === "tps-down") {
+        adjustTargetTicksPerSecond(-2);
+      } else if (action === "tps-up") {
+        adjustTargetTicksPerSecond(2);
+      } else if (action === "tps-reset") {
+        resetTargetTicksPerSecond();
+      }
+
+      toolbarFlashUntil = performance.now() + 1800;
+    }
+
     function onKeyDown(event) {
       if (event.key === " " || event.code === "Space") {
         event.preventDefault();
-        running = !running;
-        temporaryPauseUntil = 0;
-        userPausedFromTimer = !running;
-        if (running) {
-          currentStepMs = resumeStepMs;
-        }
-        lastStepAt = performance.now();
+        toggleSimulation();
+        completeHint("space");
         return;
       }
 
       if (event.key === "Enter") {
-        running = !running;
-        temporaryPauseUntil = 0;
-        userPausedFromTimer = !running;
-        if (running) {
-          currentStepMs = resumeStepMs;
-        }
-        lastStepAt = performance.now();
+        event.preventDefault();
+        resetTargetTicksPerSecond();
+        return;
+      }
+
+      if (event.key === "," || event.key === "<") {
+        event.preventDefault();
+        adjustTargetTicksPerSecond(-2);
+        return;
+      }
+
+      if (event.key === "." || event.key === ">") {
+        event.preventDefault();
+        adjustTargetTicksPerSecond(2);
         return;
       }
 
@@ -735,7 +1047,8 @@
       }
 
       if (event.key.length === 1 && /[a-z]/i.test(event.key)) {
-        spawnPattern(event.key);
+        spawnPatternAtPointer(event.key);
+        completeHint(`key:${event.key.toLowerCase()}`);
       }
     }
 
@@ -747,6 +1060,7 @@
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointerleave", hidePointer);
       canvas.removeEventListener("contextmenu", onContextMenu);
+      toolbar?.removeEventListener("click", handleToolbarClick);
       window.removeEventListener("keydown", onKeyDown);
     }
 
@@ -765,6 +1079,7 @@
     window.addEventListener("pointerup", onPointerUp, { passive: true });
     window.addEventListener("pointerleave", hidePointer);
     canvas.addEventListener("contextmenu", onContextMenu);
+    toolbar?.addEventListener("click", handleToolbarClick);
     window.addEventListener("keydown", onKeyDown);
 
     return {
