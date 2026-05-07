@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Projetos - Gabriel Saraiva</title>
+    <title data-i18n="meta.projects.title">Projetos - Gabriel Saraiva</title>
     <meta
+      data-i18n-attr="content: meta.projects.description"
       name="description"
       content="Projetos e experimentos online de Gabriel Saraiva."
     />
@@ -75,6 +76,27 @@
       .topbar a:hover,
       .topbar a:focus {
         color: var(--white);
+      }
+
+      .language-toggle {
+        display: inline-grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--white);
+        cursor: pointer;
+        font: inherit;
+        line-height: 1;
+      }
+
+      .language-toggle:hover,
+      .language-toggle:focus-visible {
+        border-color: rgba(255, 255, 255, 0.36);
+        background: rgba(255, 255, 255, 0.15);
+        outline: none;
       }
 
       .nav-links {
@@ -249,17 +271,24 @@
     <nav class="topbar" aria-label="Navegação">
       <a href="../index.html">Gabriel Saraiva</a>
       <div class="nav-links">
-        <a href="../index.html">Voltar</a>
-        <a href="../resume/index.html">Currículo</a>
-        <a href="https://github.com/gabrsar">GitHub</a>
-        <a href="https://br.linkedin.com/in/gabrielsaraiva7">LinkedIn</a>
+        <a href="../index.html" data-i18n="nav.back">Voltar</a>
+        <a href="../resume/index.html" data-i18n="nav.resume">Currículo</a>
+        <a href="https://github.com/gabrsar" data-i18n="nav.github">GitHub</a>
+        <a
+          href="https://br.linkedin.com/in/gabrielsaraiva7"
+          data-i18n="nav.linkedin"
+          >LinkedIn</a
+        >
+        <button class="language-toggle" type="button" data-language-toggle>
+          🇺🇸
+        </button>
       </div>
     </nav>
 
     <header>
-      <p class="eyebrow">Projetos</p>
-      <h1>Experimentos</h1>
-      <p>
+      <p class="eyebrow" data-i18n="projects.eyebrow">Projetos</p>
+      <h1 data-i18n="projects.title">Experimentos</h1>
+      <p data-i18n="projects.intro">
         Coisas que eu fiz para me divertir ou dar risada, ou porque eu fiquei
         curioso de como seria no meio de uma conversa de bar...
       </p>
@@ -269,9 +298,11 @@
       <div class="project-list">
         <a class="project" href="https://github.com/gabrsar/goes-wallpaper">
           <div>
-            <span class="project-label">Desktop</span>
-            <h2>GOES Wallpaper</h2>
-            <p>
+            <span class="project-label" data-i18n="project.goes.label"
+              >Desktop</span
+            >
+            <h2 data-i18n="project.goes.title">GOES Wallpaper</h2>
+            <p data-i18n="project.goes.text">
               Um programa que deixa seu papel de parede com foto da Terra em
               tempo real, usando dados dos satélites GOES/NOAA.
             </p>
@@ -280,9 +311,11 @@
         </a>
         <a class="project" href="../lightning/index.html">
           <div>
-            <span class="project-label">Canvas</span>
-            <h2>Lightning Drawer</h2>
-            <p>
+            <span class="project-label" data-i18n="project.lightning.label"
+              >Canvas</span
+            >
+            <h2 data-i18n="project.lightning.title">Lightning Drawer</h2>
+            <p data-i18n="project.lightning.text">
               Um desenho generativo de raios, ramificações e flashes de céu.
             </p>
           </div>
@@ -290,25 +323,35 @@
         </a>
         <a class="project" href="../unit-circle/index.html">
           <div>
-            <span class="project-label">Matemática</span>
-            <h2>Unit Circle</h2>
-            <p>Um brinquedo visual para seno, cosseno, tangente e ângulos.</p>
+            <span class="project-label" data-i18n="project.unit.label"
+              >Matemática</span
+            >
+            <h2 data-i18n="project.unit.title">Unit Circle</h2>
+            <p data-i18n="project.unit.text">
+              Um brinquedo visual para seno, cosseno, tangente e ângulos.
+            </p>
           </div>
           <span class="arrow" aria-hidden="true">›</span>
         </a>
         <a class="project" href="../infinite/index.html">
           <div>
-            <span class="project-label">Generativo</span>
-            <h2>Infinite Drawer</h2>
-            <p>Uma curva que continua desenhando e passeando pela tela.</p>
+            <span class="project-label" data-i18n="project.infinite.label"
+              >Generativo</span
+            >
+            <h2 data-i18n="project.infinite.title">Infinite Drawer</h2>
+            <p data-i18n="project.infinite.text">
+              Uma curva que continua desenhando e passeando pela tela.
+            </p>
           </div>
           <span class="arrow" aria-hidden="true">›</span>
         </a>
         <a class="project" href="../lemos-2022/index.html">
           <div>
-            <span class="project-label">Presente</span>
-            <h2>Birthday Balloons</h2>
-            <p>
+            <span class="project-label" data-i18n="project.birthday.label"
+              >Presente</span
+            >
+            <h2 data-i18n="project.birthday.title">Birthday Balloons</h2>
+            <p data-i18n="project.birthday.text">
               Uma pequena cena animada de aniversário com balões e tipografia
               colorida.
             </p>
@@ -317,9 +360,11 @@
         </a>
         <a class="project" href="../monkey-rotator/index.html">
           <div>
-            <span class="project-label">3D</span>
-            <h2>Monkey Spinner</h2>
-            <p>
+            <span class="project-label" data-i18n="project.monkey.label"
+              >3D</span
+            >
+            <h2 data-i18n="project.monkey.title">Monkey Spinner</h2>
+            <p data-i18n="project.monkey.text">
               Um experimento WEBGL/p5.js com um modelo 3D girando no espaço.
             </p>
           </div>
@@ -329,7 +374,10 @@
     </main>
 
     <footer>
-      <span>Feito com IA, mas pedido com carinho.</span>
+      <span data-i18n="footer.made.short"
+        >Feito com IA, mas pedido com carinho.</span
+      >
     </footer>
+    <script src="../assets/js/i18n.js" defer></script>
   </body>
 </html>

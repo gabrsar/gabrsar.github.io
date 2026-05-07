@@ -1,10 +1,14 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Currículo - Gabriel Saraiva</title>
-    <meta name="description" content="Currículo em PDF de Gabriel Saraiva.">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="meta.resume.title">Currículo - Gabriel Saraiva</title>
+    <meta
+      name="description"
+      content="Currículo em PDF de Gabriel Saraiva."
+      data-i18n-attr="content: meta.resume.description"
+    />
     <style>
       :root {
         --ink: #121417;
@@ -29,9 +33,20 @@
         margin: 0;
         color: var(--ink);
         background:
-          radial-gradient(circle at 18% 8%, rgba(255, 255, 255, 0.9), transparent 30rem),
+          radial-gradient(
+            circle at 18% 8%,
+            rgba(255, 255, 255, 0.9),
+            transparent 30rem
+          ),
           linear-gradient(135deg, var(--paper) 0%, #ebe5d9 100%);
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
       }
 
       a {
@@ -79,6 +94,28 @@
       .nav-links a:hover,
       .nav-links a:focus {
         color: var(--ink);
+      }
+
+      .language-toggle {
+        display: inline-grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 253, 248, 0.72);
+        color: var(--ink);
+        cursor: pointer;
+        font: inherit;
+        line-height: 1;
+        backdrop-filter: blur(16px);
+      }
+
+      .language-toggle:hover,
+      .language-toggle:focus-visible {
+        background: var(--white);
+        border-color: rgba(18, 20, 23, 0.26);
+        outline: none;
       }
 
       .intro {
@@ -258,44 +295,94 @@
       <nav class="topbar" aria-label="Navegação">
         <a class="brand" href="../index.html">Gabriel Saraiva</a>
         <div class="nav-links">
-          <a href="../index.html">Voltar</a>
-          <a href="../projects/index.html">Projetos</a>
-          <a href="https://github.com/gabrsar">GitHub</a>
-          <a href="https://br.linkedin.com/in/gabrielsaraiva7">LinkedIn</a>
+          <a href="../index.html" data-i18n="nav.back">Voltar</a>
+          <a href="../projects/index.html" data-i18n="nav.projects">Projetos</a>
+          <a href="https://github.com/gabrsar" data-i18n="nav.github">GitHub</a>
+          <a
+            href="https://br.linkedin.com/in/gabrielsaraiva7"
+            data-i18n="nav.linkedin"
+            >LinkedIn</a
+          >
+          <button class="language-toggle" type="button" data-language-toggle>
+            🇺🇸
+          </button>
         </div>
       </nav>
 
       <header class="intro">
         <div>
-          <p class="eyebrow">Currículo</p>
-          <h1>Um pouco do que eu já fiz.</h1>
-          <p class="intro-copy">
-            Algumas pessoas e empresas preferem uma versão em PDF do meu currículo, apesar de ser a mesma coisa que está no LinkedIn
-            (eu literalmente copio de lá e coloco aqui), mas se é isso que você quer, aqui está.
-            Só não tem meus dados de contato por motivos óbvios, mas é só me dar um oi no LinkedIn que a gente conversa.
+          <p class="eyebrow" data-i18n="resume.eyebrow">Currículo</p>
+          <h1 data-i18n="resume.title">Um pouco do que eu já fiz.</h1>
+          <p class="intro-copy" data-i18n="resume.intro">
+            Algumas pessoas e empresas preferem uma versão em PDF do meu
+            currículo, apesar de ser a mesma coisa que está no LinkedIn (eu
+            literalmente copio de lá e coloco aqui), mas se é isso que você
+            quer, aqui está. Só não tem meus dados de contato por motivos
+            óbvios, mas é só me dar um oi no LinkedIn que a gente conversa.
           </p>
         </div>
-        <div class="actions" aria-label="Ações do currículo">
-          <a class="viewer-link" href="./Gabriel-Saraiva-Staff-Software-Engineer-Resume.pdf" download>Download</a>
-          <button id="fullscreen-toggle" type="button" aria-pressed="false">Tela cheia</button>
+        <div
+          class="actions"
+          aria-label="Ações do currículo"
+          data-i18n-attr="aria-label: resume.actionsLabel"
+        >
+          <a
+            class="viewer-link"
+            href="./Gabriel-Saraiva-Staff-Software-Engineer-Resume.pdf"
+            download
+            data-i18n="resume.download"
+            >Download</a
+          >
+          <button
+            id="fullscreen-toggle"
+            type="button"
+            aria-pressed="false"
+            data-i18n="resume.fullscreen"
+          >
+            Tela cheia
+          </button>
         </div>
       </header>
 
-      <section class="viewer" id="viewer" aria-label="Visualizador do currículo em PDF">
+      <section
+        class="viewer"
+        id="viewer"
+        aria-label="Visualizador do currículo em PDF"
+        data-i18n-attr="aria-label: resume.viewerLabel"
+      >
         <div class="fullscreen-panel">
-          <button id="fullscreen-exit" type="button">Sair</button>
+          <button id="fullscreen-exit" type="button" data-i18n="resume.exit">
+            Sair
+          </button>
         </div>
         <div class="pages" id="pages">
-          <article class="pdf-page" aria-label="Página 1">
-            <img src="./pages/resume-page-1.png" alt="Página 1 do currículo de Gabriel Saraiva">
+          <article
+            class="pdf-page"
+            aria-label="Página 1"
+            data-i18n-attr="aria-label: resume.page1"
+          >
+            <img
+              src="./pages/resume-page-1.png"
+              alt="Página 1 do currículo de Gabriel Saraiva"
+              data-i18n-attr="alt: resume.page1Alt"
+            />
           </article>
-          <article class="pdf-page" aria-label="Página 2">
-            <img src="./pages/resume-page-2.png" alt="Página 2 do currículo de Gabriel Saraiva">
+          <article
+            class="pdf-page"
+            aria-label="Página 2"
+            data-i18n-attr="aria-label: resume.page2"
+          >
+            <img
+              src="./pages/resume-page-2.png"
+              alt="Página 2 do currículo de Gabriel Saraiva"
+              data-i18n-attr="alt: resume.page2Alt"
+            />
           </article>
         </div>
       </section>
     </main>
 
+    <script src="../assets/js/i18n.js" defer></script>
     <script>
       const viewer = document.querySelector("#viewer");
       const fullscreenButton = document.querySelector("#fullscreen-toggle");
@@ -310,7 +397,9 @@
         const active = isFullscreen();
         document.body.classList.toggle("resume-fullscreen", active);
         fullscreenButton.setAttribute("aria-pressed", String(active));
-        fullscreenButton.textContent = active ? "Sair da tela cheia" : "Tela cheia";
+        fullscreenButton.textContent = active
+          ? window.SiteI18n?.t("resume.exitFullscreen") || "Sair da tela cheia"
+          : window.SiteI18n?.t("resume.fullscreen") || "Tela cheia";
       }
 
       async function enterFullscreen() {
@@ -351,6 +440,8 @@
         fallbackFullscreen = false;
         syncFullscreenState();
       });
+
+      document.addEventListener("site-language-change", syncFullscreenState);
     </script>
   </body>
 </html>

@@ -184,8 +184,16 @@
       y: "Y",
       z: "Z",
     };
+    function t(key, replacements) {
+      return window.SiteI18n?.t?.(key, replacements) || key;
+    }
+
     const hintTemplates = [
-      { label: "Espaço", action: "space", resultLabel: "Pause" },
+      {
+        label: () => t("life.hint.space"),
+        action: "space",
+        resultLabel: () => t("life.result.space"),
+      },
       ...Object.keys(patternNames).map((key) => ({
         label: key.toUpperCase(),
         action: `key:${key}`,
@@ -434,7 +442,9 @@
 
       const screen = cellToScreen(activeHint.x, activeHint.y);
       addFloatingLabel(
-        activeHint.resultLabel || "ok :)",
+        typeof activeHint.resultLabel === "function"
+          ? activeHint.resultLabel()
+          : activeHint.resultLabel || "ok :)",
         screen.x + view.cellSize * 0.5,
         screen.y,
       );
@@ -780,7 +790,13 @@
         timestamp - hoveredHint.lastShownAt > hintPromptMs
       ) {
         hoveredHint.lastShownAt = timestamp;
-        addFloatingLabel(hoveredHint.label, pointer.x, pointer.y - 14);
+        addFloatingLabel(
+          typeof hoveredHint.label === "function"
+            ? hoveredHint.label()
+            : hoveredHint.label,
+          pointer.x,
+          pointer.y - 14,
+        );
       }
     }
 
@@ -792,7 +808,7 @@
       }
       toolbar.dataset.running = String(running);
       toolbar.dataset.tps = targetTicksPerSecond.toFixed(0);
-      toolbarToggle.textContent = running ? "Pause (space)" : "Play (space)";
+      toolbarToggle.textContent = running ? t("life.pause") : t("life.play");
       toolbarToggle.setAttribute("aria-pressed", String(!running));
 
       if (tpsMeterLabel && tpsMeterFill) {
@@ -801,7 +817,7 @@
           0.04,
           Math.min(1, currentTicksPerSecond / maxTicksPerSecond),
         );
-        tpsMeterLabel.textContent = `TPS ${currentTps}`;
+        tpsMeterLabel.textContent = t("life.tpsLabel", { value: currentTps });
         tpsMeterFill.style.width = `${progress * 100}%`;
       }
     }

@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gabriel Saraiva</title>
     <meta
+      data-i18n-attr="content: meta.home.description"
       name="description"
       content="Site pessoal de Gabriel Saraiva: currículo, projetos e experimentos feitos por diversão."
     />
     <meta property="og:title" content="Gabriel Saraiva" />
     <meta
+      data-i18n-attr="content: meta.home.ogDescription"
       property="og:description"
       content="Currículo, projetos e experimentos de programação feitos por diversão."
     />
@@ -18,16 +20,29 @@
     <link rel="stylesheet" href="./assets/css/site.css" />
   </head>
   <body>
-    <a class="skip-link" href="#content">Pular para o conteúdo</a>
+    <a class="skip-link" href="#content" data-i18n="skip.content"
+      >Pular para o conteúdo</a
+    >
 
-    <nav class="site-nav" aria-label="Navegação principal">
+    <nav
+      class="site-nav"
+      aria-label="Navegação principal"
+      data-i18n-attr="aria-label: nav.main"
+    >
       <div class="nav-inner">
         <a class="brand" href="./index.html">Gabriel Saraiva</a>
         <div class="nav-links">
-          <a href="./projects/index.html">Projetos</a>
-          <a href="./resume/index.html">Currículo</a>
-          <a href="https://github.com/gabrsar">GitHub</a>
-          <a href="https://br.linkedin.com/in/gabrielsaraiva7">LinkedIn</a>
+          <a href="./projects/index.html" data-i18n="nav.projects">Projetos</a>
+          <a href="./resume/index.html" data-i18n="nav.resume">Currículo</a>
+          <a href="https://github.com/gabrsar" data-i18n="nav.github">GitHub</a>
+          <a
+            href="https://br.linkedin.com/in/gabrielsaraiva7"
+            data-i18n="nav.linkedin"
+            >LinkedIn</a
+          >
+          <button class="language-toggle" type="button" data-language-toggle>
+            🇺🇸
+          </button>
         </div>
       </div>
     </nav>
@@ -37,19 +52,24 @@
         <canvas id="hero-background-canvas" aria-hidden="true"></canvas>
         <div class="life-toolbar" id="life-toolbar">
           <span>
-            Isso é um
+            <span data-i18n="life.about.prefix">Isso é um</span>
             <a
               href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
               target="_blank"
               rel="noopener noreferrer"
               >Game of Life</a
-            >.
+            ><span data-i18n="life.about.suffix">.</span>
           </span>
-          <div class="life-toolbar-actions" aria-label="Controles do jogo">
+          <div
+            class="life-toolbar-actions"
+            aria-label="Controles do jogo"
+            data-i18n-attr="aria-label: life.controlsLabel"
+          >
             <button
               class="life-toolbar-button"
               id="life-toolbar-toggle"
               data-life-action="toggle"
+              data-i18n="life.pause"
             >
               Pause (space)
             </button>
@@ -59,13 +79,25 @@
             <button class="life-toolbar-button" data-life-action="zoom-in">
               +
             </button>
-            <button class="life-toolbar-button" data-life-action="tps-down">
+            <button
+              class="life-toolbar-button"
+              data-life-action="tps-down"
+              data-i18n="life.tpsDown"
+            >
               TPS -(,)
             </button>
-            <button class="life-toolbar-button" data-life-action="tps-up">
+            <button
+              class="life-toolbar-button"
+              data-life-action="tps-up"
+              data-i18n="life.tpsUp"
+            >
               TPS +(.)
             </button>
-            <button class="life-toolbar-button" data-life-action="tps-reset">
+            <button
+              class="life-toolbar-button"
+              data-life-action="tps-reset"
+              data-i18n="life.tpsReset"
+            >
               Reset TPS (enter)
             </button>
             <span class="life-tps-meter" id="life-tps-meter">
@@ -81,78 +113,95 @@
         </div>
       </div>
       <div class="hero-inner">
-        <p class="eyebrow">Software, algoritmos, e outras coisas estranhas...</p>
-        <h1>Oi. <span class="welcome">Bem vindo.</span></h1>
+        <p class="eyebrow" data-i18n="home.eyebrow">
+          Software, algoritmos, e outras coisas estranhas...
+        </p>
+        <h1>
+          <span data-i18n="home.title.hello">Oi.</span>
+          <span class="welcome" data-i18n="home.title.welcome">Bem vindo.</span>
+        </h1>
         <p class="intro">
-          Sou apaixonado em resolver problemas complexos e entender como as coisas realmente funcionam.
-          Uso isso para desenvolver soluções reais, eficientes e elegantes, as vezes, com software.
-          <br/> <br/>
-
-          Caso você esteja procurando meu currículo ou queira entrar em contato, tem um botãozinho por aí.
-
+          <span data-i18n="home.intro"
+            >Sou apaixonado em resolver problemas complexos e entender como as
+            coisas realmente funcionam. Uso isso para desenvolver soluções
+            reais, eficientes e elegantes, às vezes, com software.</span
+          >
           <br /><br />
-          No mais, é isso mesmo. Obrigado pela visita.
+          <span data-i18n="home.intro.links"
+            >Caso você esteja procurando meu currículo ou queira entrar em
+            contato, tem um botãozinho por aí.</span
+          >
+          <br /><br />
+          <span data-i18n="home.intro.close"
+            >No mais, é isso mesmo. Obrigado pela visita.</span
+          >
         </p>
       </div>
     </header>
 
     <main class="below" id="content">
-      <section class="section" aria-label="Rotas do site">
+      <section
+        class="section"
+        aria-label="Rotas do site"
+        data-i18n-attr="aria-label: home.routesLabel"
+      >
         <div class="route-grid">
           <a class="route" href="./resume/index.html">
-            <span>Currículo</span>
+            <span data-i18n="home.card.resume.label">Currículo</span>
             <div>
-              <h2>Um pouco do que eu já fiz</h2>
-              <p>
+              <h2 data-i18n="home.card.resume.title">
+                Um pouco do que eu já fiz
+              </h2>
+              <p data-i18n="home.card.resume.text">
                 Tem muito mais coisas, mas isso é o que cabe em duas páginas
                 rsrs.
               </p>
             </div>
           </a>
           <a class="route" href="./projects/index.html">
-            <span>Projetos</span>
+            <span data-i18n="home.card.projects.label">Projetos</span>
             <div>
-              <h2>Experimentos</h2>
-              <p>
+              <h2 data-i18n="home.card.projects.title">Experimentos</h2>
+              <p data-i18n="home.card.projects.text">
                 Coisas que eu fiz para me divertir, dar risada ou porque fiquei
                 curioso no meio de uma conversa de bar.
               </p>
             </div>
           </a>
           <a class="route" href="https://br.linkedin.com/in/gabrielsaraiva7">
-            <span>Contato</span>
+            <span data-i18n="home.card.linkedin.label">Contato</span>
             <div>
-              <h2>LinkedIn</h2>
-              <p>
+              <h2 data-i18n="home.card.linkedin.title">LinkedIn</h2>
+              <p data-i18n="home.card.linkedin.text">
                 O jeito mais simples de falar comigo e pedir e-mail ou telefone.
               </p>
             </div>
           </a>
           <a class="route" href="https://github.com/gabrsar">
-            <span>Código</span>
+            <span data-i18n="home.card.github.label">Código</span>
             <div>
-              <h2>GitHub</h2>
-              <p>
+              <h2 data-i18n="home.card.github.title">GitHub</h2>
+              <p data-i18n="home.card.github.text">
                 Onde ficam meus repositórios, experimentos e algumas ideias em
                 andamento.
               </p>
             </div>
           </a>
           <a class="route" href="https://www.instagram.com/olhanoceu/">
-            <span>Astronomia</span>
+            <span data-i18n="home.card.instagram.label">Astronomia</span>
             <div>
-              <h2>Olha No Céu</h2>
-              <p>
+              <h2 data-i18n="home.card.instagram.title">Olha No Céu</h2>
+              <p data-i18n="home.card.instagram.text">
                 Um projeto que tenho no meu tempo livre. Ótimo para conhecer
                 gente nova.
               </p>
             </div>
           </a>
           <a class="route" href="https://www.printables.com/@gabrsar">
-            <span>Fabricação</span>
+            <span data-i18n="home.card.printables.label">Fabricação</span>
             <div>
-              <h2>3D Printing</h2>
-              <p>
+              <h2 data-i18n="home.card.printables.title">3D Printing</h2>
+              <p data-i18n="home.card.printables.text">
                 Meu perfil no Printables, com peças, suportes e pequenas
                 soluções físicas para ideias que escaparam da tela.
               </p>
@@ -161,19 +210,26 @@
         </div>
       </section>
 
-      <section class="section" aria-label="Nota">
-        <p class="note">Viu? Falei que era só isso.</p>
-        <p>Tenha um ótimo dia. :)</p>
+      <section
+        class="section"
+        aria-label="Nota"
+        data-i18n-attr="aria-label: home.note.label"
+      >
+        <p class="note" data-i18n="home.note">Viu? Falei que era só isso.</p>
+        <p data-i18n="home.note.day">Tenha um ótimo dia. :)</p>
       </section>
     </main>
 
     <footer>
       <div class="footer-inner">
         <span>Gabriel Saraiva</span>
-        <span>Feito com IA, mas pedido com carinho por um humano.</span>
+        <span data-i18n="footer.made"
+          >Feito com IA, mas pedido com carinho por um humano.</span
+        >
       </div>
     </footer>
 
+    <script src="./assets/js/i18n.js" defer></script>
     <script
       src="./assets/js/background-effects/game-of-life/effect.js"
       defer
@@ -182,6 +238,7 @@
       src="./assets/js/background-effects/lorenz-attractor/effect.js"
       defer
     ></script>
+    <script src="./assets/js/background-effects/index.js" defer></script>
     <script src="./assets/js/site.js" defer></script>
   </body>
 </html>
