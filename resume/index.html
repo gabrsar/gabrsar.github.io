@@ -82,6 +82,7 @@
 
       .nav-links {
         display: flex;
+        align-items: center;
         flex-wrap: wrap;
         justify-content: flex-end;
         gap: 16px;
@@ -100,13 +101,17 @@
         display: inline-grid;
         width: 34px;
         height: 34px;
+        min-width: 34px;
+        min-height: 34px;
         place-items: center;
         border: 1px solid var(--line);
         border-radius: 999px;
+        padding: 0;
         background: rgba(255, 253, 248, 0.72);
         color: var(--ink);
         cursor: pointer;
         font: inherit;
+        font-size: 1rem;
         line-height: 1;
         backdrop-filter: blur(16px);
       }
@@ -159,7 +164,8 @@
       }
 
       .viewer-link,
-      button {
+      .actions button,
+      .fullscreen-panel button {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -177,8 +183,10 @@
 
       .viewer-link:hover,
       .viewer-link:focus,
-      button:hover,
-      button:focus {
+      .actions button:hover,
+      .actions button:focus,
+      .fullscreen-panel button:hover,
+      .fullscreen-panel button:focus {
         background: var(--white);
         border-color: rgba(18, 20, 23, 0.26);
       }
@@ -322,11 +330,11 @@
           <p class="eyebrow" data-i18n="resume.eyebrow">Currículo</p>
           <h1 data-i18n="resume.title">Um pouco do que eu já fiz.</h1>
           <p class="intro-copy" data-i18n="resume.intro">
-            Algumas pessoas e empresas preferem uma versão em PDF do meu
-            currículo, apesar de ser a mesma coisa que está no LinkedIn (eu
-            literalmente copio de lá e coloco aqui), mas se é isso que você
-            quer, aqui está. Só não tem meus dados de contato por motivos
-            óbvios, mas é só me dar um oi no LinkedIn que a gente conversa.
+            Algumas pessoas e empresas preferem uma versão em PDF do currículo,
+            então deixei uma cópia por aqui também. O conteúdo é bem parecido
+            com o que está no LinkedIn, só com um pouco mais de cuidado na
+            apresentação. Para conversar ou pedir meus dados de contato, é só me
+            chamar por lá.
           </p>
         </div>
         <div

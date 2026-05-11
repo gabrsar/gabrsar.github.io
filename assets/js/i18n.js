@@ -108,7 +108,7 @@
       "resume.eyebrow": "Currículo",
       "resume.title": "Um pouco do que eu já fiz.",
       "resume.intro":
-        "Algumas pessoas e empresas preferem uma versão em PDF do meu currículo, apesar de ser a mesma coisa que está no LinkedIn (eu literalmente copio de lá e coloco aqui), mas se é isso que você quer, aqui está. Só não tem meus dados de contato por motivos óbvios, mas é só me dar um oi no LinkedIn que a gente conversa.",
+        "Algumas pessoas e empresas preferem uma versão em PDF do currículo, então deixei uma cópia por aqui também. O conteúdo é bem parecido com o que está no LinkedIn, só com um pouco mais de cuidado na apresentação. Para conversar ou pedir meus dados de contato, é só me chamar por lá.",
       "resume.actionsLabel": "Ações do currículo",
       "resume.download": "Download",
       "resume.fullscreen": "Tela cheia",
@@ -258,7 +258,7 @@
       "resume.eyebrow": "Resume",
       "resume.title": "A bit of what I have done.",
       "resume.intro":
-        "Some people and companies prefer a PDF version of my resume, even though it is the same thing that is on LinkedIn (I literally copy it from there and put it here), but if that is what you want, here it is. It does not include my contact details for obvious reasons, but just say hi on LinkedIn and we can talk.",
+        "Some people and companies prefer a PDF version of a resume, so I keep a copy here too. The content is very close to what is on LinkedIn, just presented with a little more care. If you want to talk or need my contact details, just say hi there.",
       "resume.actionsLabel": "Resume actions",
       "resume.download": "Download",
       "resume.fullscreen": "Fullscreen",

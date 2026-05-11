@@ -22,6 +22,14 @@
         --clay: #b95f4c;
       }
 
+      @font-face {
+        font-family: "Material Symbols Rounded";
+        font-style: normal;
+        font-weight: 500;
+        src: url("../assets/fonts/material-symbols-rounded.ttf")
+          format("truetype");
+      }
+
       * {
         box-sizing: border-box;
       }
@@ -146,6 +154,7 @@
       }
 
       .project {
+        --accent: var(--teal);
         position: relative;
         display: flex;
         min-height: 218px;
@@ -172,12 +181,12 @@
         background:
           radial-gradient(
             circle at 18% 18%,
-            rgba(227, 177, 91, 0.16),
+            color-mix(in srgb, var(--accent), transparent 84%),
             transparent 12rem
           ),
           radial-gradient(
             circle at 88% 92%,
-            rgba(31, 111, 104, 0.12),
+            color-mix(in srgb, var(--accent), transparent 86%),
             transparent 13rem
           );
         transition: opacity 0.2s ease;
@@ -186,8 +195,10 @@
 
       .project:hover,
       .project:focus {
-        border-color: rgba(31, 111, 104, 0.46);
-        box-shadow: 0 24px 64px rgba(21, 23, 25, 0.12);
+        border-color: color-mix(in srgb, var(--accent), transparent 42%);
+        box-shadow:
+          0 24px 64px rgba(21, 23, 25, 0.12),
+          inset 0 0 0 1px color-mix(in srgb, var(--accent), transparent 76%);
         transform: translateY(-2px);
       }
 
@@ -206,6 +217,41 @@
         font-size: 0.78rem;
         font-weight: 820;
         text-transform: uppercase;
+      }
+
+      .project-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .project-icon {
+        display: inline-grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid color-mix(in srgb, var(--accent), transparent 60%);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--accent), transparent 88%);
+        color: color-mix(in srgb, var(--accent), var(--ink) 34%);
+        font-family: "Material Symbols Rounded";
+        font-feature-settings: "liga";
+        font-size: 1.28rem;
+        font-weight: 500;
+        line-height: 1;
+        text-transform: none;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .project:hover .project-icon,
+      .project:focus .project-icon {
+        background: var(--accent);
+        color: var(--white);
+        transform: scale(1.04);
       }
 
       .project h2 {
@@ -306,14 +352,18 @@
       <div class="project-list">
         <a
           class="project"
+          style="--accent: #2f81f7"
           href="https://github.com/gabrsar/goes-wallpaper"
           target="_blank"
           rel="noopener noreferrer"
         >
           <div>
-            <span class="project-label" data-i18n="project.goes.label"
-              >Desktop</span
-            >
+            <div class="project-meta">
+              <span class="project-label" data-i18n="project.goes.label"
+                >Desktop</span
+              >
+              <span class="project-icon" aria-hidden="true">public</span>
+            </div>
             <h2 data-i18n="project.goes.title">GOES Wallpaper</h2>
             <p data-i18n="project.goes.text">
               Um programa que deixa seu papel de parede com foto da Terra em
@@ -322,11 +372,18 @@
           </div>
           <span class="arrow" aria-hidden="true">›</span>
         </a>
-        <a class="project" href="../lightning/index.html">
+        <a
+          class="project"
+          href="../lightning/index.html"
+          style="--accent: #f0b429"
+        >
           <div>
-            <span class="project-label" data-i18n="project.lightning.label"
-              >Canvas</span
-            >
+            <div class="project-meta">
+              <span class="project-label" data-i18n="project.lightning.label"
+                >Canvas</span
+              >
+              <span class="project-icon" aria-hidden="true">electric_bolt</span>
+            </div>
             <h2 data-i18n="project.lightning.title">Lightning Drawer</h2>
             <p data-i18n="project.lightning.text">
               Um desenho generativo de raios, ramificações e flashes de céu.
@@ -334,11 +391,18 @@
           </div>
           <span class="arrow" aria-hidden="true">›</span>
         </a>
-        <a class="project" href="../unit-circle/index.html">
+        <a
+          class="project"
+          href="../unit-circle/index.html"
+          style="--accent: #1f6f68"
+        >
           <div>
-            <span class="project-label" data-i18n="project.unit.label"
-              >Matemática</span
-            >
+            <div class="project-meta">
+              <span class="project-label" data-i18n="project.unit.label"
+                >Matemática</span
+              >
+              <span class="project-icon" aria-hidden="true">functions</span>
+            </div>
             <h2 data-i18n="project.unit.title">Unit Circle</h2>
             <p data-i18n="project.unit.text">
               Um brinquedo visual para seno, cosseno, tangente e ângulos.
@@ -346,11 +410,18 @@
           </div>
           <span class="arrow" aria-hidden="true">›</span>
         </a>
-        <a class="project" href="../infinite/index.html">
+        <a
+          class="project"
+          href="../infinite/index.html"
+          style="--accent: #6e40c9"
+        >
           <div>
-            <span class="project-label" data-i18n="project.infinite.label"
-              >Generativo</span
-            >
+            <div class="project-meta">
+              <span class="project-label" data-i18n="project.infinite.label"
+                >Generativo</span
+              >
+              <span class="project-icon" aria-hidden="true">all_inclusive</span>
+            </div>
             <h2 data-i18n="project.infinite.title">Infinite Drawer</h2>
             <p data-i18n="project.infinite.text">
               Uma curva que continua desenhando e passeando pela tela.
@@ -358,11 +429,18 @@
           </div>
           <span class="arrow" aria-hidden="true">›</span>
         </a>
-        <a class="project" href="../lemos-2022/index.html">
+        <a
+          class="project"
+          href="../lemos-2022/index.html"
+          style="--accent: #d946ef"
+        >
           <div>
-            <span class="project-label" data-i18n="project.birthday.label"
-              >Presente</span
-            >
+            <div class="project-meta">
+              <span class="project-label" data-i18n="project.birthday.label"
+                >Presente</span
+              >
+              <span class="project-icon" aria-hidden="true">celebration</span>
+            </div>
             <h2 data-i18n="project.birthday.title">Birthday Balloons</h2>
             <p data-i18n="project.birthday.text">
               Uma pequena cena animada de aniversário com balões e tipografia
@@ -371,11 +449,18 @@
           </div>
           <span class="arrow" aria-hidden="true">›</span>
         </a>
-        <a class="project" href="../monkey-rotator/index.html">
+        <a
+          class="project"
+          href="../monkey-rotator/index.html"
+          style="--accent: #b95f4c"
+        >
           <div>
-            <span class="project-label" data-i18n="project.monkey.label"
-              >3D</span
-            >
+            <div class="project-meta">
+              <span class="project-label" data-i18n="project.monkey.label"
+                >3D</span
+              >
+              <span class="project-icon" aria-hidden="true">view_in_ar</span>
+            </div>
             <h2 data-i18n="project.monkey.title">Monkey Spinner</h2>
             <p data-i18n="project.monkey.text">
               Um experimento WEBGL/p5.js com um modelo 3D girando no espaço.

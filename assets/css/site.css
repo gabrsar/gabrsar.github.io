@@ -10,6 +10,13 @@
   --clay: #b95f4c;
 }
 
+@font-face {
+  font-family: "Material Symbols Rounded";
+  font-style: normal;
+  font-weight: 500;
+  src: url("../fonts/material-symbols-rounded.ttf") format("truetype");
+}
+
 * {
   box-sizing: border-box;
 }
@@ -463,6 +470,8 @@ body[data-superhot="on"] footer {
 }
 
 .route {
+  --accent: var(--teal);
+  position: relative;
   display: flex;
   min-height: 190px;
   flex-direction: column;
@@ -474,15 +483,88 @@ body[data-superhot="on"] footer {
   color: var(--ink);
   text-decoration: none;
   box-shadow: 0 18px 46px rgba(21, 23, 25, 0.08);
+  overflow: hidden;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.route::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent), transparent 84%),
+      transparent 48%
+    ),
+    radial-gradient(
+      circle at 88% 16%,
+      color-mix(in srgb, var(--accent), transparent 78%),
+      transparent 8rem
+    );
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
 .route:hover,
 .route:focus {
-  border-color: rgba(31, 111, 104, 0.46);
+  border-color: color-mix(in srgb, var(--accent), transparent 42%);
+  box-shadow:
+    0 24px 64px rgba(21, 23, 25, 0.12),
+    inset 0 0 0 1px color-mix(in srgb, var(--accent), transparent 76%);
   transform: translateY(-2px);
 }
 
-.route span {
+.route:hover::before,
+.route:focus::before {
+  opacity: 1;
+}
+
+.route > * {
+  position: relative;
+  z-index: 1;
+}
+
+.route-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-icon {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--accent), transparent 60%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent), transparent 88%);
+  color: color-mix(in srgb, var(--accent), var(--ink) 34%);
+  font-family: "Material Symbols Rounded";
+  font-feature-settings: "liga";
+  font-size: 1.28rem;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: none;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.route:hover .card-icon,
+.route:focus .card-icon {
+  background: var(--accent);
+  color: var(--white);
+  transform: scale(1.04);
+}
+
+.route-meta > span:first-child {
   color: var(--muted);
   font-size: 0.88rem;
   font-weight: 760;
