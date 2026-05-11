@@ -121,104 +121,107 @@
       return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
     }
 
-    const patterns = {
-      a: patternFromRows([".O.....", "...O...", "OO..OOO"]), // Acorn
-      b: patternFromRows(["OOO"]), // Blinker
-      c: patternFromRows(["..OO", "OOO.", ".O.."]), // Century
-      d: patternFromRows(["......O.", "OO......", ".O...OOO"]), // Diehard
-      e: patternFromRows([".OOO", "OO..", ".OO."]), // E-heptomino
-      f: patternFromRows([".O..O", "O....", "O...O", "OOOO."]), // Lightweight spaceship
-      g: patternFromRows([
-        "........................O...........",
-        "......................O.O...........",
-        "............OO......OO............OO",
-        "...........O...O....OO............OO",
-        "OO........O.....O...OO..............",
-        "OO........O...O.OO....O.O...........",
-        "..........O.....O.......O...........",
-        "...........O...O....................",
-        "............OO......................",
-      ]), // Gosper glider gun
-      h: patternFromRows(["OOO", "O.O", "O.."]), // Herschel
-      i: patternFromRows(["OO..", "O.O.", ".O.O", "..OO"]), // Integral sign
-      j: patternFromRows(["OOOOOO"]), // Line-of-six spark
-      k: patternFromRows([
-        "OOOOOO.OO",
-        "OOOOOO.OO",
-        ".......OO",
-        "OO.......",
-        "OO.......",
-        "OO.......",
-        "OO.OOOOOO",
-        "OO.OOOOOO",
-      ]), // Kok's galaxy
-      l: patternFromRows([".OO.", "O..O", ".O.O", "..O."]), // Loaf
-      m: patternFromRows(["...O..", ".O...O", "O.....", "O....O", "OOOOO."]), // Middleweight spaceship
-      n: patternFromRows(["OO..", "O.O.", "..O.", "..OO"]), // Long snake
-      o: patternFromRows(["OOO", "OOO", ".O.", "..O", "..O"]), // O-pentomino
-      p: patternFromRows([
-        "..OOO...OOO..",
-        ".............",
-        "O....O.O....O",
-        "O....O.O....O",
-        "O....O.O....O",
-        "..OOO...OOO..",
-        ".............",
-        "..OOO...OOO..",
-        "O....O.O....O",
-        "O....O.O....O",
-        "O....O.O....O",
-        ".............",
-        "..OOO...OOO..",
-      ]), // Pulsar
-      q: patternFromRows([
-        ".........O.........",
-        ".......O.O.........",
-        "......O.O..........",
-        "OO...O..O.......OO.",
-        "OO....O.O.......OO.",
-        ".......O.O.........",
-        ".........O.........",
-      ]), // Queen bee shuttle
-      r: patternFromRows([".OO", "OO.", ".O."]), // R-pentomino
-      s: patternFromRows(["OOO", "O.O", "OOO"]), // Switch engine predecessor
-      t: patternFromRows([".OOO", "OOO."]), // Toad
-      u: patternFromRows(["O.O", "OOO"]), // U-pentomino
-      v: patternFromRows(["O..", "O..", "OOO"]), // V-pentomino
-      w: patternFromRows(["O..", "OO.", ".OO"]), // W-pentomino
-      x: patternFromRows([".O.", "OOO", ".O."]), // X-pentomino
-      y: patternFromRows(["O.", "OO", "O.", "O."]), // Y-pentomino
-      z: patternFromRows(["OO.", ".O.", ".O.", ".OO"]), // Z-hexomino
+    const patternDefinitions = {
+      a: { name: "Acorn", rows: [".O.....", "...O...", "OO..OOO"] },
+      b: { name: "Blinker", rows: ["OOO"] },
+      c: { name: "Century", rows: ["..OO", "OOO.", ".O.."] },
+      d: { name: "Diehard", rows: ["......O.", "OO......", ".O...OOO"] },
+      e: { name: "E-heptomino", rows: [".OOO", "OO..", ".OO."] },
+      f: {
+        name: "Lightweight spaceship",
+        rows: [".O..O", "O....", "O...O", "OOOO."],
+      },
+      g: {
+        name: "Gosper glider gun",
+        rows: [
+          "........................O...........",
+          "......................O.O...........",
+          "............OO......OO............OO",
+          "...........O...O....OO............OO",
+          "OO........O.....O...OO..............",
+          "OO........O...O.OO....O.O...........",
+          "..........O.....O.......O...........",
+          "...........O...O....................",
+          "............OO......................",
+        ],
+      },
+      h: { name: "Herschel", rows: ["OOO", "O.O", "O.."] },
+      i: { name: "Integral sign", rows: ["OO..", "O.O.", ".O.O", "..OO"] },
+      j: { name: "Line-of-six spark", rows: ["OOOOOO"] },
+      k: {
+        name: "Kok's galaxy",
+        rows: [
+          "OOOOOO.OO",
+          "OOOOOO.OO",
+          ".......OO",
+          "OO.......",
+          "OO.......",
+          "OO.......",
+          "OO.OOOOOO",
+          "OO.OOOOOO",
+        ],
+      },
+      l: { name: "Loaf", rows: [".OO.", "O..O", ".O.O", "..O."] },
+      m: {
+        name: "Middleweight spaceship",
+        rows: ["...O..", ".O...O", "O.....", "O....O", "OOOOO."],
+      },
+      n: { name: "Long snake", rows: ["OO..", "O.O.", "..O.", "..OO"] },
+      o: { name: "O-pentomino", rows: ["OOO", "OOO", ".O.", "..O", "..O"] },
+      p: {
+        name: "Pulsar",
+        rows: [
+          "..OOO...OOO..",
+          ".............",
+          "O....O.O....O",
+          "O....O.O....O",
+          "O....O.O....O",
+          "..OOO...OOO..",
+          ".............",
+          "..OOO...OOO..",
+          "O....O.O....O",
+          "O....O.O....O",
+          "O....O.O....O",
+          ".............",
+          "..OOO...OOO..",
+        ],
+      },
+      q: {
+        name: "Queen bee shuttle",
+        rows: [
+          ".........O.........",
+          ".......O.O.........",
+          "......O.O..........",
+          "OO...O..O.......OO.",
+          "OO....O.O.......OO.",
+          ".......O.O.........",
+          ".........O.........",
+        ],
+      },
+      r: { name: "R-pentomino", rows: [".OO", "OO.", ".O."] },
+      s: { name: "Switch engine predecessor", rows: ["OOO", "O.O", "OOO"] },
+      t: { name: "Toad", rows: [".OOO", "OOO."] },
+      u: { name: "U-pentomino", rows: ["O.O", "OOO"] },
+      v: { name: "V-pentomino", rows: ["O..", "O..", "OOO"] },
+      w: { name: "W-pentomino", rows: ["O..", "OO.", ".OO"] },
+      x: { name: "X-pentomino", rows: [".O.", "OOO", ".O."] },
+      y: { name: "Y-pentomino", rows: ["O.", "OO", "O.", "O."] },
+      z: { name: "Z-hexomino", rows: ["OO.", ".O.", ".O.", ".OO"] },
     };
 
-    const patternNames = {
-      a: "Acorn",
-      b: "Blinker",
-      c: "Century",
-      d: "Diehard",
-      e: "E-heptomino",
-      f: "Lightweight spaceship",
-      g: "Gosper glider gun",
-      h: "Herschel",
-      i: "Integral sign",
-      j: "Line-of-six spark",
-      k: "Kok's galaxy",
-      l: "Loaf",
-      m: "Middleweight spaceship",
-      n: "Long snake",
-      o: "O-pentomino",
-      p: "Pulsar",
-      q: "Queen bee shuttle",
-      r: "R-pentomino",
-      s: "Switch engine predecessor",
-      t: "Toad",
-      u: "U-pentomino",
-      v: "V-pentomino",
-      w: "W-pentomino",
-      x: "X-pentomino",
-      y: "Y-pentomino",
-      z: "Z-hexomino",
-    };
+    const patterns = Object.fromEntries(
+      Object.entries(patternDefinitions).map(([key, definition]) => [
+        key,
+        patternFromRows(definition.rows),
+      ]),
+    );
+
+    const patternNames = Object.fromEntries(
+      Object.entries(patternDefinitions).map(([key, definition]) => [
+        key,
+        definition.name,
+      ]),
+    );
     function t(key, replacements) {
       return window.SiteI18n?.t?.(key, replacements) || key;
     }
