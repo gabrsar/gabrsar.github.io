@@ -1,19 +1,32 @@
-import {
-  GlobalWorkerOptions,
-  TextLayer,
-  getDocument,
-} from "../vendor/pdfjs/pdf.mjs";
-import {
-  AnnotationLayerBuilder,
-  EventBus,
-  LinkTarget,
-  SimpleLinkService,
-} from "../vendor/pdfjs/pdf_viewer.mjs";
+import * as pdfjs from "../vendor/pdfjs/pdf.mjs";
 
-const PDF_URL = "./Gabriel-Saraiva-Staff-Software-Engineer-Resume.pdf";
+const { GlobalWorkerOptions, TextLayer, getDocument } = pdfjs;
+
+const PDF_URL = new URL(
+  "../../resume/Gabriel-Saraiva-Staff-Software-Engineer-Resume.pdf",
+  import.meta.url,
+).href;
+const PDF_IMAGES_URL = new URL("../vendor/pdfjs/images/", import.meta.url).href;
+const PDF_STANDARD_FONTS_URL = new URL(
+  "../vendor/pdfjs/standard_fonts/",
+  import.meta.url,
+).href;
 const MAX_PAGE_WIDTH = 816;
+const ZOOM_SCALE = 1.72;
 
-GlobalWorkerOptions.workerSrc = "../assets/vendor/pdfjs/pdf.worker.mjs";
+GlobalWorkerOptions.workerSrc = new URL(
+  "../vendor/pdfjs/pdf.worker.mjs",
+  import.meta.url,
+).href;
+
+let viewerToolsPromise;
+
+function loadViewerTools() {
+  // The PDF.js viewer helpers expect the core bundle on this global.
+  globalThis.pdfjsLib ||= pdfjs;
+  viewerToolsPromise ||= import("../vendor/pdfjs/pdf_viewer.mjs");
+  return viewerToolsPromise;
+}
 
 function installPageZoom(page) {
   function updateZoomOrigin(event) {
@@ -42,12 +55,18 @@ function pageWidth(container, viewport) {
   return Math.min(available, MAX_PAGE_WIDTH, viewport.width);
 }
 
-async function renderPage({ pdf, pageNumber, container, linkService }) {
+async function renderPage({
+  pdf,
+  pageNumber,
+  container,
+  linkService,
+  AnnotationLayerBuilder,
+}) {
   const page = await pdf.getPage(pageNumber);
   const baseViewport = page.getViewport({ scale: 1 });
   const width = pageWidth(container, baseViewport);
   const viewport = page.getViewport({ scale: width / baseViewport.width });
-  const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+  const outputScale = Math.min((window.devicePixelRatio || 1) * ZOOM_SCALE, 4);
 
   const pageElement = document.createElement("article");
   pageElement.className = "pdf-page pdf-js-page";
@@ -86,7 +105,7 @@ async function renderPage({ pdf, pageNumber, container, linkService }) {
   const annotationLayer = new AnnotationLayerBuilder({
     pdfPage: page,
     linkService,
-    imageResourcesPath: "../assets/vendor/pdfjs/images/",
+    imageResourcesPath: PDF_IMAGES_URL,
     onAppend: (layer) => pageElement.append(layer),
   });
   await annotationLayer.render({ viewport });
@@ -98,13 +117,22 @@ async function renderResumePdf() {
     return;
   }
 
+  if (window.location.protocol === "file:") {
+    console.warn(
+      "PDF.js needs an HTTP origin; keeping rendered image fallback for file:// preview.",
+    );
+    return;
+  }
+
   const fallback = container.innerHTML;
   try {
     const pdf = await getDocument({
       url: PDF_URL,
-      standardFontDataUrl: "../assets/vendor/pdfjs/standard_fonts/",
+      standardFontDataUrl: PDF_STANDARD_FONTS_URL,
     }).promise;
 
+    const { AnnotationLayerBuilder, EventBus, LinkTarget, SimpleLinkService } =
+      await loadViewerTools();
     const eventBus = new EventBus();
     const linkService = new SimpleLinkService({
       eventBus,
@@ -115,7 +143,13 @@ async function renderResumePdf() {
 
     container.replaceChildren();
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-      await renderPage({ pdf, pageNumber, container, linkService });
+      await renderPage({
+        pdf,
+        pageNumber,
+        container,
+        linkService,
+        AnnotationLayerBuilder,
+      });
     }
   } catch (error) {
     console.warn(

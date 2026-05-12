@@ -232,6 +232,9 @@
       }
 
       .pdf-page.is-zoomed {
+        position: relative;
+        z-index: 2;
+        overflow: visible;
         cursor: zoom-out;
       }
 
@@ -531,6 +534,6 @@
 
       document.querySelectorAll(".pdf-page").forEach(installFallbackPageZoom);
     </script>
-    <script type="module" src="../assets/js/resume-pdf-viewer.mjs"></script>
+    <script type="module" src="../assets/js/resume-pdf-viewer.mjs?v=3"></script>
   </body>
 </html>
