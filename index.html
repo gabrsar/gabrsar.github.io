@@ -112,10 +112,16 @@
               <span class="life-tps-meter-label" id="life-tps-meter-label"
                 >TPS 2.0</span
               >
-              <span class="life-tps-meter-track" aria-hidden="true">
-                <span class="life-tps-meter-fill" id="life-tps-meter-fill">
-                </span>
-              </span>
+              <input
+                class="life-tps-slider"
+                id="life-tps-slider"
+                type="range"
+                min="0.2"
+                max="20"
+                step="0.1"
+                value="3"
+                aria-label="TPS"
+              />
             </span>
           </div>
         </div>
@@ -132,16 +138,12 @@
           <span data-i18n="home.intro"
             >Sou apaixonado em resolver problemas complexos e entender como as
             coisas realmente funcionam. Uso isso para desenvolver soluções
-            reais, eficientes e elegantes, às vezes, com software.</span
+            reais, eficientes e robustas, às vezes, com software.</span
           >
           <br /><br />
           <span data-i18n="home.intro.links"
             >Caso você esteja procurando meu currículo ou queira entrar em
-            contato, tem um botãozinho por aí.</span
-          >
-          <br /><br />
-          <span data-i18n="home.intro.close"
-            >No mais, é isso mesmo. Obrigado pela visita.</span
+            contato, tem um link ali em cima!</span
           >
         </p>
       </div>
@@ -267,7 +269,6 @@
         aria-label="Nota"
         data-i18n-attr="aria-label: home.note.label"
       >
-        <p class="note" data-i18n="home.note">Viu? Falei que era só isso.</p>
         <p data-i18n="home.note.day">Tenha um ótimo dia. :)</p>
       </section>
     </main>

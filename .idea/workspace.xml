@@ -7,9 +7,8 @@
     <list default="true" id="cd2acb1f-55fb-494e-aa92-12f5875e435a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/css/site.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/css/site.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/background-effects/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/background-effects/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/js/background-effects/game-of-life/effect.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/background-effects/game-of-life/effect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/site.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/site.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/i18n.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/i18n.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

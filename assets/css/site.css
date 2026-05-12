@@ -235,22 +235,10 @@ body[data-life-toolbar="on"] .life-toolbar {
   font-weight: 800;
 }
 
-.life-tps-meter-track {
-  width: 86px;
-  height: 6px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: rgba(57, 211, 83, 0.13);
-}
-
-.life-tps-meter-fill {
-  display: block;
-  width: 10%;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #1f883d, #39d353, #b9ffc4);
-  box-shadow: 0 0 12px rgba(57, 211, 83, 0.42);
-  transition: width 0.16s ease;
+.life-tps-slider {
+  width: 112px;
+  accent-color: #39d353;
+  cursor: pointer;
 }
 
 .life-toolbar-button {
@@ -297,11 +285,11 @@ body[data-background-effect="game-of-life"] .field::after {
   background:
     linear-gradient(
       90deg,
-      rgba(4, 18, 11, 0.62) 0%,
-      rgba(4, 18, 11, 0.42) 40%,
-      rgba(4, 18, 11, 0.08) 100%
+      rgba(4, 18, 11, 0.34) 0%,
+      rgba(4, 18, 11, 0.2) 34%,
+      rgba(4, 18, 11, 0.03) 72%
     ),
-    linear-gradient(180deg, rgba(4, 18, 11, 0.04), rgba(4, 18, 11, 0.36));
+    linear-gradient(180deg, rgba(4, 18, 11, 0.02), rgba(4, 18, 11, 0.22));
 }
 
 body[data-superhot="on"] .field::after {
@@ -322,25 +310,26 @@ body[data-superhot="on"] .field::after {
     opacity 0.5s ease,
     transform 0.5s ease,
     color 0.5s ease;
+  pointer-events: none;
 }
 
 .hero-inner::before {
   content: "";
   position: absolute;
   z-index: -1;
-  top: -26px;
-  bottom: -22px;
-  left: -26px;
-  width: min(900px, calc(100% + 52px));
+  top: -18px;
+  bottom: -16px;
+  left: -18px;
+  width: min(760px, calc(100% + 36px));
   border-radius: 8px;
   background: linear-gradient(
     4deg,
-    rgba(0, 0, 0, 0.48) 0%,
-    rgba(0, 0, 0, 0.32) 42%,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.18) 44%,
     rgba(0, 0, 0, 0) 100%
   );
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   pointer-events: none;
 }
 

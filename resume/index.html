@@ -9,6 +9,7 @@
       content="Currículo em PDF de Gabriel Saraiva."
       data-i18n-attr="content: meta.resume.description"
     />
+    <link rel="stylesheet" href="../assets/vendor/pdfjs/pdf_viewer.css" />
     <style>
       :root {
         --ink: #121417;
@@ -203,6 +204,8 @@
       }
 
       .pdf-page {
+        --zoom-x: 50%;
+        --zoom-y: 50%;
         width: min(100%, 8.5in);
         overflow: hidden;
         border-radius: 4px;
@@ -210,12 +213,54 @@
         box-shadow:
           0 30px 78px rgba(18, 20, 23, 0.24),
           0 8px 20px rgba(18, 20, 23, 0.13);
+        cursor: zoom-in;
       }
 
       .pdf-page img {
         display: block;
         width: 100%;
         height: auto;
+        transform-origin: var(--zoom-x) var(--zoom-y);
+        transition: transform 0.18s ease;
+        will-change: transform;
+      }
+
+      .pdf-page:hover {
+        box-shadow:
+          0 34px 88px rgba(18, 20, 23, 0.3),
+          0 10px 24px rgba(18, 20, 23, 0.16);
+      }
+
+      .pdf-page.is-zoomed {
+        cursor: zoom-out;
+      }
+
+      .pdf-page.is-zoomed img {
+        transform: scale(1.72);
+      }
+
+      .pdf-js-page {
+        position: relative;
+      }
+
+      .pdf-js-page canvas {
+        display: block;
+      }
+
+      .pdf-js-page .textLayer,
+      .pdf-js-page .annotationLayer {
+        transform-origin: var(--zoom-x) var(--zoom-y);
+        transition: transform 0.18s ease;
+      }
+
+      .pdf-js-page.is-zoomed canvas,
+      .pdf-js-page.is-zoomed .textLayer,
+      .pdf-js-page.is-zoomed .annotationLayer {
+        transform: scale(1.72);
+      }
+
+      .pdf-js-page.is-zoomed img {
+        transform: none;
       }
 
       body.resume-fullscreen {
@@ -458,6 +503,34 @@
       });
 
       document.addEventListener("site-language-change", syncFullscreenState);
+
+      function installFallbackPageZoom(page) {
+        function updateZoomOrigin(event) {
+          const rect = page.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * 100;
+          const y = ((event.clientY - rect.top) / rect.height) * 100;
+          page.style.setProperty(
+            "--zoom-x",
+            `${Math.max(0, Math.min(100, x))}%`,
+          );
+          page.style.setProperty(
+            "--zoom-y",
+            `${Math.max(0, Math.min(100, y))}%`,
+          );
+        }
+
+        page.addEventListener("pointermove", updateZoomOrigin);
+        page.addEventListener("click", (event) => {
+          updateZoomOrigin(event);
+          page.classList.toggle("is-zoomed");
+        });
+        page.addEventListener("pointerleave", () => {
+          page.classList.remove("is-zoomed");
+        });
+      }
+
+      document.querySelectorAll(".pdf-page").forEach(installFallbackPageZoom);
     </script>
+    <script type="module" src="../assets/js/resume-pdf-viewer.mjs"></script>
   </body>
 </html>

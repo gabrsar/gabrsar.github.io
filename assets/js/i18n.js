@@ -39,10 +39,9 @@
       "home.title.hello": "Oi.",
       "home.title.welcome": "Bem vindo.",
       "home.intro":
-        "Sou apaixonado em resolver problemas complexos e entender como as coisas realmente funcionam. Uso isso para desenvolver soluções reais, eficientes e elegantes, às vezes, com software.",
+        "Sou apaixonado em resolver problemas complexos e entender como as coisas realmente funcionam. Uso isso para desenvolver soluções reais, eficientes e robustas, às vezes, com software.",
       "home.intro.links":
-        "Caso você esteja procurando meu currículo ou queira entrar em contato, tem um botãozinho por aí.",
-      "home.intro.close": "No mais, é isso mesmo. Obrigado pela visita.",
+        "Caso você esteja procurando meu currículo ou queira entrar em contato, tem um link ali em cima!",
       "home.routesLabel": "Rotas do site",
       "home.card.resume.label": "Currículo",
       "home.card.resume.title": "Um pouco do que eu já fiz",
@@ -69,7 +68,6 @@
       "home.card.printables.text":
         "Uma coleção de peças, modelos CAD, suportes e pequenas soluções físicas para ideias que escaparam da tela.",
       "home.note.label": "Nota",
-      "home.note": "Viu? Falei que era só isso.",
       "home.note.day": "Tenha um ótimo dia. :)",
       "footer.made":
         "Feito com IA, mas pedido com carinho e ajustado por um humano.",
@@ -189,10 +187,9 @@
       "home.title.hello": "Hi.",
       "home.title.welcome": "Welcome.",
       "home.intro":
-        "I love solving complex problems and understanding how things really work. I use that to build real, efficient, elegant solutions, sometimes with software.",
+        "I love solving complex problems and understanding how things really work. I use that to build real, efficient, robust solutions, sometimes with software.",
       "home.intro.links":
-        "If you are looking for my resume or want to get in touch, there is a little button around here.",
-      "home.intro.close": "That is pretty much it. Thanks for visiting.",
+        "If you are looking for my resume or want to get in touch, there is a link up there!",
       "home.routesLabel": "Site links",
       "home.card.resume.label": "Resume",
       "home.card.resume.title": "A bit of what I have done",
@@ -219,7 +216,6 @@
       "home.card.printables.text":
         "A collection of parts, CAD models, supports, and small physical solutions for ideas that escaped the screen.",
       "home.note.label": "Note",
-      "home.note": "See? I told you that was it.",
       "home.note.day": "Have a great day. :)",
       "footer.made":
         "Made with AI, but requested with care and adjusted by a human.",

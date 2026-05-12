@@ -25,7 +25,7 @@
     const toolbar = document.querySelector("#life-toolbar");
     const toolbarToggle = document.querySelector("#life-toolbar-toggle");
     const tpsMeterLabel = document.querySelector("#life-tps-meter-label");
-    const tpsMeterFill = document.querySelector("#life-tps-meter-fill");
+    const tpsSlider = document.querySelector("#life-tps-slider");
     const liveCells = new Set();
     const bornCells = new Map();
     const fadedCells = new Map();
@@ -58,21 +58,22 @@
     let running = true;
     let hasInteracted = false;
     let toolbarFlashUntil = 0;
-    let currentTicksPerSecond = 2;
+    let currentTicksPerSecond = 1 / 3;
     let targetTicksPerSecond = 3;
     let generation = 0;
     let activeHint = null;
     let nextHintAt = performance.now() + 1400;
 
     const defaultTicksPerSecond = 3;
-    const resumeTicksPerSecond = 2;
-    const tpsRampPerSecond = 2;
-    const minTicksPerSecond = 1;
-    const maxTicksPerSecond = 60;
+    const resumeTicksPerSecond = 1 / 3;
+    const tpsRampPerSecond = 0.1;
+    const minTicksPerSecond = 0.2;
+    const maxTicksPerSecond = 20;
     const minCellSize = 7;
     const maxCellSize = 46;
-    const fadeMs = 360;
-    const hintLifeMs = 7400;
+    const minCellTransitionMs = 180;
+    const maxCellTransitionMs = 1400;
+    const hintLifeMs = 12800;
     const hintPromptMs = 3000;
     const touchFirstInput = window.matchMedia(
       "(hover: none), (pointer: coarse)",
@@ -119,6 +120,14 @@
       const blue = Math.round(start.b + (end.b - start.b) * mix);
 
       return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+    }
+
+    function cellTransitionMs() {
+      const tickMs = 1000 / Math.max(0.1, currentTicksPerSecond);
+      return Math.max(
+        minCellTransitionMs,
+        Math.min(maxCellTransitionMs, tickMs / 3),
+      );
     }
 
     const patternDefinitions = {
@@ -495,15 +504,31 @@
     function seedInitialLife() {
       const bounds = canvas.getBoundingClientRect();
       const center = screenToCell(bounds.width * 0.68, bounds.height * 0.42);
+      const left = Math.floor(
+        (-view.offsetX + bounds.width * 0.06) / view.cellSize,
+      );
+      const right = Math.ceil(
+        (-view.offsetX + bounds.width * 0.94) / view.cellSize,
+      );
+      const top = Math.floor(
+        (-view.offsetY + bounds.height * 0.12) / view.cellSize,
+      );
+      const bottom = Math.ceil(
+        (-view.offsetY + bounds.height * 0.86) / view.cellSize,
+      );
       pointer.x = bounds.width * 0.68;
       pointer.y = bounds.height * 0.42;
       pointer.active = true;
 
       [
-        ["f", center.x - 12, center.y - 7],
-        ["b", center.x + 4, center.y - 3],
-        ["r", center.x - 4, center.y + 5],
-        ["t", center.x + 10, center.y + 6],
+        ["f", center.x - 17, center.y - 9],
+        ["g", center.x + 10, center.y - 12],
+        ["p", center.x - 3, center.y + 1],
+        ["q", center.x + 22, center.y + 7],
+        ["r", center.x - 25, center.y + 9],
+        ["t", center.x + 4, center.y + 16],
+        ["b", center.x - 2, center.y - 15],
+        ["l", center.x + 33, center.y - 2],
       ].forEach(([patternKey, x, y]) => {
         const previousPointer = { ...pointer };
         const position = cellToScreen(x, y);
@@ -513,11 +538,57 @@
         pointer.x = previousPointer.x;
         pointer.y = previousPointer.y;
       });
+
+      for (let y = top; y <= bottom; y += 1) {
+        for (let x = left; x <= right; x += 1) {
+          const normalizedX = (x - left) / Math.max(1, right - left);
+          const normalizedY = (y - top) / Math.max(1, bottom - top);
+          const wave =
+            Math.sin(normalizedX * Math.PI * 3.1) *
+              Math.cos(normalizedY * Math.PI * 2.4) *
+              0.024 +
+            Math.sin((normalizedX + normalizedY) * Math.PI * 4.2) * 0.012;
+          const density =
+            0.026 +
+            (1 - Math.abs(normalizedX - 0.58) * 1.5) * 0.018 +
+            (1 - Math.abs(normalizedY - 0.44) * 1.8) * 0.014 +
+            wave;
+
+          if (
+            Math.random() < Math.max(0.006, Math.min(0.028, density * 0.36))
+          ) {
+            setCell(x, y, true);
+
+            if (Math.random() < 0.5) {
+              const neighborCount = Math.random() < 0.3 ? 2 : 1;
+              const offsets = [
+                [-1, 0],
+                [1, 0],
+                [0, -1],
+                [0, 1],
+                [-1, -1],
+                [1, 1],
+                [-1, 1],
+                [1, -1],
+              ].sort(() => Math.random() - 0.5);
+
+              for (let index = 0; index < neighborCount; index += 1) {
+                const [dx, dy] = offsets[index];
+                setCell(x + dx, y + dy, true);
+              }
+            }
+          }
+        }
+      }
     }
 
     function pauseForInteraction() {
       running = false;
       toolbarFlashUntil = 0;
+    }
+
+    function postponeNextStep() {
+      lastStepAt = performance.now() + 80;
     }
 
     function resumeSimulation() {
@@ -526,7 +597,7 @@
         currentTicksPerSecond,
         resumeTicksPerSecond,
       );
-      lastStepAt = performance.now();
+      postponeNextStep();
       toolbarFlashUntil = performance.now() + 1800;
     }
 
@@ -548,13 +619,14 @@
       if (currentTicksPerSecond > targetTicksPerSecond) {
         currentTicksPerSecond = targetTicksPerSecond;
       }
+      postponeNextStep();
       toolbarFlashUntil = performance.now() + 1800;
     }
 
     function resetTargetTicksPerSecond() {
       targetTicksPerSecond = defaultTicksPerSecond;
       currentTicksPerSecond = resumeTicksPerSecond;
-      lastStepAt = performance.now();
+      postponeNextStep();
       toolbarFlashUntil = performance.now() + 1800;
     }
 
@@ -645,9 +717,10 @@
     function drawCells(timestamp) {
       const pad = Math.max(1, view.cellSize * 0.11);
       const radius = Math.min(5, view.cellSize * 0.22);
+      const transitionMs = cellTransitionMs();
 
       fadedCells.forEach((fade, key) => {
-        const progress = (timestamp - fade.diedAt) / fadeMs;
+        const progress = (timestamp - fade.diedAt) / transitionMs;
         if (progress >= 1) {
           fadedCells.delete(key);
           return;
@@ -674,8 +747,8 @@
       liveCells.forEach((key) => {
         const { x, y } = parseCell(key);
         const screen = cellToScreen(x, y);
-        const bornAt = bornCells.get(key) || timestamp - fadeMs;
-        const age = Math.min(1, (timestamp - bornAt) / fadeMs);
+        const bornAt = bornCells.get(key) || timestamp - transitionMs;
+        const age = Math.min(1, (timestamp - bornAt) / transitionMs);
         const pulse = 0.9 + age * 0.1;
         const intensity = Math.max(
           10,
@@ -853,15 +926,68 @@
       const isHovered = hint === hoveredHint;
       const pad = view.cellSize * 0.08;
       const size = view.cellSize - pad * 2;
-      const glow = (isHovered ? 76 : 46 + pulse * 58) * fade;
-      const intensity = 0.44 + fade * 0.86;
+      const glow = (isHovered ? 128 : 84 + pulse * 96) * fade;
+      const intensity = 0.68 + fade * 1.04;
+      const auraSize = view.cellSize * (1.8 + pulse * 0.85);
+      const auraAlpha = (0.22 + pulse * 0.22 + (isHovered ? 0.2 : 0)) * fade;
+      const centerX = screen.x + view.cellSize * 0.5;
+      const centerY = screen.y + view.cellSize * 0.5;
 
       context.save();
-      context.shadowColor = `rgba(255, 244, 154, ${(0.84 + pulse * 0.5) * fade})`;
+      context.globalCompositeOperation = "screen";
+      const aura = context.createRadialGradient(
+        centerX,
+        centerY,
+        view.cellSize * 0.28,
+        centerX,
+        centerY,
+        auraSize,
+      );
+      aura.addColorStop(0, `rgba(255, 255, 190, ${auraAlpha})`);
+      aura.addColorStop(0.42, `rgba(255, 221, 64, ${auraAlpha * 0.42})`);
+      aura.addColorStop(1, "rgba(255, 221, 64, 0)");
+      context.fillStyle = aura;
+      context.beginPath();
+      context.arc(centerX, centerY, auraSize, 0, Math.PI * 2);
+      context.fill();
+
+      context.globalCompositeOperation = "overlay";
+      for (let dy = -3; dy <= 3; dy += 1) {
+        for (let dx = -3; dx <= 3; dx += 1) {
+          const distance = Math.hypot(dx, dy);
+          if (distance > 3.2 || (dx === 0 && dy === 0)) {
+            continue;
+          }
+
+          const key = keyForCell(hint.x + dx, hint.y + dy);
+          if (!liveCells.has(key)) {
+            continue;
+          }
+
+          const falloff = Math.max(0, 1 - distance / 3.25);
+          const cellScreen = cellToScreen(hint.x + dx, hint.y + dy);
+          const alpha =
+            (0.16 + pulse * 0.18 + (isHovered ? 0.12 : 0)) * falloff * fade;
+          context.shadowColor = `rgba(190, 255, 246, ${alpha * 1.8})`;
+          context.shadowBlur = view.cellSize * (0.72 + pulse * 0.48) * falloff;
+          context.fillStyle = `rgba(196, 255, 232, ${alpha})`;
+          roundedRect(
+            cellScreen.x + pad,
+            cellScreen.y + pad,
+            size,
+            size,
+            Math.min(7, view.cellSize * 0.28),
+          );
+          context.fill();
+        }
+      }
+
+      context.globalCompositeOperation = "screen";
+      context.shadowColor = `rgba(255, 244, 120, ${Math.min(1, (1.08 + pulse * 0.62) * fade)})`;
       context.shadowBlur = glow;
       context.fillStyle = isHovered
-        ? `rgba(255, 252, 132, ${Math.min(1, 1.05 * intensity)})`
-        : `rgba(255, 228, 72, ${Math.min(1, (0.86 + pulse * 0.34) * intensity)})`;
+        ? `rgba(255, 255, 184, ${Math.min(1, 1.2 * intensity)})`
+        : `rgba(255, 236, 66, ${Math.min(1, (1.02 + pulse * 0.42) * intensity)})`;
       roundedRect(
         screen.x + pad,
         screen.y + pad,
@@ -874,11 +1000,11 @@
       context.strokeStyle = `rgba(42, 30, 0, ${(0.42 + pulse * 0.22) * fade})`;
       context.lineWidth = Math.max(1, view.cellSize * 0.2);
       context.stroke();
-      context.shadowColor = `rgba(255, 247, 179, ${0.72 * fade})`;
-      context.shadowBlur = 18 * fade;
+      context.shadowColor = `rgba(255, 250, 185, ${0.96 * fade})`;
+      context.shadowBlur = 30 * fade;
       context.strokeStyle = isHovered
         ? `rgba(255, 255, 236, ${0.98 * fade})`
-        : `rgba(255, 252, 200, ${(0.9 + pulse * 0.28) * fade})`;
+        : `rgba(255, 255, 214, ${Math.min(1, (1.04 + pulse * 0.36) * fade)})`;
       context.lineWidth = Math.max(1, view.cellSize * 0.07);
       context.stroke();
       context.restore();
@@ -912,14 +1038,13 @@
       toolbarToggle.textContent = running ? t("life.pause") : t("life.play");
       toolbarToggle.setAttribute("aria-pressed", String(!running));
 
-      if (tpsMeterLabel && tpsMeterFill) {
+      if (tpsMeterLabel) {
         const currentTps = currentTicksPerSecond.toFixed(1);
-        const progress = Math.max(
-          0.04,
-          Math.min(1, currentTicksPerSecond / maxTicksPerSecond),
-        );
         tpsMeterLabel.textContent = t("life.tpsLabel", { value: currentTps });
-        tpsMeterFill.style.width = `${progress * 100}%`;
+      }
+
+      if (tpsSlider && document.activeElement !== tpsSlider) {
+        tpsSlider.value = targetTicksPerSecond.toFixed(1);
       }
     }
 
@@ -938,6 +1063,28 @@
         view.cellSize - 2,
         view.cellSize - 2,
       );
+    }
+
+    function drawVignette(width, height) {
+      const radius = Math.max(width, height) * 0.66;
+      const gradient = context.createRadialGradient(
+        width * 0.5,
+        height * 0.44,
+        Math.min(width, height) * 0.12,
+        width * 0.5,
+        height * 0.48,
+        radius,
+      );
+      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+      gradient.addColorStop(0.44, "rgba(0, 0, 0, 0.08)");
+      gradient.addColorStop(0.72, "rgba(0, 0, 0, 0.42)");
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0.82)");
+
+      context.save();
+      context.globalCompositeOperation = "multiply";
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, width, height);
+      context.restore();
     }
 
     function render(timestamp = performance.now()) {
@@ -978,6 +1125,7 @@
       drawKeyPresses(timestamp);
       drawPointerCell();
       drawFloatingLetters(timestamp);
+      drawVignette(width, height);
       updateToolbar(timestamp);
 
       canvas.dataset.generation = String(generation);
@@ -1104,8 +1252,27 @@
       toolbarFlashUntil = performance.now() + 1800;
     }
 
+    function handleTpsSliderInput(event) {
+      const nextTps = Number(event.currentTarget.value);
+      if (!Number.isFinite(nextTps)) {
+        return;
+      }
+
+      markInteracted();
+      targetTicksPerSecond = Math.max(
+        0.2,
+        Math.min(maxTicksPerSecond, nextTps),
+      );
+      currentTicksPerSecond = targetTicksPerSecond;
+      postponeNextStep();
+      toolbarFlashUntil = performance.now() + 1800;
+    }
+
     function onKeyDown(event) {
       if (event.key === " " || event.code === "Space") {
+        if (event.repeat) {
+          return;
+        }
         markInteracted();
         event.preventDefault();
         toggleSimulation();
@@ -1114,6 +1281,9 @@
       }
 
       if (event.key === "Enter") {
+        if (event.repeat) {
+          return;
+        }
         markInteracted();
         event.preventDefault();
         resetTargetTicksPerSecond();
@@ -1202,6 +1372,7 @@
       window.removeEventListener("pointerleave", hidePointer);
       canvas.removeEventListener("contextmenu", onContextMenu);
       toolbar?.removeEventListener("click", handleToolbarClick);
+      tpsSlider?.removeEventListener("input", handleTpsSliderInput);
       window.removeEventListener("keydown", onKeyDown);
     }
 
@@ -1221,6 +1392,7 @@
     window.addEventListener("pointerleave", hidePointer);
     canvas.addEventListener("contextmenu", onContextMenu);
     toolbar?.addEventListener("click", handleToolbarClick);
+    tpsSlider?.addEventListener("input", handleTpsSliderInput);
     window.addEventListener("keydown", onKeyDown);
 
     return {
