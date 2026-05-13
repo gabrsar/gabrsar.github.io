@@ -74,7 +74,7 @@
       "footer.made.short": "Feito com IA, mas pedido com carinho.",
       "footer.cordialityLabel": "Cordialidade com o Codex",
       "footer.cordialityTooltip":
-        "Cordialidade com o Codex: 3,5/5 ★★★◐☆. Métrica criada pelo assistente, sem alterações do Gabriel. Direto, colaborativo e bem-humorado; perdeu alguns pontinhos por xingamentos ocasionais ao código, mas não ao assistente.",
+        "Cordialidade com o Codex: 4,5/5 ★★★★⯨. Métrica criada pelo assistente, sem alterações do Gabriel. Direto, colaborativo e bem-humorado; perdeu alguns pontinhos por xingamentos ocasionais ao código, mas não ao assistente.",
       "projects.eyebrow": "Projetos",
       "projects.title": "Experimentos",
       "projects.intro":
@@ -222,7 +222,7 @@
       "footer.made.short": "Made with AI, but requested with care.",
       "footer.cordialityLabel": "Cordiality with Codex",
       "footer.cordialityTooltip":
-        "Cordiality with Codex: 3.5/5 ★★★◐☆. Metric created by the assistant, with no edits from Gabriel. Direct, collaborative, and funny; a few points off for occasional swearing at the code, but not at the assistant.",
+        "Cordiality with Codex: 4.5/5 ★★★★⯨. Metric created by the assistant, with no edits from Gabriel. Direct, collaborative, and funny; a few points off for occasional swearing at the code, but not at the assistant.",
       "projects.eyebrow": "Projects",
       "projects.title": "Experiments",
       "projects.intro":
