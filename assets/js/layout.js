@@ -107,7 +107,7 @@
     const made = document.createElement("span");
     made.className = "cordiality-score";
     made.title =
-      "Cordialidade com o Codex: 3,5/5 ★★★◐☆. Métrica criada pelo assistente, sem alterações do Gabriel. Direto, colaborativo e bem-humorado; perdeu alguns pontinhos por xingamentos ocasionais ao código, mas não ao assistente.";
+      "Cordialidade com o Codex: 4,5/5 ★★★⯨☆. Métrica criada pelo assistente, sem alterações do Gabriel. Direto, colaborativo e bem-humorado; perdeu alguns pontinhos por xingamentos ocasionais ao código, mas não ao assistente.";
     made.dataset.i18nAttr = "title: footer.cordialityTooltip";
     made.dataset.i18n = "footer.made";
     made.textContent =
