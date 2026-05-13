@@ -17,6 +17,7 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.gabrielsaraiva.com.br/" />
+    <link rel="stylesheet" href="./assets/css/layout.css" />
     <link rel="stylesheet" href="./assets/css/site.css" />
   </head>
   <body>
@@ -24,36 +25,12 @@
       >Pular para o conteúdo</a
     >
 
-    <nav
-      class="site-nav"
-      aria-label="Navegação principal"
-      data-i18n-attr="aria-label: nav.main"
-    >
-      <div class="nav-inner">
-        <a class="brand" href="./index.html">Gabriel Saraiva</a>
-        <div class="nav-links">
-          <a href="./projects/index.html" data-i18n="nav.projects">Projetos</a>
-          <a href="./resume/index.html" data-i18n="nav.resume">Currículo</a>
-          <a
-            href="https://github.com/gabrsar"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-i18n="nav.github"
-            >GitHub</a
-          >
-          <a
-            href="https://br.linkedin.com/in/gabrielsaraiva7"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-i18n="nav.linkedin"
-            >LinkedIn</a
-          >
-          <button class="language-toggle" type="button" data-language-toggle>
-            🇺🇸
-          </button>
-        </div>
-      </div>
-    </nav>
+    <div
+      data-site-header
+      data-layout-style="home"
+      data-site-page="home"
+      data-site-root="."
+    ></div>
 
     <header class="hero">
       <div class="field">
@@ -88,22 +65,9 @@
               +
             </button>
             <button
-              class="life-toolbar-button"
-              data-life-action="tps-down"
-              data-i18n="life.tpsDown"
-            >
-              TPS -(,)
-            </button>
-            <button
-              class="life-toolbar-button"
-              data-life-action="tps-up"
-              data-i18n="life.tpsUp"
-            >
-              TPS +(.)
-            </button>
-            <button
-              class="life-toolbar-button"
+              class="life-toolbar-button life-mobile-short-label"
               data-life-action="tps-reset"
+              data-mobile-label="Reset TPS"
               data-i18n="life.tpsReset"
             >
               Reset TPS (enter)
@@ -273,20 +237,9 @@
       </section>
     </main>
 
-    <footer>
-      <div class="footer-inner">
-        <span>Gabriel Saraiva</span>
-        <span
-          class="cordiality-score"
-          title="Cordialidade com o Codex: 3,5/5 ★★★◐☆. Métrica criada pelo assistente, sem alterações do Gabriel. Direto, colaborativo e bem-humorado; perdeu alguns pontinhos por xingamentos ocasionais ao código, mas não ao assistente."
-          data-i18n-attr="title: footer.cordialityTooltip"
-          data-i18n="footer.made"
-        >
-          Feito com IA, mas pedido com carinho e ajustado por um humano.
-        </span>
-      </div>
-    </footer>
+    <div data-site-footer></div>
 
+    <script src="./assets/js/layout.js" defer></script>
     <script src="./assets/js/i18n.js" defer></script>
     <script
       src="./assets/js/background-effects/game-of-life/effect.js"

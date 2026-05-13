@@ -10,6 +10,7 @@
       data-i18n-attr="content: meta.resume.description"
     />
     <link rel="stylesheet" href="../assets/vendor/pdfjs/pdf_viewer.css" />
+    <link rel="stylesheet" href="../assets/css/layout.css" />
     <style>
       :root {
         --ink: #121417;
@@ -348,30 +349,12 @@
   </head>
   <body>
     <main class="shell">
-      <nav class="topbar" aria-label="Navegação">
-        <a class="brand" href="../index.html">Gabriel Saraiva</a>
-        <div class="nav-links">
-          <a href="../index.html" data-i18n="nav.back">Voltar</a>
-          <a href="../projects/index.html" data-i18n="nav.projects">Projetos</a>
-          <a
-            href="https://github.com/gabrsar"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-i18n="nav.github"
-            >GitHub</a
-          >
-          <a
-            href="https://br.linkedin.com/in/gabrielsaraiva7"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-i18n="nav.linkedin"
-            >LinkedIn</a
-          >
-          <button class="language-toggle" type="button" data-language-toggle>
-            🇺🇸
-          </button>
-        </div>
-      </nav>
+      <div
+        data-site-header
+        data-layout-style="subpage"
+        data-site-page="resume"
+        data-site-root=".."
+      ></div>
 
       <header class="intro">
         <div>
@@ -446,6 +429,11 @@
       </section>
     </main>
 
+    <div class="shell">
+      <div data-site-footer></div>
+    </div>
+
+    <script src="../assets/js/layout.js" defer></script>
     <script src="../assets/js/i18n.js" defer></script>
     <script>
       const viewer = document.querySelector("#viewer");

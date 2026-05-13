@@ -1,0 +1,18 @@
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.cordiality-score {
+  cursor: help;
+}
+
+@media (max-width: 760px) {
+  .footer-inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

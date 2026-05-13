@@ -9,6 +9,7 @@
       name="description"
       content="Projetos e experimentos online de Gabriel Saraiva."
     />
+    <link rel="stylesheet" href="../assets/css/layout.css" />
     <style>
       :root {
         --ink: #151719;
@@ -314,30 +315,12 @@
     </style>
   </head>
   <body>
-    <nav class="topbar" aria-label="Navegação">
-      <a href="../index.html">Gabriel Saraiva</a>
-      <div class="nav-links">
-        <a href="../index.html" data-i18n="nav.back">Voltar</a>
-        <a href="../resume/index.html" data-i18n="nav.resume">Currículo</a>
-        <a
-          href="https://github.com/gabrsar"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-i18n="nav.github"
-          >GitHub</a
-        >
-        <a
-          href="https://br.linkedin.com/in/gabrielsaraiva7"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-i18n="nav.linkedin"
-          >LinkedIn</a
-        >
-        <button class="language-toggle" type="button" data-language-toggle>
-          🇺🇸
-        </button>
-      </div>
-    </nav>
+    <div
+      data-site-header
+      data-layout-style="subpage"
+      data-site-page="projects"
+      data-site-root=".."
+    ></div>
 
     <header>
       <p class="eyebrow" data-i18n="projects.eyebrow">Projetos</p>
@@ -471,11 +454,8 @@
       </div>
     </main>
 
-    <footer>
-      <span data-i18n="footer.made.short"
-        >Feito com IA, mas pedido com carinho.</span
-      >
-    </footer>
+    <div data-site-footer></div>
+    <script src="../assets/js/layout.js" defer></script>
     <script src="../assets/js/i18n.js" defer></script>
   </body>
 </html>

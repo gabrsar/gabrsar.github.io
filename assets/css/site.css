@@ -623,6 +623,16 @@ footer {
     padding: 112px 0 44px;
   }
 
+  h1 {
+    font-size: clamp(3.1rem, 16vw, 5.4rem);
+    line-height: 0.94;
+  }
+
+  .intro {
+    font-size: clamp(0.98rem, 4.4vw, 1.12rem);
+    line-height: 1.5;
+  }
+
   .life-toolbar {
     top: 76px;
     left: 14px;
@@ -643,6 +653,28 @@ footer {
 
   .life-toolbar-actions {
     width: 100%;
+  }
+
+  #life-toolbar-toggle,
+  .life-mobile-short-label {
+    font-size: 0;
+  }
+
+  #life-toolbar-toggle::after,
+  .life-mobile-short-label::after {
+    font-size: 0.72rem;
+  }
+
+  .life-toolbar[data-running="true"] #life-toolbar-toggle::after {
+    content: "Pause";
+  }
+
+  .life-toolbar[data-running="false"] #life-toolbar-toggle::after {
+    content: "Play";
+  }
+
+  .life-mobile-short-label::after {
+    content: attr(data-mobile-label);
   }
 
   .route-grid {

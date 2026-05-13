@@ -43,6 +43,8 @@
       vx: 0,
       vy: 0,
       active: false,
+      pressed: false,
+      pointerType: "mouse",
       radius: 140,
     };
     const attractor = {
@@ -178,6 +180,10 @@
       return `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
     }
 
+    function isTouchLikePointer(event) {
+      return event.pointerType === "touch" || event.pointerType === "pen";
+    }
+
     function updateMouseGlow(event) {
       const bounds = canvas.getBoundingClientRect();
       const nextX = event.clientX - bounds.left;
@@ -190,16 +196,20 @@
       mouseGlow.previousY = nextY;
       mouseGlow.x = event.clientX - bounds.left;
       mouseGlow.y = event.clientY - bounds.top;
-      mouseGlow.active =
+      mouseGlow.pointerType = event.pointerType || "mouse";
+      const inside =
         mouseGlow.x >= 0 &&
         mouseGlow.x <= bounds.width &&
         mouseGlow.y >= 0 &&
         mouseGlow.y <= bounds.height;
+      mouseGlow.active =
+        inside && (!isTouchLikePointer(event) || mouseGlow.pressed);
       canvas.dataset.glow = mouseGlow.active ? "on" : "off";
     }
 
     function hideMouseGlow() {
       mouseGlow.active = false;
+      mouseGlow.pressed = false;
       mouseGlow.vx = 0;
       mouseGlow.vy = 0;
       canvas.dataset.glow = "off";
@@ -1052,11 +1062,23 @@
     window.addEventListener(
       "pointerdown",
       (event) => {
+        mouseGlow.pressed = true;
         updateMouseGlow(event);
         detonateAttractorPulse();
       },
       { passive: true },
     );
+    window.addEventListener(
+      "pointerup",
+      (event) => {
+        mouseGlow.pressed = false;
+        if (isTouchLikePointer(event)) {
+          hideMouseGlow();
+        }
+      },
+      { passive: true },
+    );
+    window.addEventListener("pointercancel", hideMouseGlow, { passive: true });
     window.addEventListener("pointerleave", hideMouseGlow);
     window.addEventListener("blur", hideMouseGlow);
     window.addEventListener("resize", resizeCanvas);
