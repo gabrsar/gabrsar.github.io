@@ -21,10 +21,109 @@
     const targetOrder = 8;
     const visualLevelCount = 8;
     const maxVisualLevel = visualLevelCount - 1;
-    const maxFps = 60;
-    const frameBudgetMs = 1000 / maxFps;
-    const holdDurationMs = 1400;
-    const morphDurationMs = 3300;
+    const settingsPrefix = "hilbertCurve.";
+    const parameterDefinitions = [
+      {
+        key: "curveScale",
+        label: "Tamanho",
+        min: 0.35,
+        max: 1,
+        step: 0.01,
+        defaultValue: 0.9,
+        description: "Escala do quadrado da Hilbert dentro da viewport.",
+        suffix: "x",
+      },
+      {
+        key: "maxFps",
+        label: "FPS budget",
+        min: 15,
+        max: 120,
+        step: 1,
+        defaultValue: 60,
+        description: "Budget usado para dividir trabalho pesado por frame.",
+      },
+      {
+        key: "holdDurationMs",
+        label: "Pausa",
+        min: 0,
+        max: 5000,
+        step: 50,
+        defaultValue: 1400,
+        description: "Tempo parado entre uma evolucao de nivel e outra.",
+        suffix: "ms",
+      },
+      {
+        key: "baseMorphDurationMs",
+        label: "Morph base",
+        min: 300,
+        max: 8000,
+        step: 100,
+        defaultValue: 3300,
+        description: "Duracao inicial do morph; cada nivel dobra esse tempo.",
+        suffix: "ms",
+      },
+      {
+        key: "baseTrailDurationMs",
+        label: "Trail base",
+        min: 0,
+        max: 5000,
+        step: 50,
+        defaultValue: 1200,
+        description: "Tempo base do rastro, dividido pelo nivel atual.",
+        suffix: "ms",
+      },
+      {
+        key: "minTrailFrames",
+        label: "Trail alto",
+        min: 0,
+        max: 80,
+        step: 1,
+        defaultValue: 14,
+        description: "Maximo de frames antigos guardados nos niveis altos.",
+      },
+      {
+        key: "maxTrailFrames",
+        label: "Trail baixo",
+        min: 0,
+        max: 160,
+        step: 1,
+        defaultValue: 84,
+        description: "Maximo de frames antigos guardados nos niveis baixos.",
+      },
+      {
+        key: "transitionBand",
+        label: "Faixa",
+        min: 0.02,
+        max: 0.4,
+        step: 0.01,
+        defaultValue: 0.08,
+        description: "Largura da frente que transforma a curva aos poucos.",
+      },
+      {
+        key: "overshootAmplitude",
+        label: "Overshoot",
+        min: 0,
+        max: 0.2,
+        step: 0.005,
+        defaultValue: 0.075,
+        description: "Forca da passada alem do alvo antes de retornar.",
+      },
+      {
+        key: "overshootFrequency",
+        label: "Oscilacao",
+        min: 0.5,
+        max: 5,
+        step: 0.1,
+        defaultValue: 2.4,
+        description: "Frequencia da ondulacao usada no overshoot.",
+      },
+    ];
+    const settings = Object.fromEntries(
+      parameterDefinitions.map((definition) => [
+        definition.key,
+        readSetting(definition),
+      ]),
+    );
     const curveBox = {
       x: 0,
       y: 0,
@@ -35,12 +134,153 @@
     const builtLevels = new Map();
     const levelBuilders = new Map();
     const morphProgressCache = new Map();
+    const trailFrames = [];
     let rafId = 0;
     let lastTimestamp = 0;
     let currentLevel = prefersReducedMotion ? maxVisualLevel : 0;
     let phase = prefersReducedMotion ? "static" : "build";
     let phaseStartedAt = performance.now();
     let morphProgress = prefersReducedMotion ? 1 : 0;
+    let direction = 1;
+    let controlsElement = null;
+
+    function readSetting(definition) {
+      const storedValue = window.localStorage.getItem(
+        settingsPrefix + definition.key,
+      );
+      const parsedValue = storedValue === null ? NaN : Number(storedValue);
+      return Number.isFinite(parsedValue)
+        ? clamp(parsedValue, definition.min, definition.max)
+        : definition.defaultValue;
+    }
+
+    function formatSettingValue(definition, value) {
+      const precision = definition.step < 1 ? 3 : 0;
+      const formatted = Number(value).toFixed(precision).replace(/\.?0+$/, "");
+      return `${formatted}${definition.suffix || ""}`;
+    }
+
+    function ensureControlsStyles() {
+      if (document.getElementById("hilbert-controls-styles")) {
+        return;
+      }
+
+      const style = document.createElement("style");
+      style.id = "hilbert-controls-styles";
+      style.textContent = `
+        .hilbert-controls {
+          position: fixed;
+          top: 16px;
+          left: 16px;
+          z-index: 20;
+          display: grid;
+          gap: 10px;
+          width: min(310px, calc(100vw - 32px));
+          max-height: calc(100vh - 32px);
+          overflow: auto;
+          border: 1px solid rgba(124, 172, 255, 0.2);
+          border-radius: 8px;
+          padding: 12px;
+          background: rgba(5, 10, 18, 0.72);
+          color: rgba(233, 242, 255, 0.94);
+          font: 12px/1.25 ui-sans-serif, system-ui, sans-serif;
+          backdrop-filter: blur(12px);
+        }
+
+        .hilbert-control {
+          display: grid;
+          gap: 5px;
+        }
+
+        .hilbert-control-description {
+          display: none;
+          margin: -1px 0 1px;
+          color: rgba(199, 220, 255, 0.68);
+        }
+
+        .hilbert-control:hover .hilbert-control-description,
+        .hilbert-control:focus-within .hilbert-control-description {
+          display: block;
+        }
+
+        .hilbert-control-label {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+        }
+
+        .hilbert-control-value {
+          color: rgba(154, 196, 255, 0.92);
+          font-variant-numeric: tabular-nums;
+        }
+
+        .hilbert-control input {
+          width: 100%;
+          accent-color: #90c6ff;
+        }
+      `;
+      document.head.append(style);
+    }
+
+    function createControls() {
+      if (canvas.dataset.hilbertControls !== "on") {
+        return null;
+      }
+
+      ensureControlsStyles();
+      const controls = document.createElement("div");
+      controls.className = "hilbert-controls";
+
+      parameterDefinitions.forEach((definition) => {
+        const row = document.createElement("label");
+        row.className = "hilbert-control";
+
+        const labelLine = document.createElement("span");
+        labelLine.className = "hilbert-control-label";
+
+        const labelText = document.createElement("span");
+        labelText.textContent = definition.label;
+
+        const valueText = document.createElement("span");
+        valueText.className = "hilbert-control-value";
+        valueText.textContent = formatSettingValue(
+          definition,
+          settings[definition.key],
+        );
+
+        const input = document.createElement("input");
+        input.type = "range";
+        input.min = String(definition.min);
+        input.max = String(definition.max);
+        input.step = String(definition.step);
+        input.value = String(settings[definition.key]);
+        input.title = definition.description;
+
+        const description = document.createElement("span");
+        description.className = "hilbert-control-description";
+        description.textContent = definition.description;
+
+        input.addEventListener("input", () => {
+          const value = Number(input.value);
+          settings[definition.key] = value;
+          window.localStorage.setItem(settingsPrefix + definition.key, value);
+          valueText.textContent = formatSettingValue(definition, value);
+
+          if (definition.key === "curveScale") {
+            resizeCanvas();
+          }
+        });
+
+        labelLine.append(labelText, valueText);
+        row.title = definition.description;
+        row.append(labelLine, description, input);
+        controls.append(row);
+      });
+
+      document.body.append(controls);
+      return controls;
+    }
 
     function clamp(value, min, max) {
       return Math.min(max, Math.max(min, value));
@@ -54,6 +294,15 @@
       return amount < 0.5
         ? 4 * amount * amount * amount
         : 1 - Math.pow(-2 * amount + 2, 3) / 2;
+    }
+
+    function overshootReturn(amount) {
+      const eased = easeInOut(amount);
+      const overshoot =
+        settings.overshootAmplitude *
+        Math.sin(Math.PI * eased) *
+        Math.sin(Math.PI * eased * settings.overshootFrequency);
+      return eased + overshoot;
     }
 
     function rotate(n, point, rx, ry) {
@@ -203,18 +452,19 @@
       canvas.height = Math.max(1, Math.floor(bounds.height * deviceScale));
       context.setTransform(deviceScale, 0, 0, deviceScale, 0, 0);
 
-      const size = Math.min(bounds.width, bounds.height) * 0.9;
+      const size = Math.min(bounds.width, bounds.height) * settings.curveScale;
       curveBox.size = size;
       curveBox.x = (bounds.width - size) / 2;
       curveBox.y = (bounds.height - size) / 2;
       curveBox.centerX = curveBox.x + size / 2;
       curveBox.centerY = curveBox.y + size / 2;
+      trailFrames.length = 0;
       rebuildCachedPaths();
     }
 
-    function drawBackground(width, height) {
-      context.clearRect(0, 0, width, height);
-
+    function paintAtmosphere(width, height, alpha) {
+      context.save();
+      context.globalAlpha = alpha;
       const glow = context.createRadialGradient(
         curveBox.centerX,
         curveBox.centerY,
@@ -228,6 +478,14 @@
       glow.addColorStop(1, "rgba(4, 7, 12, 0)");
       context.fillStyle = glow;
       context.fillRect(0, 0, width, height);
+      context.restore();
+    }
+
+    function drawBackground(width, height) {
+      context.clearRect(0, 0, width, height);
+      context.fillStyle = "rgb(5, 7, 11)";
+      context.fillRect(0, 0, width, height);
+      paintAtmosphere(width, height, 1);
 
       context.strokeStyle = "rgba(120, 168, 255, 0.08)";
       context.lineWidth = 1;
@@ -274,6 +532,22 @@
         Math.max(0.45, curveBox.size / 900),
         t,
       );
+    }
+
+    function morphDurationForLevel(fromLevel, toLevel) {
+      return (
+        settings.baseMorphDurationMs * Math.pow(2, Math.min(fromLevel, toLevel))
+      );
+    }
+
+    function trailTuningForLevel(level) {
+      const t = clamp(level / Math.max(1, maxVisualLevel), 0, 1);
+      return {
+        durationMs: settings.baseTrailDurationMs / (Math.floor(level) + 1),
+        maxFrames: Math.round(
+          lerp(settings.maxTrailFrames, settings.minTrailFrames, t),
+        ),
+      };
     }
 
     function morphProgressKey(fromSegmentCount, toSegmentCount) {
@@ -333,24 +607,57 @@
       context.lineCap = "round";
       context.lineJoin = "round";
       context.lineWidth = strokeWidth;
-      context.shadowBlur = curveBox.size * 0.04 * (1 - currentLevel / (maxVisualLevel + 1));
+      context.shadowBlur =
+        curveBox.size * 0.04 * (1 - currentLevel / (maxVisualLevel + 1));
       context.shadowColor = "rgba(77, 161, 255, 0.28)";
-      context.strokeStyle = "rgba(190, 222, 255, 0.22)";
+      context.strokeStyle = "rgba(144, 198, 255, 0.82)";
       context.stroke(path);
       context.shadowBlur = 0;
       context.lineWidth = Math.max(0.35, strokeWidth * 0.62);
-      context.strokeStyle = "rgba(255, 255, 255, 0.14)";
+      context.strokeStyle = "rgba(255, 255, 255, 0.18)";
       context.stroke(path);
       context.restore();
     }
 
-    function drawMorph(fromData, toData, progress, timestamp) {
-      const eased = easeInOut(progress);
+    function drawTrail(timestamp) {
+      while (
+        trailFrames.length > 0 &&
+        timestamp - trailFrames[0].timestamp >
+          trailTuningForLevel(trailFrames[0].level).durationMs
+      ) {
+        trailFrames.shift();
+      }
+
+      context.save();
+      context.lineCap = "butt";
+      context.lineJoin = "miter";
+      context.miterLimit = 2;
+      trailFrames.forEach((frame) => {
+        const age = timestamp - frame.timestamp;
+        const tuning = trailTuningForLevel(frame.level);
+        const life = clamp(1 - age / tuning.durationMs, 0, 1);
+        if (life <= 0) {
+          return;
+        }
+
+        context.lineWidth = frame.strokeWidth;
+        context.strokeStyle = `rgba(144, 198, 255, ${0.32 * life * life})`;
+        context.stroke(frame.path);
+      });
+      context.restore();
+    }
+
+    function drawMorph(fromData, toData, progress, timestamp, waveDirection) {
       const progressValues = getMorphProgressValues(
         fromData.segmentCount,
         toData.segmentCount,
       );
-      const morphLevel = currentLevel + eased;
+      const transitionBand = settings.transitionBand;
+      const waveHead =
+        waveDirection > 0
+          ? progress * (1 + transitionBand)
+          : 1 + transitionBand - progress * (1 + transitionBand);
+      const morphLevel = currentLevel + direction * progress;
       const strokeWidth = lerp(
         Math.max(1.35, curveBox.size / 220),
         Math.max(0.45, curveBox.size / 900),
@@ -358,16 +665,24 @@
       );
 
       context.save();
-      context.beginPath();
+      const morphPath = new Path2D();
       context.lineCap = "butt";
       context.lineJoin = "miter";
       context.miterLimit = 2;
-      context.lineWidth = Math.max(0.4, strokeWidth * 0.72);
+      const currentStrokeWidth = Math.max(0.4, strokeWidth * 0.72);
+      context.lineWidth = currentStrokeWidth;
 
       let tipX = 0;
       let tipY = 0;
       for (let index = 0; index < progressValues.length; index += 1) {
         const pathProgress = progressValues[index];
+        const waveDistance =
+          waveDirection > 0
+            ? waveHead - pathProgress
+            : pathProgress - waveHead + transitionBand;
+        const localProgress = overshootReturn(
+          clamp(waveDistance / transitionBand, 0, 1),
+        );
         const fromPoint = pointOnPolyline(
           fromData.points,
           fromData.segmentCount,
@@ -378,22 +693,33 @@
           toData.segmentCount,
           pathProgress,
         );
-        const x = screenX(lerp(fromPoint.x, toPoint.x, eased));
-        const y = screenY(lerp(fromPoint.y, toPoint.y, eased));
+        const x = screenX(lerp(fromPoint.x, toPoint.x, localProgress));
+        const y = screenY(lerp(fromPoint.y, toPoint.y, localProgress));
 
         if (index === 0) {
-          context.moveTo(x, y);
+          morphPath.moveTo(x, y);
         } else {
-          context.lineTo(x, y);
+          morphPath.lineTo(x, y);
         }
 
         tipX = x;
         tipY = y;
       }
 
+      drawTrail(timestamp);
       context.strokeStyle = "rgba(144, 198, 255, 0.82)";
-      context.stroke();
+      context.stroke(morphPath);
       context.restore();
+      trailFrames.push({
+        path: morphPath,
+        level: morphLevel,
+        strokeWidth: currentStrokeWidth,
+        timestamp,
+      });
+      const trailTuning = trailTuningForLevel(morphLevel);
+      if (trailFrames.length > trailTuning.maxFrames) {
+        trailFrames.splice(0, trailFrames.length - trailTuning.maxFrames);
+      }
       drawTip(tipX, tipY, timestamp);
     }
 
@@ -405,9 +731,10 @@
         return;
       }
 
-      if (currentLevel < maxVisualLevel) {
-        ensureLevel(currentLevel + 1);
-        buildLevelSlice(currentLevel + 1, deadline);
+      const nextLevel = currentLevel + direction;
+      if (nextLevel >= 0 && nextLevel <= maxVisualLevel) {
+        ensureLevel(nextLevel);
+        buildLevelSlice(nextLevel, deadline);
       }
 
     }
@@ -419,7 +746,7 @@
       const frameMs = timestamp - lastTimestamp;
       lastTimestamp = timestamp;
 
-      const budgetDeadline = performance.now() + frameBudgetMs;
+      const budgetDeadline = performance.now() + 1000 / settings.maxFps;
       pumpBuildWork(budgetDeadline);
 
       const width = canvas.clientWidth;
@@ -440,23 +767,26 @@
       } else if (phase === "build") {
         drawExactPath(currentData.path);
         if (currentData && performance.now() < budgetDeadline) {
-          phase = currentLevel < maxVisualLevel ? "hold" : "static";
+          phase = "hold";
           phaseStartedAt = timestamp;
         }
       } else if (phase === "hold") {
         drawExactPath(currentData.path);
-        if (
-          currentLevel < maxVisualLevel &&
-          timestamp - phaseStartedAt >= holdDurationMs
-        ) {
+        if (timestamp - phaseStartedAt >= settings.holdDurationMs) {
+          if (currentLevel >= maxVisualLevel) {
+            direction = -1;
+          } else if (currentLevel <= 0) {
+            direction = 1;
+          }
           phase = "morph";
           phaseStartedAt = timestamp;
           morphProgress = 0;
-        } else if (currentLevel >= maxVisualLevel) {
-          phase = "static";
+          trailFrames.length = 0;
         }
       } else if (phase === "morph") {
-        const nextData = getLevel(currentLevel + 1);
+        const nextLevel = currentLevel + direction;
+        const nextData = getLevel(nextLevel);
+        const morphDurationMs = morphDurationForLevel(currentLevel, nextLevel);
         morphProgress = clamp(
           (timestamp - phaseStartedAt) / morphDurationMs,
           0,
@@ -464,12 +794,19 @@
         );
 
         if (nextData) {
-          drawMorph(currentData, nextData, morphProgress, timestamp);
+          drawMorph(
+            currentData,
+            nextData,
+            morphProgress,
+            timestamp,
+            direction,
+          );
           if (morphProgress >= 1) {
-            currentLevel += 1;
-            phase = currentLevel < maxVisualLevel ? "hold" : "static";
+            currentLevel = nextLevel;
+            phase = "hold";
             phaseStartedAt = timestamp;
             morphProgress = 0;
+            trailFrames.length = 0;
           }
         } else {
           drawExactPath(currentData.path);
@@ -486,6 +823,7 @@
     }
 
     resizeCanvas();
+    controlsElement = createControls();
     ensureLevel(currentLevel);
     if (currentLevel < maxVisualLevel) {
       ensureLevel(currentLevel + 1);
@@ -498,6 +836,7 @@
       destroy() {
         window.cancelAnimationFrame(rafId);
         window.removeEventListener("resize", resizeCanvas);
+        controlsElement?.remove();
       },
     };
   }
