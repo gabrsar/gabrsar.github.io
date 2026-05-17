@@ -15,6 +15,12 @@
           window.BackgroundEffects?.mountGameOfLife?.(backgroundCanvas),
       },
       {
+        id: "hilbert-curve",
+        aliases: ["hilbert", "curve", "fractal", "space-filling"],
+        mount: () =>
+          window.BackgroundEffects?.mountHilbertCurve?.(backgroundCanvas),
+      },
+      {
         id: "lorenz-attractor",
         aliases: ["lorenz", "attractor", "particles"],
         mount: () =>
@@ -22,22 +28,8 @@
       },
     ];
 
-    const effectFromUrl = new URLSearchParams(window.location.search)
-      .get("effect")
-      ?.trim()
-      .toLowerCase();
-    const forcedEffect = effects.find(
-      (effect) =>
-        effect.id === effectFromUrl || effect.aliases.includes(effectFromUrl),
-    );
-    const lastEffectId = window.sessionStorage.getItem("lastBackgroundEffect");
-    const randomEffects =
-      effects.length > 1
-        ? effects.filter((effect) => effect.id !== lastEffectId)
-        : effects;
     const selectedEffect =
-      forcedEffect ||
-      randomEffects[Math.floor(Math.random() * randomEffects.length)];
+      effects.find((effect) => effect.id === "hilbert-curve") || effects[0];
 
     document.body.dataset.backgroundEffect = selectedEffect.id;
     window.sessionStorage.setItem("lastBackgroundEffect", selectedEffect.id);
