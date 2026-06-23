@@ -28,8 +28,11 @@
       },
     ];
 
-    const selectedEffect =
-      effects.find((effect) => effect.id === "hilbert-curve") || effects[0];
+    const lastEffectId = window.sessionStorage.getItem("lastBackgroundEffect");
+    const lastEffectIndex = effects.findIndex(
+      (effect) => effect.id === lastEffectId,
+    );
+    const selectedEffect = effects[(lastEffectIndex + 1) % effects.length];
 
     document.body.dataset.backgroundEffect = selectedEffect.id;
     window.sessionStorage.setItem("lastBackgroundEffect", selectedEffect.id);
