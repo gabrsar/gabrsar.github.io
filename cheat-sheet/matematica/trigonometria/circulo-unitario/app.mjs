@@ -19,7 +19,7 @@ try {
 } catch { /* Storage is optional, including in private browsing. */ }
 let geometry, dragging=false, playing=false, animationFrame=null, previousTime=null, lastPaint=0, resizeFrame=null, diagramWidth=null;
 const graphViews=new Map(), cards=new Map();
-const degreeText=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:1})+'°';
+const degreeText=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:3})+'°';
 const angleText=()=>state.units==='rad'?radiansLabel(state.angle):degreeText(state.angle);
 const color=key=>`var(--${key})`;
 function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch{}}
@@ -197,7 +197,7 @@ function render(){
   $('#function-description').textContent=meta.description;$('#function-geometry').textContent=meta.geometry;
   $('#domain').textContent=meta.domain;$('#range').textContent=meta.range;$('#period').textContent=state.units==='rad'?radiansLabel(meta.period):degreeText(meta.period);
   const components={sin:`y = ${format(values.sin)}`,cos:`x = ${format(values.cos)}`,tan:`${format(values.sin)} ÷ ${format(values.cos)}`,cot:`${format(values.cos)} ÷ ${format(values.sin)}`,sec:`1 ÷ ${format(values.cos)}`,csc:`1 ÷ ${format(values.sin)}`};
-  $('#numeric-example').textContent=`${meta.short}(${angleText()}) = ${components[state.key]}${['sin','cos'].includes(state.key)?'':` = ${format(values[state.key])}`}`;
+  $('#numeric-example').textContent=`${meta.short}(${angleText()}) ≈ ${components[state.key]}${['sin','cos'].includes(state.key)?'':` ${values[state.key]===null?'→':'≈'} ${format(values[state.key])}`}`;
   const axis=values.cos===0||values.sin===0,quadrant=axis?'Sobre um eixo':`${Math.floor(normalize(state.angle)/90)+1}º quadrante`;
   $('#selection-status').textContent=`${degreeText(state.angle)} = ${radiansLabel(state.angle)} · ${quadrant}`;
   drawCircle(values);updateGraphs(values);

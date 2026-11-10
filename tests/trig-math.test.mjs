@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {trigValues,FUNCTIONS,graphSegments,radiansLabel,normalize} from '../cheat-sheet/matematica/trigonometria/circulo-unitario/trig-math.mjs';
+import {trigValues,FUNCTIONS,graphSegments,radiansLabel,normalize,format} from '../cheat-sheet/matematica/trigonometria/circulo-unitario/trig-math.mjs';
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-9,`${a} should equal ${b}`);
 test('cardinal angles preserve zeros and undefined values',()=>{
   assert.deepEqual(trigValues(0),{sin:0,cos:1,tan:0,cot:null,sec:1,csc:null});
@@ -31,4 +31,8 @@ test('graph segments never bridge a pole or include undefined values',()=>{
       for(const pole of meta.poles)assert.ok(!(segment[0][0]<pole&&segment.at(-1)[0]>pole),`${meta.key} crosses ${pole}`);
     }
   }
+});
+test('a small nonzero denominator is never displayed as zero',()=>{
+  const values=trigValues(89.99);assert.notEqual(format(values.cos),'0,000');assert.notEqual(values.tan,null);
+  assert.equal(format(0),'0,000');assert.equal(format(null),'indefinida');
 });

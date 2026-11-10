@@ -18,7 +18,11 @@ export const FUNCTIONS = [
   {key:'csc',name:'Cossecante',short:'cossec',formula:'cossec θ = 1 / sen θ',description:'É o recíproco do seno e tem o mesmo sinal que ele. Seu módulo nunca é menor que 1. Se o seno é zero, a cossecante é indefinida. Em inglês, costuma aparecer como csc.',geometry:'Na reta OP, o segmento da origem até U, em y = 1, tem módulo |cossec θ|. O sinal é positivo no sentido de P e negativo no sentido oposto.',domain:'sen θ ≠ 0',range:'(−∞, −1] ∪ [1, ∞)',period:360,limit:4,poles:[0,180,360]},
 ];
 export function format(value, digits=3) {
-  return value === null ? 'indefinida' : (Math.abs(value) < .5 * 10 ** -digits ? 0 : value).toLocaleString('pt-BR',{minimumFractionDigits:digits,maximumFractionDigits:digits});
+  if(value===null)return 'indefinida';
+  const magnitude=Math.abs(value);
+  if(magnitude>0&&magnitude<10**-digits)return value.toLocaleString('pt-BR',{maximumSignificantDigits:4,notation:magnitude<1e-6?'scientific':'standard'});
+  if(magnitude>=1e6)return value.toLocaleString('pt-BR',{notation:'scientific',maximumFractionDigits:3});
+  return (value===0?0:value).toLocaleString('pt-BR',{minimumFractionDigits:digits,maximumFractionDigits:digits});
 }
 export function radiansLabel(degrees) {
   const common = {0:'0',15:'π/12',30:'π/6',45:'π/4',60:'π/3',90:'π/2',120:'2π/3',135:'3π/4',150:'5π/6',180:'π',210:'7π/6',225:'5π/4',240:'4π/3',270:'3π/2',300:'5π/3',315:'7π/4',330:'11π/6',360:'2π'};
