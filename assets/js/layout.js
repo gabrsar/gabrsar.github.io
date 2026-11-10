@@ -16,22 +16,26 @@
     home: [
       { path: "projects/index.html", i18n: "nav.projects", label: "Projetos" },
       { path: "resume/index.html", i18n: "nav.resume", label: "Currículo" },
+      { path: "cheat-sheet/index.html", i18n: "nav.cheatsheet", label: "Cheat sheet" },
       ...EXTERNAL_LINKS,
     ],
     projects: [
       { path: "index.html", i18n: "nav.back", label: "Voltar" },
       { path: "resume/index.html", i18n: "nav.resume", label: "Currículo" },
+      { path: "cheat-sheet/index.html", i18n: "nav.cheatsheet", label: "Cheat sheet" },
       ...EXTERNAL_LINKS,
     ],
     resume: [
       { path: "index.html", i18n: "nav.back", label: "Voltar" },
       { path: "projects/index.html", i18n: "nav.projects", label: "Projetos" },
+      { path: "cheat-sheet/index.html", i18n: "nav.cheatsheet", label: "Cheat sheet" },
       ...EXTERNAL_LINKS,
     ],
     fabrication: [
       { path: "index.html", i18n: "nav.back", label: "Voltar" },
       { path: "projects/index.html", i18n: "nav.projects", label: "Projetos" },
       { path: "resume/index.html", i18n: "nav.resume", label: "Currículo" },
+      { path: "cheat-sheet/index.html", i18n: "nav.cheatsheet", label: "Cheat sheet" },
       ...EXTERNAL_LINKS,
     ],
   };

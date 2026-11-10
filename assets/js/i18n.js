@@ -17,6 +17,9 @@
       "meta.fabrication.description":
         "Projetos de impressão 3D, modelagem CAD e pequenas soluções físicas de Gabriel Saraiva.",
       "nav.projects": "Projetos",
+      "nav.cheatsheet": "Cheat sheet",
+      "home.card.cheatsheet.title": "Aprender explorando",
+      "home.card.cheatsheet.text": "Referências rápidas e ferramentas interativas para entender matemática na prática.",
       "nav.resume": "Currículo",
       "nav.back": "Voltar",
       "nav.github": "GitHub",
@@ -90,7 +93,7 @@
       "project.unit.label": "Matemática",
       "project.unit.title": "Unit Circle",
       "project.unit.text":
-        "Um brinquedo visual para seno, cosseno, tangente e ângulos.",
+        "As seis funções trigonométricas, com círculo interativo, gráficos e explicações na Cheat sheet.",
       "project.infinite.label": "Generativo",
       "project.infinite.title": "Infinite Drawer",
       "project.infinite.text":
@@ -164,6 +167,9 @@
       "meta.fabrication.description":
         "Gabriel Saraiva's 3D printing projects, CAD models, and small physical problem-solving pieces.",
       "nav.projects": "Projects",
+      "nav.cheatsheet": "Cheat sheet",
+      "home.card.cheatsheet.title": "Learn by exploring",
+      "home.card.cheatsheet.text": "Quick references and interactive tools to understand mathematics through exploration.",
       "nav.resume": "Resume",
       "nav.back": "Back",
       "nav.github": "GitHub",
@@ -238,7 +244,7 @@
       "project.unit.label": "Math",
       "project.unit.title": "Unit Circle",
       "project.unit.text":
-        "A visual toy for sine, cosine, tangent, and angles.",
+        "All six trigonometric functions, with an interactive circle, graphs, and explanations in the Cheat sheet.",
       "project.infinite.label": "Generative",
       "project.infinite.title": "Infinite Drawer",
       "project.infinite.text":

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Círculo unitário V2 · Trigonometria — Gabriel Saraiva</title>
+  <meta name="description" content="Explore as seis funções trigonométricas no círculo unitário e nos gráficos. Ângulos, pontos aleatórios, explicações e valores em tempo real.">
+  <link rel="stylesheet" href="/cheat-sheet/cheat-sheet.css">
+  <link rel="canonical" href="https://www.gabrielsaraiva.com.br/cheat-sheet/matematica/trigonometria/circulo-unitario/">
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Pular para a ferramenta</a>
+  <header class="study-nav"><div><a class="brand" href="/">Gabriel Saraiva</a><nav aria-label="Navegação principal"><a href="/cheat-sheet/" aria-current="true">Cheat sheet</a><a class="optional" href="/projects/">Projetos</a></nav></div></header>
+  <main class="study-page" id="content">
+    <nav class="breadcrumbs" aria-label="Você está em"><a href="/cheat-sheet/">Cheat sheet</a><span aria-hidden="true">/</span><a href="/cheat-sheet/matematica/">Matemática</a><span aria-hidden="true">/</span><a href="../">Trigonometria</a><span aria-hidden="true">/</span><span>Círculo unitário</span></nav>
+    <div class="tool-heading"><div><p class="eyebrow">Um ângulo. Seis perspectivas.</p><h1>Círculo unitário</h1><p class="intro">Gire o ponto. Veja as relações. Entenda de onde saem os gráficos.</p></div><nav class="version-links" aria-label="Versão da ferramenta"><a href="v1/">V1 · original</a><a href="./" aria-current="page">V2</a></nav></div>
+    <section class="lab" data-view="circle" aria-label="Laboratório de trigonometria">
+      <div class="lab-toolbar"><div class="segmented" aria-label="Visualização"><button type="button" data-view="circle" aria-pressed="true">Círculo</button><button type="button" data-view="graphs" aria-pressed="false">Gráficos</button><button type="button" data-view="both" aria-pressed="false">Círculo + gráficos</button></div><label class="units">Unidade <select id="units"><option value="deg">Graus (°)</option><option value="rad">Radianos</option></select></label></div>
+      <div class="angle-controls"><label class="angle-field" for="angle-number">θ <input id="angle-number" type="number" step="0.1" value="45" aria-label="Ângulo em graus"><span id="angle-unit">°</span></label><label class="sr-only" for="angle-range">Ângulo em graus</label><input id="angle-range" type="range" min="0" max="360" step="0.1" value="45"><div class="motion-controls"><button class="button" id="play" type="button" aria-pressed="false">▶ Animar</button><label class="sr-only" for="speed">Velocidade da animação</label><select id="speed"><option value="15">15°/s</option><option value="30" selected>30°/s</option><option value="60">60°/s</option></select></div></div>
+      <div class="explorer"><div class="circle-panel"><div class="diagram-meta"><span>Centro (0, 0) · raio 1</span><output id="point-coordinates">P = (0,707; 0,707)</output></div><svg id="unit-circle" class="circle-plot" role="img" aria-label="Círculo unitário interativo"></svg><div class="point-controls" id="points" aria-label="Pontos de exemplo"></div><p class="diagram-hint">Arraste no círculo ou escolha um ponto. O ângulo cresce no sentido anti-horário.</p><p class="diagram-hint" id="geometry-status"></p></div>
+      <aside class="readout-panel" aria-label="Funções trigonométricas"><div class="function-picker" id="functions"></div><section class="function-detail" aria-labelledby="function-title"><h2 id="function-title">Seno</h2><div class="formula" id="formula"></div><p id="function-description"></p><p id="function-geometry"></p><p class="numeric" id="numeric-example"></p><dl class="properties"><dt>Domínio</dt><dd id="domain"></dd><dt>Valores possíveis</dt><dd id="range"></dd><dt>Período</dt><dd id="period"></dd></dl></section><p class="selected-status" id="selection-status" role="status" aria-live="polite"></p></aside></div>
+      <section class="graphs-panel" aria-labelledby="graph-title"><div class="graph-heading"><div><h2 id="graph-title">Do giro à curva</h2><p>Eixo horizontal: ângulo θ. Eixo vertical: valor da função. Clique num gráfico para explorar.</p></div></div><div class="graph-grid" id="graphs"></div></section>
+      <noscript><p class="lab-noscript">Ative o JavaScript para interagir. As fórmulas e tabelas estão na <a href="../">cheat sheet de trigonometria</a>.</p></noscript>
+    </section>
+    <section class="help-section"><h2>Três ideias para não decorar no escuro</h2><div class="help-grid"><article><h3>O ponto é (cos θ, sen θ)</h3><p>Cosseno é a posição horizontal; seno é a altura. Esquerda e abaixo da origem dão valores negativos. “sin” e “sen” são o mesmo seno.</p></article><article><h3>Uma volta tem 2π radianos</h3><p>180° = π rad. Radianos medem o comprimento do arco dividido pelo raio. Como o raio aqui vale 1, o valor em radianos coincide com o comprimento do arco.</p></article><article><h3>Indefinida não significa infinito</h3><p>Dividir por zero não produz um valor. As linhas tracejadas nos gráficos são assíntotas: perto delas, o módulo da função cresce sem limite.</p></article></div></section>
+    <footer class="study-footer"><a href="../">← Fórmulas, identidades e ângulos notáveis</a><span>Cheat sheet · Matemática / Trigonometria</span></footer>
+  </main>
+</body>
+</html>

@@ -10,6 +10,10 @@
   cursor: help;
 }
 
+.nav-links {
+  flex-wrap: wrap;
+}
+
 @media (max-width: 760px) {
   .footer-inner {
     align-items: flex-start;

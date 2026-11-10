@@ -21,9 +21,9 @@ let height;
 
 let speed = 0.2;
 
-let colorSin = 'rgba(80%,0%,0%,0.5)';
-let colorCos = 'rgba(0%,80%,0%,0.5)';
-let colorHip = 'rgba(0%,0%,80%,0.5)';
+let colorSin = '#b3483f';
+let colorCos = '#1f6f68';
+let colorHip = '#586bb0';
 let colorThetaNormal = 'rgba(0%,80%,80%,0.5)';
 let colorThetaLocked = 'rgba(40%,80%,80%,0.5)';
 let colorTheta = colorThetaNormal;
@@ -47,14 +47,12 @@ function angleByMouse() {
     return A;
   }
 
-  let toDegrees = 180 / Math.PI;
   let mw = width / 2;
   let mh = height / 2;
   let x = mouseX - mw;
   let y = mh - mouseY; // Coordinates on screen on Y axis are inverted.
-  let h = Math.sqrt(x * x + y * y);
-  let ys = Math.sign(y);
-  A = ys * Math.acos(x / h) * toDegrees;
+  if (Math.hypot(x, y) < 1) return A;
+  A = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
 
   if(integerStick){
     A = Math.round(A);
@@ -91,19 +89,20 @@ function setupButtons() {
 
     let x = parseFloat($("#speed").val());
     let y = Math.pow(0.1 * x, 3);
-    console.log(x, y);
     speed = parseFloat(y.toFixed(4));
-
-    console.log(Date(), speed, y, x);
 
     let realSpeed = (fr * speed).toFixed(2) + "º/s";
 
     $("#currentSpeed").text(realSpeed);
 
-  })
+  });
+  $("#speed").trigger("input");
 }
 
 function setup() {
+  createCanvas(window.innerWidth, window.innerHeight);
+  pixelDensity(Math.min(window.devicePixelRatio || 1, 2));
+  textFont('Manrope');
   updateAngleMode();
   setupButtons();
 
@@ -123,18 +122,16 @@ function draw() {
 
   width = window.innerWidth;
   height = window.innerHeight;
-  createCanvas(width, height);
 
   halfW = width / 2;
   halfH = height / 2;
   halfMin = Math.min(halfW, halfH);
   r = halfMin / 2;
 
+  getAngle();
   aRad = (Math.PI / 180) * A;
 
-  getAngle();
-
-  background(200);
+  background(246, 241, 232);
   drawBoard();
 
   drawScale();
@@ -142,6 +139,10 @@ function draw() {
   drawTrig(A);
   drawHistory(A);
 
+}
+
+function windowResized() {
+  resizeCanvas(window.innerWidth, window.innerHeight);
 }
 
 function drawTrig(A) {
@@ -156,7 +157,7 @@ function drawTrig(A) {
   stroke(colorSin);
   line(cos * r, 0, cos * r, -sin * r);
   let sinText = sin.toFixed(4);
-  fill(255, 100, 100);
+  fill(colorSin);
   noStroke();
   let sinTextOffset = A < 90 || A > 270 ? - 100:0;
 
@@ -164,7 +165,7 @@ function drawTrig(A) {
   text("sin(θ): " + sinText, cos * r + 5 + sinTextOffset, -sin * r / 2);
 
   stroke(colorCos);
-  fill(100, 225, 100);
+  fill(colorCos);
   line(0, 0, cos * r, 0);
   let cosText = cos.toFixed(4);
   noStroke();
@@ -227,25 +228,23 @@ function drawHistory(A) {
     drawEvent(history[i], j, h);
   }
 
-  st++;
-  if (st > historySize) {
-    st = 0;
-  }
+  st = (st + 1) % historySize;
 
   pop();
 
 }
 
-function mouseClicked() {
+function mouseClicked(event) {
+  if (event && event.target && event.target.closest && event.target.closest('nav, details, a, button, input, label')) return;
   if (getAngle === angleByMouse) {
     mouseAngleLocked = !mouseAngleLocked;
   }
 
   if (mouseAngleLocked) {
-    $("#mouse-lock").text("Click anywhere to unlock.");
+    $("#mouse-lock").text("Clique no desenho para destravar.");
     colorTheta = colorThetaLocked;
   } else {
-    $("#mouse-lock").text("Click anywhere to lock.");
+    $("#mouse-lock").text("Clique no desenho para travar o ângulo.");
     colorTheta = colorThetaNormal;
   }
 
@@ -254,8 +253,8 @@ function mouseClicked() {
 function drawChart(A) {
 
   let theta = -A;
-  let angle = (A).toFixed(4);
-  let pirad = (angle / 180).toFixed(4);
+  let angle = A.toFixed(1);
+  let pirad = (A / 180).toFixed(3);
 
   push();
   translate(halfW, halfH);
@@ -268,26 +267,18 @@ function drawChart(A) {
   arc(0, 0, r / 3, r / 3, theta, 0);
   pop();
 
-  push();
-  rotate(theta);
-  text("r : 1", r / 2, -5);
-
-  push();
-
-  fill('rgba(0%,0%,0%,0.5)');
   noStroke();
-  rect(r + 20, -10, 190, 20);
-  fill(255);
-  text("θ: " + angle + "º (" + pirad + "π×rad)", r + 25, +5);
-  pop();
+  fill(50);
+  textAlign(CENTER);
+  text("θ = " + angle + "°  ·  " + pirad + "π rad", 0, -halfH + 86);
+  let px = Math.cos(aRad) * r;
+  let py = -Math.sin(aRad) * r;
+  text("r = 1", px / 2, py / 2 - 10);
   stroke(colorHip);
   strokeWeight(2);
-
-  ellipse(r, 0, 5, 5);
-  line(0, 0, r, 0);
-
-  pop();
-
+  line(0, 0, px, py);
+  fill(colorHip);
+  ellipse(px, py, 5, 5);
   pop();
 
 }
@@ -296,6 +287,7 @@ function drawBoard() {
   push();
 
   stroke(150);
+  noFill();
   ellipse(halfW, halfH, halfMin, halfMin);
   line(0, halfH, width, halfH);
   line(halfW, 0, halfW, height);

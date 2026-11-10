@@ -625,13 +625,19 @@ footer {
     font-size: 0.86rem;
   }
 
-  .nav-links a:nth-child(3) {
+  .nav-links a[href^="https://"] {
     display: none;
+  }
+
+  .nav-inner {
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    padding: 10px 0;
   }
 
   .hero {
     min-height: 94svh;
-    padding: 112px 0 44px;
+    padding: 152px 0 44px;
   }
 
   h1 {
@@ -645,7 +651,7 @@ footer {
   }
 
   .life-toolbar {
-    top: 76px;
+    top: 112px;
     left: 14px;
     align-items: flex-start;
     flex-direction: column;
