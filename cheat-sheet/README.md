@@ -2,7 +2,9 @@
 
 Static learning references and interactive tools. No build step or package installation is required.
 
-- `/cheat-sheet/` → Mathematics → Trigonometry.
+- `/cheat-sheet/` → Mathematics → Factoring and Trigonometry.
+- `matematica/fatoracao/` contains a printable formula reference, guided examples and an exact quadratic factoring tool for integer coefficients from -99 to 99. It distinguishes rational roots, irrational real roots, repeated roots and irreducibility over the reals, and handles linear and constant inputs.
+- Run its arithmetic regression tests with `node --test tests/factor-math.test.mjs`.
 - `matematica/trigonometria/circulo-unitario/` is the V2 lab. `app.mjs` handles interaction; `trig-math.mjs` contains the six functions and graph sampling.
 - `matematica/trigonometria/circulo-unitario/v1/` preserves the original p5.js experiment, using the assets in `/unit-circle/`.
 - The previous `/unit-circle/` entry redirects to the lab.

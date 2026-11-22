@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Fatoração · Cheat sheet — Gabriel Saraiva</title>
+  <meta name="description" content="Fatoração sem decoreba: fator comum, agrupamento, produtos notáveis, trinômios e cubos. Exemplos passo a passo e uma calculadora de trinômios.">
+  <link rel="stylesheet" href="/cheat-sheet/cheat-sheet.css">
+  <link rel="stylesheet" href="fatoracao.css">
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<header class="study-nav"><div><a class="brand" href="/">Gabriel Saraiva</a><nav aria-label="Navegação principal"><a href="/cheat-sheet/" aria-current="true">Cheat sheet</a><a href="/projects/">Projetos</a></nav></div></header>
+<main class="study-page factor-page" id="conteudo">
+  <nav class="breadcrumbs" aria-label="Você está em"><a href="/cheat-sheet/">Cheat sheet</a><span aria-hidden="true">/</span><a href="../">Matemática</a><span aria-hidden="true">/</span><span>Fatoração</span></nav>
+  <header class="factor-hero">
+    <div><p class="eyebrow">Matemática / Álgebra</p><h1>A mesma conta.<br>Em forma de produto.</h1><p class="intro">Fatorar é descobrir quais expressões, multiplicadas, dão a expressão original. É a distributiva no caminho de volta.</p></div>
+    <div class="hero-equation" aria-label="6 x mais 12 é igual a 6 vezes x mais 2"><span class="equation">6x + 12</span><span class="equivalence">é o mesmo que</span><span class="equation"><b>6</b>(x + 2)</span><span class="hero-caption">O 6 estava nos dois termos.</span></div>
+  </header>
+  <nav class="factor-jumps" aria-label="Nesta página"><a href="#referencia">Fórmulas</a><a href="#exemplos">Passo a passo</a><a href="#laboratorio">Testar um trinômio</a><a href="#cuidados">Erros comuns</a><button class="print-button" type="button" id="print">Imprimir referência</button></nav>
+
+  <section class="reference-section" id="referencia">
+    <p class="eyebrow">Consulta rápida</p><h2>Qual padrão aparece?</h2><p>Primeiro procure um <strong>fator comum em todos os termos</strong>. Depois conte os termos e veja se algum destes padrões encaixa. A, B e C podem ser números ou expressões inteiras.</p>
+    <div class="table-wrap" role="region" aria-label="Fórmulas e exemplos de fatoração" tabindex="0"><table class="factor-table"><thead><tr><th>Caso</th><th>O padrão</th><th>Um exemplo</th></tr></thead><tbody>
+      <tr><th scope="row">Fator comum <small>Algo multiplica todos os termos.</small></th><td><span class="math">AB + AC = A(B + C)</span></td><td><span class="math">6x² + 12x = 6x(x + 2)</span></td></tr>
+      <tr><th scope="row">Agrupamento <small>Separe grupos com um fator em comum.</small></th><td><span class="math">AC + AD + BC + BD<br>= (A + B)(C + D)</span></td><td><span class="math">x³ + 2x² + 3x + 6<br>= (x² + 3)(x + 2)</span></td></tr>
+      <tr><th scope="row">Diferença de quadrados <small>Dois quadrados com sinal de menos.</small></th><td><span class="math">A² − B² = (A − B)(A + B)</span></td><td><span class="math">9x² − 25 = (3x − 5)(3x + 5)</span></td></tr>
+      <tr><th scope="row">Quadrado perfeito <small>Confira o termo do meio: ±2AB.</small></th><td><span class="math">A² + 2AB + B² = (A + B)²<br>A² − 2AB + B² = (A − B)²</span></td><td><span class="math">x² + 6x + 9 = (x + 3)²<br>4x² − 12x + 9 = (2x − 3)²</span></td></tr>
+      <tr><th scope="row">Trinômio com x² <small>Procure soma s e produto p.</small></th><td><span class="math">x² + sx + p = (x + m)(x + n)</span><small>quando m + n = s e mn = p</small></td><td><span class="math">x² + 5x + 6 = (x + 2)(x + 3)</span></td></tr>
+      <tr><th scope="row">Soma de cubos <small>O segundo fator troca o sinal do meio.</small></th><td><span class="math">A³ + B³ = (A + B)(A² − AB + B²)</span></td><td><span class="math">x³ + 8 = (x + 2)(x² − 2x + 4)</span></td></tr>
+      <tr><th scope="row">Diferença de cubos <small>O segundo fator tem todos os sinais positivos.</small></th><td><span class="math">A³ − B³ = (A − B)(A² + AB + B²)</span></td><td><span class="math">x³ − 27 = (x − 3)(x² + 3x + 9)</span></td></tr>
+    </tbody></table></div>
+    <p class="table-hint">Em uma tela pequena, deslize a tabela para ver as três colunas.</p>
+    <div class="reference-note"><p><strong>A conferência é sempre a mesma:</strong> multiplique os fatores usando a distributiva. Se todos os termos voltarem, a igualdade está certa. Talvez ainda dê para fatorar mais.</p></div>
+  </section>
+
+  <section class="reference-section interactive-section" id="exemplos" aria-labelledby="examples-heading">
+    <p class="eyebrow">Veja a transformação</p><h2 id="examples-heading">Uma etapa de cada vez.</h2><p>Escolha um caso e avance para acompanhar o raciocínio. O objetivo é reconhecer o que se repete.</p>
+    <div class="factor-lab" id="worked-examples" hidden>
+      <div class="example-controls"><label for="example-case">Quero entender</label><select id="example-case"><option value="common">Fator comum</option><option value="group">Agrupamento</option><option value="difference">Diferença de quadrados</option><option value="square">Quadrado perfeito</option><option value="trinomial">Trinômio: soma e produto</option><option value="cubes-plus">Soma de cubos</option><option value="cubes-minus">Diferença de cubos</option><option value="combined">Combinando dois casos</option></select></div>
+      <div class="example-body"><div class="example-origin"><span>Expressão original</span><p class="equation" id="example-original"></p></div><ol class="example-steps" id="example-steps"></ol></div>
+      <div class="step-controls"><button type="button" class="button" id="previous">Etapa anterior</button><span id="step-count" role="status"></span><button type="button" class="button primary" id="next">Próxima etapa</button></div>
+    </div>
+    <noscript><p class="reference-note">Ative o JavaScript para explorar as etapas. As fórmulas e os exemplos da tabela continuam disponíveis.</p></noscript>
+  </section>
+
+  <section class="reference-section" aria-labelledby="area-heading">
+    <div class="area-explainer"><div><p class="eyebrow">A ideia por trás dos parênteses</p><h2 id="area-heading">Os fatores são os lados.</h2><p>Um retângulo de lados <span class="math">(x + 2)</span> e <span class="math">(x + 3)</span> pode ser dividido em quatro partes. Somando as áreas, aparece <span class="math">x² + 5x + 6</span>.</p><p>Expandir é somar as quatro áreas. <strong>Fatorar é reencontrar os lados.</strong></p><small>Este desenho representa comprimentos positivos: x &gt; 0. A identidade algébrica vale para todo x real.</small></div>
+    <div class="area-diagram" role="img" aria-label="Retângulo com colunas x e 3, linhas x e 2. As quatro áreas são x ao quadrado, 3x, 2x e 6. A área total é x ao quadrado mais 5x mais 6."><div class="area-top"><span>x</span><span>3</span></div><div class="area-left"><span>x</span><span>2</span></div><div class="area-cells"><span>x²</span><span>3x</span><span>2x</span><span>6</span></div><p class="equation">x² + 3x + 2x + 6</p></div></div>
+  </section>
+
+  <section class="reference-section interactive-section" id="laboratorio" aria-labelledby="lab-heading">
+    <p class="eyebrow">Laboratório de trinômios</p><h2 id="lab-heading">E quando a conta é outra?</h2><p>Escolha os coeficientes de <span class="math">ax² + bx + c</span>. A ferramenta procura fatores inteiros e, quando precisa, mostra a forma exata com raízes reais.</p>
+    <div class="factor-lab" id="quadratic-lab" hidden>
+      <form id="quadratic-form"><fieldset><legend>Coeficientes inteiros de −99 a 99</legend><div class="coefficient-fields"><label for="coef-a">a<input id="coef-a" name="a" type="number" value="1" min="-99" max="99" step="1" required></label><label for="coef-b">b<input id="coef-b" name="b" type="number" value="5" min="-99" max="99" step="1" required></label><label for="coef-c">c<input id="coef-c" name="c" type="number" value="6" min="-99" max="99" step="1" required></label><button type="submit" class="button primary">Fatorar</button></div></fieldset></form>
+      <div class="preset-controls" aria-label="Exemplos de trinômios"><span>Experimente:</span><button class="button" type="button" data-coefs="2,7,3">2x² + 7x + 3</button><button class="button" type="button" data-coefs="1,-6,9">Quadrado perfeito</button><button class="button" type="button" data-coefs="1,0,-2">Com raiz irracional</button><button class="button" type="button" data-coefs="1,0,1">Sem raízes reais</button></div>
+      <div class="quadratic-result" id="quadratic-result" role="status" aria-live="polite" aria-atomic="true"></div>
+      <p class="lab-limit">Trabalhamos com polinômios em x e coeficientes reais. A ferramenta aceita apenas os três coeficientes acima.</p>
+    </div>
+    <noscript><p class="reference-note">Ative o JavaScript para testar seus coeficientes. Use o método abaixo para fazer à mão.</p></noscript>
+  </section>
+
+  <section class="reference-section"><h2>Qualquer trinômio do 2º grau</h2><p>Se soma e produto não aparecerem de cabeça, calcule as raízes. Para <span class="math">a ≠ 0</span>:</p><div class="general-formulas"><p class="equation">Δ = b² − 4ac</p><p class="equation">x₁, x₂ = (−b ± √Δ) / (2a)</p><p class="equation">ax² + bx + c = a(x − x₁)(x − x₂)</p></div><div class="delta-grid"><div><h3>Δ &gt; 0</h3><p>Duas raízes reais distintas, dois fatores lineares diferentes.</p></div><div><h3>Δ = 0</h3><p>Uma raiz real dupla. A forma é <span class="math">a(x − x₁)²</span>.</p></div><div><h3>Δ &lt; 0</h3><p>Sem raízes reais: não se decompõe em fatores lineares com coeficientes reais.</p></div></div><p>Raiz irracional também pode ser fator: <span class="math">x² − 2 = (x − √2)(x + √2)</span>. Já <span class="math">x² + 1</span> é irredutível nos reais. O conjunto de números permitido faz diferença.</p></section>
+
+  <section class="reference-section" id="cuidados"><p class="eyebrow">Para não cair na pegadinha</p><h2>Três cuidados que salvam a conta.</h2><div class="pitfall-grid"><article><h3>O termo do meio existe.</h3><p class="equation">(A + B)² = A² + 2AB + B²</p><p>O quadrado da soma tem <strong>+2AB</strong>. Em <span class="math">x² + 4x + 9</span>, o meio precisaria ser 6x para virar <span class="math">(x + 3)²</span>.</p></article><article><h3>O sinal da raiz se inverte.</h3><p class="equation">raiz 3 → fator (x − 3)</p><p>Se <span class="math">x = 3</span> zera o polinômio, então <span class="math">(x − 3)</span> é um fator. Exemplo: <span class="math">x² − 9 = (x − 3)(x + 3)</span>.</p></article><article><h3>Cancele fatores, por inteiro.</h3><p class="equation">(x² − 9)/(x − 3) = x + 3</p><p>Primeiro fatore o numerador. Só então cancele <span class="math">(x − 3)</span>, mantendo a condição <strong>x ≠ 3</strong>. Não se cancela um termo dentro de uma soma.</p></article></div></section>
+  <section class="reference-note closing-note"><h2>Fatorar não é resolver uma equação.</h2><p><span class="math">x² + 5x + 6 = (x + 2)(x + 3)</span> é uma identidade: vale para todo x. Se o problema diz <span class="math">x² + 5x + 6 = 0</span>, aí o produto precisa ser zero: <strong>x = −2 ou x = −3</strong>.</p></section>
+  <footer class="study-footer"><a href="../">Todas as referências de matemática</a><a href="../trigonometria/">Estudar trigonometria</a></footer>
+</main>
+</body>
+</html>
