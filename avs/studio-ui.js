@@ -1,5 +1,30 @@
 (() => {
   const $=id=>document.getElementById(id),body=document.body;
+  // Global transport avoids arrows/Space, which belong to the camera and presets.
+  $('deck-prev').onclick=()=>$('preset-prev').click();
+  $('deck-next').onclick=()=>$('preset-next').click();
+  $('preset-hold').onclick=()=>window.presetLibrary.hold();
+  document.addEventListener('avs-sequence-changed',event=>{
+    const running=event.detail.shuffle;
+    $('preset-hold').setAttribute('aria-pressed',String(!running));
+    $('sequence-state').textContent=running?'Shuffle ativo':'Preset fixo';
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.repeat||event.ctrlKey||event.altKey||event.metaKey||event.shiftKey)return;
+    if(event.target.closest('input,textarea,select,[contenteditable],.ace_editor'))return;
+    const target={KeyZ:'deck-prev',KeyX:'preset-hold',KeyC:'deck-next'}[event.code];
+    if(target){event.preventDefault();$(target).click();}
+  });
+  let theme='night';try{theme=localStorage.getItem('avs-theme')||'night';}catch{}
+  function setTheme(value){
+    theme=value==='day'?'day':'night';body.dataset.theme=theme;
+    $('theme-toggle').textContent=theme==='day'?'☀ Dia':'☾ Noite';
+    $('theme-toggle').setAttribute('aria-pressed',String(theme==='day'));
+    $('theme-toggle').setAttribute('aria-label',theme==='day'?'Ativar modo noite':'Ativar modo dia');
+    document.querySelector('meta[name="theme-color"]').content=theme==='day'?'#d5d9e2':'#11121b';
+    try{localStorage.setItem('avs-theme',theme);}catch{}
+  }
+  $('theme-toggle').onclick=()=>setTheme(theme==='day'?'night':'day');setTheme(theme);
   const categories={organic:'Orgânico / psicodélico',geometry:'Geometria',worlds:'Mundos e viagens',lounge:'Lounge / ambiente',science:'Ciência / fractais',classic:'Clássicos AVS',local:'Seu preset'};
   function category(entry){
     if(entry.value.startsWith('local:'))return 'local';

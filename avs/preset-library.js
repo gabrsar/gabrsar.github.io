@@ -79,11 +79,12 @@
     scale.value=scales[Math.floor(Math.random()*scales.length)];
     layout.dispatchEvent(new Event('change',{bubbles:true}));detector=null;changeFrames=0;
   }
-  function stopShuffle(){shuffle=false;shuffleButton.textContent='⇄ Shuffle: desligado';shuffleButton.setAttribute('aria-pressed','false');}
+  function announceSequence(){document.dispatchEvent(new CustomEvent('avs-sequence-changed',{detail:{shuffle}}));}
+  function stopShuffle(){shuffle=false;shuffleButton.textContent='⇄ Shuffle: desligado';shuffleButton.setAttribute('aria-pressed','false');announceSequence();}
   shuffleButton.onclick=()=>{
     if(!shuffle&&library.filter(entry=>!disabled.has(entryValue(entry))).length<2){description.textContent='Ative pelo menos dois presets para usar o shuffle.';return;}
     shuffle=!shuffle;shuffleButton.textContent='⇄ Shuffle: '+(shuffle?'aleatório':'desligado');
-    shuffleButton.setAttribute('aria-pressed',String(shuffle));bag=[];schedule();
+    shuffleButton.setAttribute('aria-pressed',String(shuffle));bag=[];schedule();announceSequence();
   };
   interval.onchange=schedule;
   for(const [id,event]of [['run','click'],['codefile','change'],['reload-script','click'],['watch-script','change']]){
@@ -133,7 +134,7 @@
     document.getElementById(id).onclick=()=>{
       const eligible=library.map(entryValue).filter(value=>!disabled.has(value));
       if(!eligible.length)return;
-      const index=eligible.indexOf(select.value);select.value=eligible[(index+step+eligible.length)%eligible.length];
+      const index=eligible.indexOf(select.value);select.value=eligible[index<0?(step>0?0:eligible.length-1):(index+step+eligible.length)%eligible.length];
       select.dispatchEvent(new Event('change',{bubbles:true}));
     };
   }
@@ -152,6 +153,7 @@
     setEnabled(value,enabled){if(enabled)disabled.delete(value);else disabled.add(value);persistEnabled();if(library.filter(entry=>!disabled.has(entryValue(entry))).length<2)stopShuffle();},
     setAllEnabled(enabled){disabled=new Set(enabled?[]:library.map(entryValue));persistEnabled();if(!enabled)stopShuffle();},
     load(value){select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));},
+    hold(){stopShuffle();},
     pause(){stopShuffle();invalidate();}
   };
   document.getElementById('reload-script').addEventListener('click',()=>{select.value='file:visual.js';description.textContent=library[0].text;});

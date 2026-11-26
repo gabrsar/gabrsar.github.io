@@ -139,7 +139,7 @@ test('published HTML references all required controls and its local assets exist
   for(const script of ['app.js','audio-groups.js','preset-library.js','studio-ui.js','local-presets.js','input-parameters.js']){
     for(const match of read(script).matchAll(/(?:getElementById\(|\$\()'([^']+)'\)/g))assert.ok(ids.has(match[1]),`${script}: ${match[1]}`);
   }
-  for(const match of html.matchAll(/(?:src|href)="([^"#]+)"/g))if(!match[1].startsWith('http')&&!match[1].startsWith('../'))assert.ok(fs.existsSync(root+match[1]),match[1]);
+  for(const match of html.matchAll(/(?:src|href)="([^"#]+)"/g))if(!match[1].startsWith('http')&&!match[1].startsWith('../'))assert.ok(fs.existsSync(root+match[1].split('?')[0]),match[1]);
   const paths=[...read('preset-library.js').matchAll(/path:'([^']+)'/g)].map(match=>match[1]);
   assert.equal(paths.length,new Set(paths).size);paths.forEach(path=>assert.ok(fs.existsSync(root+path)));
   assert.match(html,/não gravam nem enviam o áudio/);assert.match(html,/presets criados e preferências/);
