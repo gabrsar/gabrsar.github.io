@@ -37,4 +37,4 @@ for(let i=0;i<count;i++){
   p.text(chars[column.glyphs[row]%chars.length],x,y);
  }
 }
-p.fill(75,150,95,100);p.textSize(9);p.textAlign(p.LEFT,p.TOP);p.text('SPACE pausa · SHIFT câmera lenta · R reinicia · mouse cria vento',10,h-15);
+p.fill(75,150,95,100);p.textSize(9);p.textAlign(p.LEFT,p.TOP);if(a.showHUD)p.text('SPACE pausa · SHIFT câmera lenta · R reinicia · mouse cria vento',10,h-15);

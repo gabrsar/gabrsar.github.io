@@ -13,7 +13,7 @@ p.blendMode(p.BLEND);p.colorMode(p.RGB,255);
 
 const JULIA=false;
 if(!s.g){
-  s.g=p.createGraphics(Math.max(64,Math.floor(w*.72)),Math.max(64,Math.floor(h*.72)),p.WEBGL);s.g.pixelDensity(1);s.dispose=()=>s.g.remove();
+  s.g=p.createGraphics(Math.max(64,Math.floor(w*(a.renderScale??.75)*.9)),Math.max(64,Math.floor(h*(a.renderScale??.75)*.9)),p.WEBGL);s.g.pixelDensity(1);s.dispose=()=>s.g.remove();
   s.shader=s.g.createShader(`
     precision highp float;
     attribute vec3 aPosition;attribute vec2 aTexCoord;varying vec2 uv;
@@ -55,7 +55,7 @@ cam.logZoom+=Math.max(-dt*.045,Math.min(dt*.045,(desiredLog-cam.logZoom)*(1-Math
 const dx=target[0]-cam.x,dy=target[1]-cam.y,length=Math.hypot(dx,dy);
 const limit=dt*.035/zoom;
 if(length>1e-7){const move=Math.min(limit,length*(1-Math.exp(-dt/5)));cam.x+=dx/length*move;cam.y+=dy/length*move;}
-const g=s.g,rw=Math.max(64,Math.floor(w*.72)),rh=Math.max(64,Math.floor(h*.72));
+const g=s.g,rw=Math.max(64,Math.floor(w*(a.renderScale??.75)*.9)),rh=Math.max(64,Math.floor(h*(a.renderScale??.75)*.9));
 if(g.width!==rw||g.height!==rh)g.resizeCanvas(rw,rh);
 g.clear();g.resetMatrix();g.shader(s.shader);g.noStroke();
 for(const [name,value]of Object.entries({resolution:[g.width,g.height],time:cam.clock,bass:cam.low,treble:cam.high,power:cam.power,isJulia:JULIA?1:0,cameraCenter:[cam.x,cam.y],cameraZoom:Math.exp(cam.logZoom)}))s.shader.setUniform(name,value);

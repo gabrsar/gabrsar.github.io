@@ -39,6 +39,14 @@
   for(const entry of library)group.append(new Option(entry.name,'file:'+entry.path));
   select.replaceChildren();select.prepend(group);select.value='file:visual.js';description.textContent=library[0].text;
   const legacyChange=select.onchange;
+  let disabled=new Set();
+  try{const stored=JSON.parse(localStorage.getItem('avs-disabled-presets-v1')||'[]');if(Array.isArray(stored))disabled=new Set(stored);}catch{}
+  const entryValue=entry=>entry.value||'file:'+entry.path;
+  const announceLibrary=()=>document.dispatchEvent(new Event('avs-library-changed'));
+  function persistEnabled(){
+    try{localStorage.setItem('avs-disabled-presets-v1',JSON.stringify([...disabled]));}catch{}
+    bag=[];announceLibrary();
+  }
   let revision=0,loading=false,shuffle=false,nextAt=0,bag=[],lastSwitch=0,detector=null,changeFrames=0;
   const shuffleButton=document.getElementById('shuffle-presets');
   const interval=document.getElementById('shuffle-interval');
@@ -73,6 +81,7 @@
   }
   function stopShuffle(){shuffle=false;shuffleButton.textContent='⇄ Shuffle: desligado';shuffleButton.setAttribute('aria-pressed','false');}
   shuffleButton.onclick=()=>{
+    if(!shuffle&&library.filter(entry=>!disabled.has(entryValue(entry))).length<2){description.textContent='Ative pelo menos dois presets para usar o shuffle.';return;}
     shuffle=!shuffle;shuffleButton.textContent='⇄ Shuffle: '+(shuffle?'aleatório':'desligado');
     shuffleButton.setAttribute('aria-pressed',String(shuffle));bag=[];schedule();
   };
@@ -85,9 +94,10 @@
     const phraseChange=musicalTurn();
     if(Date.now()<nextAt&&!phraseChange)return;
     if(!bag.length){
-      bag=library.map(entry=>entry.value||'file:'+entry.path).filter(value=>value!==select.value);
+      bag=library.map(entryValue).filter(value=>value!==select.value&&!disabled.has(value));
       for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}
     }
+    bag=bag.filter(value=>!disabled.has(value));
     const value=bag.pop();if(!value){schedule();return;}
     varyReading();select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));schedule();
   },500);
@@ -121,7 +131,9 @@
   };
   for(const [id,step]of [['preset-prev',-1],['preset-next',1]]){
     document.getElementById(id).onclick=()=>{
-      select.selectedIndex=(select.selectedIndex+step+select.options.length)%select.options.length;
+      const eligible=library.map(entryValue).filter(value=>!disabled.has(value));
+      if(!eligible.length)return;
+      const index=eligible.indexOf(select.value);select.value=eligible[(index+step+eligible.length)%eligible.length];
       select.dispatchEvent(new Event('change',{bubbles:true}));
     };
   }
@@ -134,8 +146,11 @@
         library.push({name:record.name,value:'local:'+record.id,code:record.code,seed:record.seed,text:'Preset local: '+record.name});
         localGroup.append(new Option(record.name,'local:'+record.id));
       }
-      select.append(localGroup);bag=[];
+      select.append(localGroup);bag=[];announceLibrary();
     },
+    entries(){return library.map(entry=>({value:entryValue(entry),name:entry.name,text:entry.text,enabled:!disabled.has(entryValue(entry))}));},
+    setEnabled(value,enabled){if(enabled)disabled.delete(value);else disabled.add(value);persistEnabled();if(library.filter(entry=>!disabled.has(entryValue(entry))).length<2)stopShuffle();},
+    setAllEnabled(enabled){disabled=new Set(enabled?[]:library.map(entryValue));persistEnabled();if(!enabled)stopShuffle();},
     load(value){select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));},
     pause(){stopShuffle();invalidate();}
   };

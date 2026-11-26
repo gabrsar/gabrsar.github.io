@@ -13,7 +13,7 @@ if(!a.groups){p.background(2,3,10);return;}
 const keys=Object.keys(a.groups).sort((x,y)=>a.groups[x].low-a.groups[y].low);
 if(s.g && s.keySignature!==keys.join(',')){s.dispose();s.g=null;}
 if(!s.g){
-  s.g=p.createGraphics(p.width,p.height,p.WEBGL);s.g.pixelDensity(1);
+  s.g=p.createGraphics(Math.max(64,Math.round(p.width*(a.renderScale??.75))),Math.max(64,Math.round(p.height*(a.renderScale??.75))),p.WEBGL);s.g.pixelDensity(1);
   const canvas=p.canvas;
   const initial=()=>({yaw:0,pitch:.95,zoom:1,panX:0,panY:0});
   s.camera=initial();s.drag=null;
@@ -65,7 +65,8 @@ if(!s.g){
   p.background(2,3,10);
 }
 const g=s.g;
-if(g.width!==p.width||g.height!==p.height)g.resizeCanvas(p.width,p.height);
+const rw=Math.max(64,Math.round(p.width*(a.renderScale??.75))),rh=Math.max(64,Math.round(p.height*(a.renderScale??.75)));
+if(g.width!==rw||g.height!==rh)g.resizeCanvas(rw,rh);
 if(t-s.sample>=1/SAMPLE_RATE){
   s.rows.push({born:t,db:keys.map(k=>a.groups[k].db??-120)});s.sample=t;
 }
@@ -166,7 +167,7 @@ p.blendMode(p.BLEND);p.colorMode(p.RGB,255);
 p.background(2,3,10,255*(1-Math.exp(-dt/TRAIL)));
 p.imageMode(p.CORNER);p.image(g,0,0,p.width,p.height);
 p.noStroke();p.textAlign(p.LEFT,p.TOP);p.textSize(10);p.fill(150,170,195,200);
-p.text('AGORA: FILEIRA CLARA · ARRASTE: ÓRBITA · SCROLL: ZOOM · SETAS: DIREÇÃO · SHIFT: PAN · R: RESET',12,10);
+if(a.showHUD)p.text('AGORA: FILEIRA CLARA · ARRASTE: ÓRBITA · SCROLL: ZOOM · SETAS: DIREÇÃO · SHIFT: PAN · R: RESET',12,10);
 const hz=v=>v>=1000?(v/1000).toFixed(v%1000?1:0)+'k':String(v);
 p.textAlign(p.CENTER,p.TOP);p.textSize(9);
 const labelEvery=Math.max(1,Math.ceil(keys.length*32/p.width));
@@ -177,4 +178,4 @@ for(let k=0;k<keys.length;k++){
   if(k%labelEvery===0)p.text(hz(group.low),x,p.height-34);
 }
 
-p.textAlign(p.LEFT,p.TOP);p.fill(150,170,195,180);p.text(keys.length+' BANDAS · '+MAX_HISTORY+'s FIXOS · '+Math.round(1000/s.frameMs)+' FPS · FOV '+FOV_DEGREES+'°',12,p.height-55);
+p.textAlign(p.LEFT,p.TOP);p.fill(150,170,195,180);if(a.showHUD)p.text(keys.length+' BANDAS · '+MAX_HISTORY+'s FIXOS · '+Math.round(1000/s.frameMs)+' FPS · FOV '+FOV_DEGREES+'°',12,p.height-55);

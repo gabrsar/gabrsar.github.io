@@ -2,8 +2,10 @@
 (() => {
   const watch = document.getElementById('watch-script');
   const status = document.getElementById('script-status');
+  const isLocal=['localhost','127.0.0.1','::1'].includes(location.hostname);
+  watch.checked=isLocal;
   let previous, busy = false, revision = 0, currentPath='visual.js';
-  window.followScript=(path,code)=>{revision++;currentPath=path;previous=code;watch.checked=true;};
+  window.followScript=(path,code)=>{revision++;currentPath=path;previous=code;watch.checked=isLocal;};
   function pause() {
     watch.checked = false;
     revision++;

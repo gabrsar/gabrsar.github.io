@@ -13,7 +13,7 @@ p.blendMode(p.BLEND);p.colorMode(p.RGB,255);
 
 const DUAL=true;
 if(!s.g){
-  s.g=p.createGraphics(w,h,p.WEBGL);s.g.pixelDensity(1);s.dispose=()=>s.g.remove();
+  s.g=p.createGraphics(Math.max(64,Math.round(w*(a.renderScale??.75))),Math.max(64,Math.round(h*(a.renderScale??.75))),p.WEBGL);s.g.pixelDensity(1);s.dispose=()=>s.g.remove();
   s.orbits=Array.from({length:DUAL?2:1},(_,i)=>({x:.1+i*.0002,y:0,z:0,points:[]}));
   s.clock=0;s.particleClock=0;s.low=0;s.high=0;s.mid=0;s.power=0;s.rotation=0;s.hue=195;s.impact=0;
   s.particles=[];s.active=64;s.warmed=false;
@@ -62,7 +62,7 @@ while(s.particleClock>=1&&iterations++<14){
     if(!Number.isFinite(dot.x)||Math.hypot(dot.x,dot.y,dot.z)>100){dot.x=.1;dot.y=0;dot.z=0;dot.trail=[];}
   }
 }
-const g=s.g;if(g.width!==w||g.height!==h)g.resizeCanvas(w,h);
+const g=s.g,rw=Math.max(64,Math.round(w*(a.renderScale??.75))),rh=Math.max(64,Math.round(h*(a.renderScale??.75)));if(g.width!==rw||g.height!==rh)g.resizeCanvas(rw,rh);
 g.clear();g.resetMatrix();g.colorMode(p.HSB,360,100,100,255);g.background(225,65,3);
 g.perspective(Math.PI/3,w/h,1,5000);g.camera(0,0,Math.max(95,95*h/w),0,0,0,0,1,0);
 g.rotateY(s.rotation);g.rotateX(-.22+Math.sin(t*.055)*(.12+s.high*.12));g.rotateZ(Math.sin(t*.035)*.055);

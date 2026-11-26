@@ -10,7 +10,7 @@ const bass=region(25,250),mid=region(250,4000),high=region(4000,22000);
 const power=levels.length?Math.max(...levels):0;
 const STEP=100,COUNT=80,SIDES=18;
 if(!s.g){
-  s.g=p.createGraphics(w,h,p.WEBGL);s.g.pixelDensity(1);s.dispose=()=>s.g.remove();
+  s.g=p.createGraphics(Math.max(64,Math.round(w*(a.renderScale??.75))),Math.max(64,Math.round(h*(a.renderScale??.75))),p.WEBGL);s.g.pixelDensity(1);s.dispose=()=>s.g.remove();
   s.sections=[];s.offset=0;s.speed=260;s.roll=0;s.bass=0;s.mid=0;s.high=0;s.power=0;
   s.turn=0;s.slope=0;s.bearing=0;s.pitch=0;s.x=0;s.y=0;s.serial=0;
   s.lookX=0;s.lookY=0;s.hue=205;s.nextMood=t+5;s.targetTurn=0;s.targetSlope=0;s.targetHue=205;
@@ -46,7 +46,7 @@ while(s.offset>=STEP){s.offset-=STEP;s.sections.shift();appendSection();}
 const mix=s.offset/STEP;
 const cx=s.sections[0].x+(s.sections[1].x-s.sections[0].x)*mix;
 const cy=s.sections[0].y+(s.sections[1].y-s.sections[0].y)*mix;
-const g=s.g;if(g.width!==w||g.height!==h)g.resizeCanvas(w,h);
+const g=s.g,rw=Math.max(64,Math.round(w*(a.renderScale??.75))),rh=Math.max(64,Math.round(h*(a.renderScale??.75)));if(g.width!==rw||g.height!==rh)g.resizeCanvas(rw,rh);
 g.clear();g.resetMatrix();g.colorMode(p.HSB,360,100,100,255);g.background(230,70,3);
 g.perspective(Math.PI*.53,w/h,5,16000);
 // Interpola também o alvo à frente: não salta quando troca de segmento.
@@ -124,4 +124,4 @@ for(let i=COUNT-1;i>=0;i--){
 // Mantém a pista visível em silêncio, mas desacelera e retira os impactos.
 p.blendMode(p.BLEND);p.background(2,3,10);p.imageMode(p.CORNER);p.image(g,0,0,w,h);
 p.colorMode(p.RGB,255);p.noStroke();p.fill(135,185,220,150);p.textSize(10);
-p.textAlign(p.LEFT,p.TOP);p.text('HYPERDRIVE · '+Math.round(s.speed)+' · GRAVES: PROPULSÃO / MÉDIOS: CURVAS / AGUDOS: BRILHO',12,12);
+p.textAlign(p.LEFT,p.TOP);if(a.showHUD)p.text('HYPERDRIVE · '+Math.round(s.speed)+' · GRAVES: PROPULSÃO / MÉDIOS: CURVAS / AGUDOS: BRILHO',12,12);

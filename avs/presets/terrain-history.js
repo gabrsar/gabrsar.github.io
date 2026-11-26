@@ -15,7 +15,7 @@ const levels=Array.from({length:bandCount},(_,i)=>{
 const loud=levels.length?Math.max(...levels):0;
 const HISTORY=24,RATE=5,COLS=24,WIDTH=1500,LENGTH=4200;
 if(!s.g){
-  s.g=p.createGraphics(Math.max(64,Math.floor(w*.75)),Math.max(64,Math.floor(h*.75)),p.WEBGL);s.g.pixelDensity(1);s.dispose=()=>s.g.remove();
+  s.g=p.createGraphics(Math.max(64,Math.floor(w*(a.renderScale??.75))),Math.max(64,Math.floor(h*(a.renderScale??.75))),p.WEBGL);s.g.pixelDensity(1);s.dispose=()=>s.g.remove();
   s.rows=[];s.objects=[];s.lastSample=-10;s.lastSpawn=-10;s.nextSpawn=t+6;s.previous=0;
 }
 // Resolução da malha independente das bandas: sem colunas demarcando frequências.
@@ -43,7 +43,7 @@ if(loud>.10&&t-s.lastSpawn>3&&((strongBeat||abnormal)||t>s.nextSpawn)){
   s.lastSpawn=t;s.nextSpawn=t+5+Math.random()*10;
 }
 s.objects=s.objects.filter(o=>t-o.born<HISTORY).slice(-12);
-const g=s.g,rw=Math.max(64,Math.floor(w*.75)),rh=Math.max(64,Math.floor(h*.75));
+const g=s.g,rw=Math.max(64,Math.floor(w*(a.renderScale??.75))),rh=Math.max(64,Math.floor(h*(a.renderScale??.75)));
 if(g.width!==rw||g.height!==rh)g.resizeCanvas(rw,rh);
 g.clear();g.resetMatrix();g.colorMode(p.HSB,360,100,100,255);g.background(225,60,4);
 g.perspective(Math.PI*.36,w/h,5,9000);g.camera(0,-300,720,0,-50,-1500,0,1,0);
@@ -95,4 +95,4 @@ for(const object of s.objects){
 }
 p.blendMode(p.BLEND);p.colorMode(p.RGB,255);p.background(2,3,10);p.imageMode(p.CORNER);p.image(g,0,0,w,h);
 p.noStroke();p.fill(130,185,180,170);p.textSize(10);p.textAlign(p.LEFT,p.TOP);
-p.text('MUNDO MUSICAL',12,12);
+if(a.showHUD)p.text('MUNDO MUSICAL',12,12);

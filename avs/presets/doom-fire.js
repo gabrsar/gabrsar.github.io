@@ -43,16 +43,19 @@ while(s.clock>=1/30&&count++<3){
   const swap=s.heat;s.heat=s.next;s.next=swap;
 }
 const image=s.image;image.loadPixels();
-for(let y=0;y<image.height;y++)for(let x=0;x<image.width;x++){
-  let index;
-  if(POLAR){
-    const dx=(x-image.width/2)/(image.width/2),dy=(y-image.height/2)/(image.height/2);
-    const radius=Math.hypot(dx,dy),angle=(Math.atan2(dy,dx)+Math.PI)/(Math.PI*2);
-    const fy=Math.floor((1-(radius-.12)/.88)*(FH-1));
-    index=radius<.12||radius>1||fy<0||fy>=FH?-1:fy*FW+Math.min(FW-1,Math.floor(angle*FW));
-  }else index=y*FW+x;
+if(POLAR&&!s.pixelMap){
+ s.pixelMap=new Int32Array(image.width*image.height);
+ for(let y=0;y<image.height;y++)for(let x=0;x<image.width;x++){
+  const dx=(x-image.width/2)/(image.width/2),dy=(y-image.height/2)/(image.height/2);
+  const radius=Math.hypot(dx,dy),angle=(Math.atan2(dy,dx)+Math.PI)/(Math.PI*2);
+  const fy=Math.floor((1-(radius-.12)/.88)*(FH-1));
+  s.pixelMap[y*image.width+x]=radius<.12||radius>1||fy<0||fy>=FH?-1:fy*FW+Math.min(FW-1,Math.floor(angle*FW));
+ }
+}
+for(let pixel=0;pixel<image.width*image.height;pixel++){
+ const index=POLAR?s.pixelMap[pixel]:pixel;
   const heat=index<0?0:Math.max(0,Math.min(255,Math.floor(s.heat[index])));
-  const color=s.palette[heat],offset=(y*image.width+x)*4;
+  const color=s.palette[heat],offset=pixel*4;
   image.pixels[offset]=color[0];image.pixels[offset+1]=color[1];image.pixels[offset+2]=color[2];image.pixels[offset+3]=255;
 }
 image.updatePixels();p.background(0);p.imageMode(p.CORNER);
