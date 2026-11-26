@@ -21,6 +21,20 @@ s.time+=activeDt;s.wind+=(Math.max(-.35,Math.min(.35,mouse.vx/1800))-s.wind)*(1-
 p.background(0,5,2,255*(1-Math.exp(-dt/.075)));p.textFont('monospace');p.textSize(fontSize);p.textAlign(p.CENTER,p.TOP);
 const chars='ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const hour=a.clock?.hour??12;
+// Atlas de glifos: evita medir e rasterizar centenas de textos a cada frame.
+const atlasCell=22,atlasCols=16,atlasRows=Math.ceil(chars.length/atlasCols);
+if(!s.atlas){
+ s.atlas=p.createGraphics(atlasCell*atlasCols,atlasCell*atlasRows*3);s.atlas.pixelDensity(1);s.atlas.clear();
+ s.atlas.textFont('monospace');s.atlas.textSize(fontSize);s.atlas.textAlign(p.CENTER,p.TOP);s.atlas.noStroke();
+ const colors=['#235b37','#42b668','#d2ffe1'];
+ for(let shade=0;shade<3;shade++){
+  s.atlas.fill(colors[shade]);
+  for(let glyph=0;glyph<chars.length;glyph++)s.atlas.text(chars[glyph],(glyph%atlasCols)*atlasCell+atlasCell/2,(Math.floor(glyph/atlasCols)+shade*atlasRows)*atlasCell);
+ }
+ s.dispose=()=>s.atlas.remove();
+}
+const ctx=p.drawingContext;ctx.save();
+try{
 for(let i=0;i<count;i++){
  const column=s.columns[i],index=Math.floor(i/count*strengths.length),energy=strengths[index]||0;
  if(mouse.clicked&&Math.abs((i+.5)/count-mouse.nx)<.12)column.y=mouse.ny*h;
@@ -32,9 +46,11 @@ for(let i=0;i<count;i++){
  for(let row=17;row>=0;row--){
   const y=column.y-row*fontSize;if(y< -fontSize||y>h)continue;
   const fade=Math.pow(1-row/18,1.7),x=(i+.5)*cell+Math.sin(s.time*.25+column.seed)*1.2+s.wind*row*4;
-  if(row===0)p.fill(150+energy*70,225+energy*25,175+energy*55,120+energy*110);
-  else p.fill(10+hour*.3,95+energy*120,35+energy*55,fade*(50+energy*170));
-  p.text(chars[column.glyphs[row]%chars.length],x,y);
+  const shade=row===0?2:energy>.40?1:0;
+  const glyph=column.glyphs[row]%chars.length;
+  ctx.globalAlpha=row===0?(.55+energy*.40):fade*(.22+energy*.64+hour*.001);
+  ctx.drawImage(s.atlas.canvas,(glyph%atlasCols)*atlasCell,(Math.floor(glyph/atlasCols)+shade*atlasRows)*atlasCell,atlasCell,atlasCell,x-atlasCell/2,y,atlasCell,atlasCell);
  }
 }
+}finally{ctx.restore();}
 p.fill(75,150,95,100);p.textSize(9);p.textAlign(p.LEFT,p.TOP);if(a.showHUD)p.text('SPACE pausa · SHIFT câmera lenta · R reinicia · mouse cria vento',10,h-15);

@@ -4,6 +4,12 @@
 
   const translations = {
     PT_BR: {
+      "project.avs.label": "Som + código",
+      "project.avs.title": "AVS Lab",
+      "project.avs.text": "Sua música virando paisagens, fractais e padrões. Explore os presets ou escreva o seu, direto no navegador.",
+      "home.card.avs.label": "Som + código",
+      "home.card.avs.title": "Veja a música acontecer",
+      "home.card.avs.text": "Uma coleção de visuais que responde ao som. Para explorar, brincar ou criar seu próprio experimento.",
       "meta.home.description":
         "Site pessoal de Gabriel Saraiva: currículo, projetos e experimentos feitos por diversão.",
       "meta.home.ogDescription":
@@ -154,6 +160,12 @@
         "Replacement part para Molinete da Shimano",
     },
     EN_US: {
+      "project.avs.label": "Sound + code",
+      "project.avs.title": "AVS Lab",
+      "project.avs.text": "Your music becomes landscapes, fractals and patterns. Explore the presets or write your own, right in your browser.",
+      "home.card.avs.label": "Sound + code",
+      "home.card.avs.title": "Watch music take shape",
+      "home.card.avs.text": "A collection of visuals that responds to sound. Explore, play, or create your own experiment.",
       "meta.home.description":
         "Gabriel Saraiva's personal site: resume, projects, and experiments built for fun.",
       "meta.home.ogDescription":

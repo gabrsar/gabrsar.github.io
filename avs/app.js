@@ -83,12 +83,17 @@ $('stop').onclick=()=>{disconnect();message('Áudio parado.')};$('demo').onclick
 $('file').onclick=()=>$('upload').click();$('upload').onchange=async e=>{const f=e.target.files[0];if(!f)return;disconnect();const ticket=generation;try{await init();if(ticket!==generation)return;url=URL.createObjectURL(f);media=new Audio(url);media.loop=false;media.onended=()=>{if(ticket===generation)message('Música encerrada. Abra outro arquivo para continuar.')};source=context.createMediaElementSource(media);source.connect(analyser);source.connect(detailAnalyser);source.connect(context.destination);await media.play();if(ticket===generation){mode='live';message('Arquivo: '+f.name)}}catch(err){if(ticket===generation){disconnect();message(err.message)}}e.target.value=''};
 $('fft').onchange=resizeFFT;
 let drawCode,state={},sketch;
-function apply(){try{const fn=new Function('p','a','s',codeEditor.getValue());if(sketch&&drawCode)window.visualTransition?.capture(sketch.canvas);if(typeof state.dispose==='function')state.dispose();drawCode=fn;state={};window.avsInputs?.reset(sketch?.canvas?sketch:null);if(sketch?.canvas)sketch.background(0);$('error').textContent='';try{localStorage.setItem('avs-code',codeEditor.getValue())}catch{}return true}catch(e){$('error').textContent=e.message;return false}}
+function disposeCurrentState(){
+ const dispose=state.dispose;state.dispose=null;
+ if(typeof dispose==='function')try{dispose()}catch(error){console.warn('Preset cleanup:',error.message)}
+}
+
+function apply(){try{const fn=new Function('p','a','s',codeEditor.getValue());if(sketch&&drawCode)window.visualTransition?.capture(sketch.canvas);disposeCurrentState();drawCode=fn;state={};window.avsInputs?.reset(sketch?.canvas?sketch:null);if(sketch?.canvas){sketch.canvas.setAttribute('aria-label','Animação que reage ao áudio. Clique para usar mouse e teclado.');sketch.background(0);}$('error').textContent='';try{localStorage.setItem('avs-code',codeEditor.getValue())}catch{}return true}catch(e){$('error').textContent=e.message;return false}}
 for(const name of Object.keys(presets))$('preset').add(new Option(name,name));
 $('preset').onchange=()=>{codeEditor.setValue(presets[$('preset').value]);apply()};
 try{codeEditor.setValue(localStorage.getItem('avs-code')||Object.values(presets)[0])}catch{codeEditor.setValue(Object.values(presets)[0])}
 $('run').onclick=apply;$('editor').onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();apply()}if(e.key==='Tab'){e.preventDefault();const t=e.target,start=t.selectionStart;t.setRangeText('  ',start,t.selectionEnd,'end')}};
-$('save').onclick=()=>{const u=URL.createObjectURL(new Blob([codeEditor.getValue()],{type:'text/javascript'}));const link=document.createElement('a');link.href=u;link.download='visual.js';link.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+$('save').onclick=()=>{const u=URL.createObjectURL(new Blob([codeEditor.getValue()],{type:'text/javascript'}));const link=document.createElement('a');link.href=u;link.download=(($('local-preset-name')?.value||'visual').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]+/g,'-').slice(0,64)||'visual')+'.js';link.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 $('import').onclick=()=>$('codefile').click();$('codefile').onchange=async e=>{if(e.target.files[0]){codeEditor.setValue(await e.target.files[0].text());apply()}e.target.value=''};
 async function enterFullscreen(target){
   try{
@@ -111,7 +116,7 @@ function audioAvailable(){
   if(stream){const track=stream.getAudioTracks()[0];return !!track && track.readyState==='live' && !track.muted;}
   return !!media && !media.paused && !media.ended;
 }
-let lastAnalysisTime;
+let lastAnalysisTime,lastScopePaint=-Infinity,lastMeterLabel=-Infinity;
 function update(p){a.time=p.millis()/1000;a.dt=Math.min(.1,p.deltaTime/1000);if(lastAnalysisTime!==undefined && a.time-lastAnalysisTime>.5)groupEngine.reset();lastAnalysisTime=a.time;const gain=+$('gain').value;let silent=false;
 if(mode==='remote'){
 const packet=window.remoteAudio.read();
@@ -150,8 +155,9 @@ if(mode==='live' && audioAvailable()){
 a.showHUD=document.body.dataset.mode==='studio';
 a.renderScale=({'performance':.55,'balanced':.75,'detail':1})[$('render-quality')?.value]||.75;
 a.features=groupEngine.features();a.music=window.avsMusic?.update(a);window.avsInputs?.update(p,a);
-const c=$('scope'),g=c.getContext('2d');if(c.width!==c.clientWidth*devicePixelRatio||c.height!==120*devicePixelRatio){c.width=c.clientWidth*devicePixelRatio;c.height=120*devicePixelRatio}const w=c.width,h=c.height;g.clearRect(0,0,w,h);for(let i=0;i<100;i++){const hz=20*Math.pow(1000,i/99),v=a.spectrum[Math.min(raw.length-1,Math.floor(hz/a.binHz))];g.fillStyle='#a9ff64';g.fillRect(i*w/100,h,Math.max(1,w/100-2),-v*h)}g.strokeStyle='#57baff';g.beginPath();for(let i=0;i<wave.length;i+=8){const x=i/wave.length*w,y=h/2+wave[i]*h*.4;if(!i)g.moveTo(x,y);else g.lineTo(x,y)}g.stroke();if(p.frameCount%10===0)$('meters').textContent=`${mode.toUpperCase()} · GRAVE ${a.bass.toFixed(2)} · MÉDIO ${a.mid.toFixed(2)} · AGUDO ${a.treble.toFixed(2)} · RMS ${a.level.toFixed(2)} · ${Math.round(p.frameRate())} FPS`;
+if(a.time-lastScopePaint<1/30)return;lastScopePaint=a.time;
+const c=$('scope'),g=c.getContext('2d');if(c.width!==c.clientWidth*devicePixelRatio||c.height!==120*devicePixelRatio){c.width=c.clientWidth*devicePixelRatio;c.height=120*devicePixelRatio}const w=c.width,h=c.height;g.clearRect(0,0,w,h);for(let i=0;i<100;i++){const hz=20*Math.pow(1000,i/99),v=a.spectrum[Math.min(raw.length-1,Math.floor(hz/a.binHz))];g.fillStyle='#a9ff64';g.fillRect(i*w/100,h,Math.max(1,w/100-2),-v*h)}g.strokeStyle='#57baff';g.beginPath();for(let i=0;i<wave.length;i+=8){const x=i/wave.length*w,y=h/2+wave[i]*h*.4;if(!i)g.moveTo(x,y);else g.lineTo(x,y)}g.stroke();if(a.time-lastMeterLabel>=.2){lastMeterLabel=a.time;$('meters').textContent=`${mode.toUpperCase()} · GRAVE ${a.bass.toFixed(2)} · MÉDIO ${a.mid.toFixed(2)} · AGUDO ${a.treble.toFixed(2)} · RMS ${a.level.toFixed(2)} · ${Math.round(p.frameRate())} FPS`;}
 }
 apply();
 if(typeof p5==='undefined')message('Não foi possível carregar p5.js. Confira sua conexão e recarregue.');
-else new p5(p=>{sketch=p;window.avsP5=p;p.setup=()=>{p.createCanvas($('stage').clientWidth,$('stage').clientHeight);p.pixelDensity(1);p.background(0);new ResizeObserver(()=>p.resizeCanvas($('stage').clientWidth,$('stage').clientHeight)).observe($('stage'))};p.draw=()=>{update(p);if(drawCode){p.push();try{drawCode(p,a,state)}catch(e){$('error').textContent=e.stack;drawCode=null}finally{p.pop()}}}},$('stage'));
+else new p5(p=>{sketch=p;window.avsP5=p;p.setup=()=>{p.createCanvas($('stage').clientWidth,$('stage').clientHeight);p.pixelDensity(1);p.background(0);new ResizeObserver(()=>p.resizeCanvas($('stage').clientWidth,$('stage').clientHeight)).observe($('stage'))};p.draw=()=>{update(p);if(drawCode){p.push();try{drawCode(p,a,state)}catch(e){$('error').textContent=e.stack||e.message;drawCode=null;disposeCurrentState()}finally{p.pop()}}}},$('stage'));

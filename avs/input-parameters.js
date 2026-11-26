@@ -9,6 +9,7 @@
   function clearKeys(){for(const key of held)released.add(key);held.clear();mouse.pressed=false;}
   window.addEventListener('keydown',e=>{
     if(typing(e)||(!hover&&document.activeElement!==canvas))return;
+    if(document.activeElement===canvas&&['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
     for(const key of [normalize(e.key),normalize(e.code)]){if(!held.has(key))pressed.add(key);held.add(key);}
   });
   window.addEventListener('keyup',e=>{for(const key of [normalize(e.key),normalize(e.code)]){held.delete(key);released.add(key);}});

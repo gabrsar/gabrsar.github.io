@@ -33,6 +33,8 @@
         const preset=document.getElementById('preset');
         if([...preset.options].some(option=>option.value==='file:'+currentPath))preset.value='file:'+currentPath;
         status.textContent = currentPath+' aplicado às ' + new Date().toLocaleTimeString();
+        const option=[...preset.options].find(item=>item.value==='file:'+currentPath);
+        document.dispatchEvent(new CustomEvent('avs-preset-loaded',{detail:{value:'file:'+currentPath,name:option?.textContent||currentPath}}));
       } else {
         status.textContent = 'Erro ao aplicar '+currentPath+' · consulte o editor';
       }

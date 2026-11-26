@@ -6,7 +6,7 @@
     open(){
       if(mode!=='remote')disconnect();active=true;sessionStorage.setItem('avs-persistent-audio','yes');
       // Reuse a named window without navigating or reloading an existing capture.
-      const popup=window.open('','avs-capture','popup,width=540,height=460');
+      const popup=window.open('','avs-capture:'+location.origin,'popup,width=540,height=460');
       if(!popup){message('Permita a janela de captura no Chrome.');return;}
       try{if(popup.location.href==='about:blank')popup.location.href='capture.html';}catch{}
       popup.focus();channel.postMessage({type:'hello'});

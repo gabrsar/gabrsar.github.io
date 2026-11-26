@@ -66,7 +66,8 @@
   $('presets-enable-all').onclick=()=>window.presetLibrary.setAllEnabled(true);
   $('presets-disable-all').onclick=()=>window.presetLibrary.setAllEnabled(false);
   document.addEventListener('avs-library-changed',renderLibrary);
-  document.addEventListener('avs-preset-loaded',updateSelected);
+  document.addEventListener('avs-preset-loaded',event=>{updateSelected();try{localStorage.setItem('avs-last-preset',event.detail.value);}catch{}});
+  document.addEventListener('avs-preset-draft',()=>{$('visual-title').textContent='Novo preset';$('visual-family').textContent='SEU EXPERIMENTO';});
   $('gain').addEventListener('input',()=>$('gain-value').textContent=Number($('gain').value).toFixed(1)+'×');
   $('smooth').addEventListener('input',()=>$('smooth-value').textContent=Math.round(Number($('smooth').value)*100)+'%');
   const updateLog=()=>$('log-control').hidden=$('amplitude-scale').value!=='log';
@@ -77,6 +78,8 @@
     fps+=(Math.max(0,a.fps||0)-fps)*.25;
     const active=typeof mode!=='undefined'?mode:'silence';
     $('fps-pill').textContent='● '+Math.round(fps)+' FPS';
+    $('fps-pill').dataset.slow=String(fps<40);
+    $('visual-error').hidden=!$('error').textContent.trim();
     const labels={remote:'Captura conectada',live:'Recebendo áudio',demo:'Demo visual',silence:'Sem sinal'};
     $('signal-label').textContent=labels[active]||'Sem sinal';
     $('stage-mode-label').textContent=active==='demo'?'DEMO · SEM ÁUDIO REAL':'ÁUDIO REATIVO';
@@ -85,4 +88,5 @@
   },400);
   let initial='discover';try{initial=localStorage.getItem('avs-ui-mode')||'discover';}catch{}
   setMode(initial);setPanel('explore');renderLibrary();updateSelected();
+  try{const remembered=localStorage.getItem('avs-last-preset');if(remembered&&window.presetLibrary.entries().some(entry=>entry.value===remembered))window.presetLibrary.load(remembered);}catch{}
 })();

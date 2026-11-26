@@ -2,6 +2,8 @@
 (() => {
   const label = document.getElementById('capture-health');
   function report() {
+    const needsResume=(mode==='remote'&&window.remoteAudio?.state.includes('suspenso'))||(mode==='live'&&context&&context.state!=='running');
+    document.getElementById('resume-audio').hidden=!needsResume;
     const parts = [];
     if (mode === 'remote') parts.push(window.remoteAudio.state);
     else if (mode === 'demo') parts.push('Demo sintética');

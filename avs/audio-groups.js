@@ -66,7 +66,7 @@ class AudioGroups {
       low:energy[0]+energy[1],mid:energy[2]+energy[3],high:energy[4]+energy[5]};
   }
   reset() {
-    this.previous=null;
+    this.previous=null;this.lastMeterPaint=-Infinity;
     for(const g of Object.values(this.groups)) Object.assign(g,{
       magnitude:0,db:-120,level:0,energy:0,attack:0,sustain:0,hit:false,peak:.04,
       fluxMean:0,fluxPeak:.005,lastHit:-10,tail:0
@@ -77,6 +77,7 @@ class AudioGroups {
     if(!this.previous || this.previous.length!==spectrum.length){
       this.previous=new Float32Array(spectrum.length);
     }
+    const paintMeters=time-this.lastMeterPaint>=.08;
     for(const g of Object.values(this.groups)) {
       const start=Math.max(1,Math.ceil(g.low/binHz));
       const end=Math.min(spectrum.length-1,Math.ceil(g.high/binHz)-1);
@@ -110,8 +111,9 @@ class AudioGroups {
       target=g.enabled?Math.min(1,target*g.gain):0;
       g.level+=(target-g.level)*(1-Math.exp(-dt/(target>g.level?.012:.12)));
       if(!g.enabled){g.attack=0;g.hit=false}
-      g.meter.value=g.level;
+      if(paintMeters)g.meter.value=g.level;
     }
+    if(paintMeters)this.lastMeterPaint=time;
     this.previous.set(spectrum);
     return this.groups;
   }

@@ -19,7 +19,7 @@
     localStorage.setItem(KEY,JSON.stringify(next)); // commit before replacing the in-memory list
     records=next;window.presetLibrary.setLocals(records);
   }
-  function unique(name){let next=name,suffix=2;while(records.some(record=>record.name===next))next=name+' ('+suffix+++')';return next;}
+  function unique(name){let next=name,suffix=2;while(records.some(record=>record.name===next))next=name+' ('+(suffix++)+')';return next;}
   function save(copy){
     pause();
     try{
@@ -50,7 +50,7 @@ if(a.mouse.clicked)s.phase+=.3;
 if(a.keyboard.pressed('Space'))s.phase=0;
 // a.fps, a.elapsed, a.seed, a.mouse.ax/ay também estão disponíveis.
 `);
-    apply();status.textContent='Novo rascunho · dê um nome e clique em Salvar local.';
+    apply();document.dispatchEvent(new Event('avs-preset-draft'));status.textContent='Novo rascunho · dê um nome e clique em Salvar local.';
   };
   document.addEventListener('avs-preset-loaded',event=>{$('local-preset-name').value=event.detail.name;});
   $('local-load').onclick=()=>$('local-preset-files').click();
@@ -69,7 +69,7 @@ if(a.keyboard.pressed('Space'))s.phase=0;
       }
       if(!incoming.length)return;
       const now=new Date().toISOString(),next=[...records];
-      for(const item of incoming){let name=item.name,n=2;while(next.some(record=>record.name===name))name=item.name+' ('+n+++')';next.push({...item,name,id:id(),createdAt:now,updatedAt:now});}
+      for(const item of incoming){let name=item.name,n=2;while(next.some(record=>record.name===name))name=item.name+' ('+(n++)+')';next.push({...item,name,id:id(),createdAt:now,updatedAt:now});}
       persist(next);window.presetLibrary.load('local:'+next[records.length-incoming.length].id);
       status.textContent=incoming.length+' preset(s) carregado(s) e salvo(s) localmente.';
     }catch(error){status.textContent='Importação cancelada: '+error.message;}

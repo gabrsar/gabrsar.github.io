@@ -13,20 +13,22 @@ p.blendMode(p.BLEND);p.colorMode(p.RGB,255);
 
 s.phase ??= rand(0,6);s.phase+=dt*(.025+mid*.04);
 p.background(16,7,6,255*(1-Math.exp(-dt/.18)));
-p.translate(w/2,h/2);p.noFill();
-const ctx=p.drawingContext;ctx.save();
+const scale=a.renderScale??.75,rw=Math.max(64,Math.round(w*scale)),rh=Math.max(64,Math.round(h*scale));
+if(!s.layer){s.layer=p.createGraphics(rw,rh);s.layer.pixelDensity(1);s.dispose=()=>s.layer.remove();}
+const g=s.layer;if(g.width!==rw||g.height!==rh)g.resizeCanvas(rw,rh);
+g.clear();g.resetMatrix();g.colorMode(p.RGB,255);g.scale(scale);g.translate(w/2,h/2);g.noFill();
 const R=Math.min(w,h)*.44;
 for(let panel=0;panel<18;panel++){
  const energy=strengths[Math.floor(panel/18*strengths.length)]||0;
  const rotation=s.phase*.12+panel*.035;
- p.push();p.rotate(rotation);
+ g.push();g.rotate(rotation);
  const neon=panel%7===3;
  const trend=a.music?.trend||0;
- ctx.shadowColor=neon?'rgba(100,210,190,.32)':'rgba(255,123,50,.30)';
- ctx.shadowBlur=2.5+energy*5;
- p.stroke(neon?90:185+panel*3,neon?175:55+panel*5+trend*8,neon?155:28+panel*2,(neon?12:20)+energy*(neon?18:40));p.strokeWeight(.65+energy*.6);
- p.rectMode(p.CENTER);const size=R*(.25+panel*.075);
- p.rect(Math.sin(s.phase+panel*.12)*w*.035,Math.cos(s.phase*.7)*h*.025,size*1.35,size*.75,3);p.pop();
+ g.stroke(neon?90:185+panel*3,neon?175:55+panel*5+trend*8,neon?155:28+panel*2,(neon?12:20)+energy*(neon?18:40));g.strokeWeight(.65+energy*.6);
+ g.rectMode(p.CENTER);const size=R*(.25+panel*.075);
+ g.rect(Math.sin(s.phase+panel*.12)*w*.035,Math.cos(s.phase*.7)*h*.025,size*1.35,size*.75,3);g.pop();
 }
 
-ctx.restore();
+// Um bloom por camada em vez de recalcular sombras em cada retângulo.
+p.imageMode(p.CORNER);const ctx=p.drawingContext;ctx.save();
+try{ctx.filter='blur('+(3+low*2).toFixed(2)+'px)';ctx.globalAlpha=.30;p.image(g,0,0,w,h);ctx.filter='none';ctx.globalAlpha=.95;p.image(g,0,0,w,h);}finally{ctx.restore();}
