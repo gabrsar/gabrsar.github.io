@@ -75,12 +75,27 @@ a.visualLevel=db=>{
 a.energy=(lo,hi)=>{let start=Math.max(0,Math.ceil(lo/a.binHz)),end=Math.min(a.spectrum.length-1,Math.floor(hi/a.binHz)),sum=0;for(let i=start;i<=end;i++)sum+=a.spectrum[i];return sum/Math.max(1,end-start+1)};
 function message(t){$('status').textContent=t}
 function resizeFFT(){const n=+$('fft').value;if(analyser)analyser.fftSize=n;raw=new Uint8Array(n/2);wave=new Float32Array(n);a.spectrum=new Float32Array(n/2);a.waveform=wave;a.binHz=a.sampleRate/n}
-function disconnect(){window.avsMusic?.reset();window.remoteAudio?.detach();generation++;groupEngine.reset();if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;if(source)source.disconnect();source=null;if(media){media.pause();media.removeAttribute('src');media.load();media=null}if(url)URL.revokeObjectURL(url);url=null;mode='silence'}
+function disconnect(){$('example-player').replaceChildren();$('example-player').hidden=true;window.avsMusic?.reset();window.remoteAudio?.detach();generation++;groupEngine.reset();if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;if(source)source.disconnect();source=null;if(media){media.pause();media.removeAttribute('src');media.load();media=null}if(url)URL.revokeObjectURL(url);url=null;mode='silence'}
 async function init(){context ||= new AudioContext();await context.resume();analyser ||= context.createAnalyser();if(!detailAnalyser){detailAnalyser=context.createAnalyser();detailAnalyser.fftSize=4096;detailAnalyser.smoothingTimeConstant=0.05;detailAnalyser.minDecibels=-110;detailAnalyser.maxDecibels=0;}a.sampleRate=context.sampleRate;resizeFFT()}
 async function capture(kind){disconnect();const ticket=generation;try{await init();const captured=kind==='system'?await navigator.mediaDevices.getDisplayMedia({video:true,audio:true,systemAudio:'include'}):await navigator.mediaDevices.getUserMedia({audio:true});if(ticket!==generation){captured.getTracks().forEach(t=>t.stop());return}if(!captured.getAudioTracks().length){captured.getTracks().forEach(t=>t.stop());throw Error('Nenhuma faixa de áudio. Selecione uma aba/tela e marque compartilhar áudio.')}stream=captured;source=context.createMediaStreamSource(new MediaStream(stream.getAudioTracks()));source.connect(analyser);source.connect(detailAnalyser);mode='live';stream.getAudioTracks()[0].onended=()=>{if(ticket===generation){disconnect();message('Captura encerrada.')}};message(kind==='system'?'Capturando áudio compartilhado · FFT ao vivo':'Microfone conectado · FFT ao vivo')}catch(e){if(ticket===generation){disconnect();message('Captura não iniciada: '+e.message)}}}
 $('system').onclick=()=>capture('system');$('mic').onclick=()=>capture('mic');
 $('stop').onclick=()=>{disconnect();message('Áudio parado.')};$('demo').onclick=()=>{disconnect();mode='demo';message('Demo sintética visual · sem áudio real.')};
 $('file').onclick=()=>$('upload').click();$('upload').onchange=async e=>{const f=e.target.files[0];if(!f)return;disconnect();const ticket=generation;try{await init();if(ticket!==generation)return;url=URL.createObjectURL(f);media=new Audio(url);media.loop=false;media.onended=()=>{if(ticket===generation)message('Música encerrada. Abra outro arquivo para continuar.')};source=context.createMediaElementSource(media);source.connect(analyser);source.connect(detailAnalyser);source.connect(context.destination);await media.play();if(ticket===generation){mode='live';message('Arquivo: '+f.name)}}catch(err){if(ticket===generation){disconnect();message(err.message)}}e.target.value=''};
+const exampleTracks={cipher:'Cipher', 'local-forecast':'Local Forecast', 'dream-culture':'Dream Culture'};
+$('play-example').onclick=async()=>{
+ const key=$('example-track').value;if(!exampleTracks[key])return;
+ disconnect();const ticket=generation;message('Carregando '+exampleTracks[key]+'…');
+ try{
+  await init();if(ticket!==generation)return;
+  media=new Audio('./assets/audio/'+key+'.mp3');media.controls=true;media.preload='none';media.volume=.65;
+  media.setAttribute('aria-label','Reprodução de '+exampleTracks[key]);
+  $('example-player').replaceChildren(media);$('example-player').hidden=false;
+  source=context.createMediaElementSource(media);source.connect(analyser);source.connect(detailAnalyser);source.connect(context.destination);
+  media.onended=()=>{if(ticket===generation)message('Música encerrada · escolha outro exemplo ou toque novamente.')};
+  media.onerror=()=>{if(ticket===generation){disconnect();message('Não foi possível carregar a música. Tente novamente.')}};
+  await media.play();if(ticket===generation){mode='live';message(exampleTracks[key]+' · Kevin MacLeod · CC BY 4.0')}
+ }catch(err){if(ticket===generation){disconnect();message('Não foi possível tocar: '+err.message)}}
+};
 $('fft').onchange=resizeFFT;
 let drawCode,state={},sketch;
 function disposeCurrentState(){
